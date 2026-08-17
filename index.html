@@ -223,6 +223,57 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
   header { padding: 0 16px; flex-wrap: wrap; gap: 8px; height: auto; padding: 12px 16px; }
   .login-card { width: 95%; padding: 32px 24px; }
 }
+
+/* ── CALENDAR ── */
+.cal-wrap { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px; }
+.cal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 2px solid var(--border); background: var(--surface); }
+.cal-title { font-size: 18px; font-weight: 700; color: var(--text); }
+.cal-nav { display: flex; gap: 8px; align-items: center; }
+.cal-nav button { font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600; border: 1.5px solid var(--border); background: var(--white); color: var(--text); padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: .15s; }
+.cal-nav button:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.cal-nav button.view-active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); }
+.cal-day-header { text-align: center; padding: 10px 4px; font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--border); }
+.cal-day-header.weekend { color: var(--red); }
+.cal-cell { min-height: 90px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6px; position: relative; transition: background .1s; }
+.cal-cell:nth-child(7n) { border-right: none; }
+.cal-cell:hover { background: var(--surface); }
+.cal-cell.other-month { background: #fafbfd; }
+.cal-cell.today { background: #e8f0fe; }
+.cal-cell.today .cal-date { background: var(--accent); color: #fff; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+.cal-date { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+.cal-date.weekend { color: var(--red); }
+.cal-event { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; line-height: 1.6; }
+.cal-event.ev-done   { background: var(--green-bg); color: var(--green); border-left: 3px solid var(--green); }
+.cal-event.ev-inprog { background: var(--yellow-bg); color: var(--yellow); border-left: 3px solid var(--yellow); }
+.cal-event.ev-todo   { background: var(--bg); color: var(--gray); border-left: 3px solid var(--border); }
+.cal-event.ev-late   { background: var(--red-bg); color: var(--red); border-left: 3px solid var(--red); }
+.cal-more { font-size: 10px; color: var(--accent); font-weight: 600; cursor: pointer; padding: 1px 4px; }
+
+/* WEEK VIEW */
+.week-grid { display: grid; grid-template-columns: 80px repeat(7,1fr); }
+.week-time-col { border-right: 1px solid var(--border); }
+.week-day-col { border-right: 1px solid var(--border); min-height: 60px; }
+.week-day-col:last-child { border-right: none; }
+.week-header-cell { text-align: center; padding: 10px 4px; border-bottom: 2px solid var(--border); background: var(--surface); }
+.week-date-num { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1; }
+.week-date-day { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
+.week-header-cell.today-col .week-date-num { color: var(--accent); }
+.week-task-cell { padding: 6px; min-height: 80px; border-bottom: 1px solid var(--border); }
+.week-label { font-size: 10px; color: var(--muted); padding: 8px 6px; border-bottom: 1px solid var(--border); font-weight: 600; }
+
+/* FILTER BAR */
+.cal-filter { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+.cal-filter-label { font-size: 12px; color: var(--gray); font-weight: 500; }
+.filter-chip { font-family: 'Prompt', sans-serif; font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--white); color: var(--gray); cursor: pointer; transition: .15s; }
+.filter-chip:hover { border-color: var(--accent); color: var(--accent); }
+.filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* EVENT POPUP */
+.ev-popup { position: fixed; background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: 0 8px 30px rgba(0,0,0,.15); z-index: 300; width: 260px; }
+.ev-popup h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.ev-popup p  { font-size: 12px; color: var(--gray); margin-bottom: 4px; }
+.ev-popup-close { position: absolute; top: 10px; right: 12px; background: none; border: none; font-size: 16px; cursor: pointer; color: var(--gray); }
 </style>
 </head>
 <body>
@@ -292,6 +343,7 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
   </div>
   <div class="tab-nav">
     <button class="tab-btn active" id="tab-my"  onclick="switchTab('my-tasks',this)">งานของฉัน</button>
+    <button class="tab-btn"        id="tab-cal" onclick="switchTab('calendar',this)">📅 ปฏิทิน</button>
     <button class="tab-btn"        id="tab-mgr" onclick="switchTab('manager',this)"  style="display:none">มุมมอง AVP</button>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -478,6 +530,7 @@ function switchTab(view, btn) {
   document.getElementById('view-'+view).classList.add('active');
   btn.classList.add('active');
   if (view === 'manager') listenManagerView();
+  else if (view === 'calendar') listenCalendar();
   else listenMyTasks();
 }
 
@@ -730,6 +783,247 @@ function showToast(msg) {
 }
 
 init();
+
+// ── CALENDAR ──────────────────────────────────────
+let calView = 'month';
+let calDate = new Date();
+let calFilter = 'all';
+let calTasksCache = [];
+let calMembersCache = [];
+let calPopup = null;
+
+function setCalView(v) {
+  calView = v;
+  document.getElementById('btn-month').classList.toggle('view-active', v==='month');
+  document.getElementById('btn-week').classList.toggle('view-active', v==='week');
+  renderCalendar();
+}
+
+function setFilter(f, btn) {
+  calFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCalendar();
+}
+
+function prevPeriod() {
+  if (calView==='month') calDate.setMonth(calDate.getMonth()-1);
+  else calDate.setDate(calDate.getDate()-7);
+  renderCalendar();
+}
+function nextPeriod() {
+  if (calView==='month') calDate.setMonth(calDate.getMonth()+1);
+  else calDate.setDate(calDate.getDate()+7);
+  renderCalendar();
+}
+function goToday() { calDate = new Date(); renderCalendar(); }
+
+async function listenCalendar() {
+  const { db, ref, onValue } = window._fb;
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  onValue(ref(db,'members'), snap => {
+    const data = snap.val()||{};
+    calMembersCache = Object.values(data);
+    renderCalendar();
+  });
+
+  onValue(ref(db,'tasks'), snap => {
+    const data = snap.val()||{};
+    calTasksCache = [];
+    Object.entries(data).forEach(([memberId, mTasks]) => {
+      Object.entries(mTasks||{}).forEach(([key, t]) => {
+        calTasksCache.push({...t, key, memberId});
+      });
+    });
+    renderCalendar();
+  });
+}
+
+function getVisibleTasks() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  let tasks = calTasksCache.filter(t => t.due);
+
+  // กรองตามสิทธิ์
+  if (!me.isAVP) {
+    tasks = tasks.filter(t => t.memberId === me.id);
+  } else {
+    tasks = tasks.filter(t => t.avp === me.avp);
+  }
+
+  // กรองตาม filter
+  if (calFilter === 'late') {
+    tasks = tasks.filter(t => t.status!=='done' && new Date(t.due)<today);
+  } else if (calFilter !== 'all') {
+    tasks = tasks.filter(t => t.status === calFilter);
+  }
+  return tasks;
+}
+
+function getEventClass(t) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  if (t.status==='done') return 'ev-done';
+  if (new Date(t.due) < today) return 'ev-late';
+  if (t.status==='inprogress') return 'ev-inprog';
+  return 'ev-todo';
+}
+
+function renderCalendar() {
+  if (calView==='month') renderMonth();
+  else renderWeek();
+}
+
+function renderMonth() {
+  const months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  const days   = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const today  = new Date(); today.setHours(0,0,0,0);
+
+  document.getElementById('cal-period-title').textContent =
+    `${months[calDate.getMonth()]} ${calDate.getFullYear()+543}`;
+
+  const year  = calDate.getFullYear();
+  const month = calDate.getMonth();
+  const first = new Date(year, month, 1);
+  const last  = new Date(year, month+1, 0);
+  const startDay = first.getDay();
+
+  const tasks = getVisibleTasks();
+
+  // Build task map by date string
+  const taskMap = {};
+  tasks.forEach(t => {
+    const d = t.due.split('T')[0];
+    if (!taskMap[d]) taskMap[d] = [];
+    taskMap[d].push(t);
+  });
+
+  let html = '<div class="cal-grid">';
+  // Headers
+  days.forEach((d,i) => {
+    html += `<div class="cal-day-header ${i===0||i===6?'weekend':''}">${d}</div>`;
+  });
+
+  // Cells
+  const totalCells = Math.ceil((startDay + last.getDate()) / 7) * 7;
+  for (let i=0; i<totalCells; i++) {
+    const dayNum = i - startDay + 1;
+    const isCurrentMonth = dayNum >= 1 && dayNum <= last.getDate();
+    const cellDate = new Date(year, month, dayNum);
+    const dateStr  = cellDate.toISOString().split('T')[0];
+    const isToday  = cellDate.getTime() === today.getTime();
+    const isWeekend = cellDate.getDay()===0 || cellDate.getDay()===6;
+    const cellTasks = taskMap[dateStr] || [];
+
+    let cls = 'cal-cell';
+    if (!isCurrentMonth) cls += ' other-month';
+    if (isToday) cls += ' today';
+
+    let eventsHtml = '';
+    const showMax = 3;
+    cellTasks.slice(0, showMax).forEach(t => {
+      const ec = getEventClass(t);
+      const m  = calMembersCache.find(x=>x.id===t.memberId);
+      const label = me.isAVP && m ? `${m.name.split(' ')[0]}: ${t.name}` : t.name;
+      eventsHtml += `<div class="cal-event ${ec}" onclick="showPopup(event,'${t.key}','${t.memberId}')" title="${t.name}">${label}</div>`;
+    });
+    if (cellTasks.length > showMax) {
+      eventsHtml += `<div class="cal-more">+${cellTasks.length-showMax} งาน</div>`;
+    }
+
+    html += `<div class="${cls}">
+      <div class="cal-date ${isWeekend?'weekend':''}">${isCurrentMonth?dayNum:''}</div>
+      ${eventsHtml}
+    </div>`;
+  }
+  html += '</div>';
+  document.getElementById('cal-body').innerHTML = html;
+}
+
+function renderWeek() {
+  const days    = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const today   = new Date(); today.setHours(0,0,0,0);
+  const dayOfWk = calDate.getDay();
+  const sunday  = new Date(calDate); sunday.setDate(calDate.getDate()-dayOfWk);
+
+  const weekDates = Array.from({length:7},(_,i)=>{
+    const d = new Date(sunday); d.setDate(sunday.getDate()+i); return d;
+  });
+
+  const startStr = weekDates[0].toLocaleDateString('th-TH',{day:'numeric',month:'short'});
+  const endStr   = weekDates[6].toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+  document.getElementById('cal-period-title').textContent = `${startStr} – ${endStr}`;
+
+  const tasks = getVisibleTasks();
+  const taskMap = {};
+  tasks.forEach(t => {
+    const d = t.due.split('T')[0];
+    if (!taskMap[d]) taskMap[d] = [];
+    taskMap[d].push(t);
+  });
+
+  let html = '<div class="week-grid">';
+  // Corner
+  html += '<div class="week-header-cell" style="border-bottom:2px solid var(--border);background:var(--surface)"></div>';
+  // Day headers
+  weekDates.forEach(d => {
+    const isToday = d.getTime()===today.getTime();
+    const isWknd  = d.getDay()===0||d.getDay()===6;
+    html += `<div class="week-header-cell ${isToday?'today-col':''}">
+      <div class="week-date-num" style="color:${isWknd?'var(--red)':isToday?'var(--accent)':'var(--text)'}">${d.getDate()}</div>
+      <div class="week-date-day">${days[d.getDay()]}</div>
+    </div>`;
+  });
+
+  // Task row
+  html += '<div class="week-label">งาน</div>';
+  weekDates.forEach(d => {
+    const dateStr  = d.toISOString().split('T')[0];
+    const isToday  = d.getTime()===today.getTime();
+    const cellTasks = taskMap[dateStr] || [];
+    let evHtml = '';
+    cellTasks.forEach(t => {
+      const ec = getEventClass(t);
+      const m  = calMembersCache.find(x=>x.id===t.memberId);
+      const label = me.isAVP && m ? `${m.name.split(' ')[0]}: ${t.name}` : t.name;
+      evHtml += `<div class="cal-event ${ec}" onclick="showPopup(event,'${t.key}','${t.memberId}')" title="${t.name}">${label}</div>`;
+    });
+    html += `<div class="week-task-cell" style="${isToday?'background:#e8f0fe':''}">${evHtml||'<div style="color:var(--border);font-size:11px;text-align:center;padding-top:20px">—</div>'}</div>`;
+  });
+
+  html += '</div>';
+  document.getElementById('cal-body').innerHTML = html;
+}
+
+function showPopup(e, taskKey, memberId) {
+  e.stopPropagation();
+  if (calPopup) calPopup.remove();
+
+  const t = calTasksCache.find(x=>x.key===taskKey&&x.memberId===memberId);
+  if (!t) return;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const due   = t.due ? new Date(t.due) : null;
+  const late  = due && due < today && t.status !== 'done';
+  const dstr  = due ? due.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'}) : '—';
+  const sl    = {done:'✅ เสร็จเรียบร้อย',inprogress:'⏳ กำลังดำเนินการ',todo:'📋 ยังไม่เริ่ม'}[t.status];
+  const m     = calMembersCache.find(x=>x.id===memberId);
+
+  const div = document.createElement('div');
+  div.className = 'ev-popup';
+  div.style.top  = (e.clientY+8)+'px';
+  div.style.left = Math.min(e.clientX, window.innerWidth-280)+'px';
+  div.innerHTML = `
+    <button class="ev-popup-close" onclick="this.parentElement.remove()">✕</button>
+    <h4>${t.name}</h4>
+    ${m?`<p>👤 ${m.name} · ${m.position}</p>`:''}
+    <p>📅 กำหนดส่ง: <strong style="color:${late?'var(--red)':'var(--text)'}">${late?'⚑ ':''} ${dstr}</strong></p>
+    <p>${sl}</p>
+  `;
+  document.body.appendChild(div);
+  calPopup = div;
+}
+
+document.addEventListener('click', ()=>{ if(calPopup){ calPopup.remove(); calPopup=null; } });
+
 </script>
 </body>
 </html>
