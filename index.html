@@ -147,6 +147,29 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
 
 /* MANAGER */
 .mgr-kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
+.progress-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+.prog-sec-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+.progress-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); padding: 16px 18px; box-shadow: var(--shadow); }
+.pc-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.pc-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+.pc-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.pc-role { font-size: 11px; color: var(--gray); }
+.pc-bar-wrap { background: var(--border); border-radius: 20px; height: 8px; margin-bottom: 8px; overflow: hidden; }
+.pc-bar-fill { height: 8px; border-radius: 20px; }
+.pc-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.pc-pct { font-size: 22px; font-weight: 700; line-height: 1; }
+.pc-nums { font-size: 11px; color: var(--gray); text-align: right; line-height: 1.7; }
+.pc-overdue { margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--red); background: var(--red-bg); border: 1px solid var(--red-br); border-radius: 6px; padding: 4px 8px; }
+.team-bar-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); padding: 18px 22px; box-shadow: var(--shadow); margin-bottom: 20px; }
+.tb-title { font-size: 13px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 16px; }
+.tb-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.tb-row:last-child { margin-bottom: 0; }
+.tb-name { font-size: 13px; font-weight: 500; width: 110px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+.tb-bar-wrap { flex: 1; background: var(--border); border-radius: 20px; height: 10px; overflow: hidden; }
+.tb-bar-fill { height: 10px; border-radius: 20px; }
+.tb-pct { font-size: 12px; font-weight: 700; width: 38px; text-align: right; flex-shrink: 0; }
+.tb-tags { display: flex; gap: 5px; }
+.tb-tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
 .mgr-member-block { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); margin-bottom: 12px; overflow: hidden; box-shadow: var(--shadow); }
 .mgr-member-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; cursor: pointer; transition: .15s; border-bottom: 1px solid transparent; }
 .mgr-member-header:hover { background: var(--surface); }
@@ -194,7 +217,7 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
 @media(max-width:768px) {
-  .kpi-row,.mgr-kpi-row { grid-template-columns: 1fr 1fr; }
+  .kpi-row,.mgr-kpi-row,.progress-grid { grid-template-columns: 1fr 1fr; }
   .table-header,.task-row,.add-row { grid-template-columns: 1fr; gap: 6px; }
   .view { padding: 16px; }
   header { padding: 0 16px; flex-wrap: wrap; gap: 8px; height: auto; padding: 12px 16px; }
@@ -559,7 +582,6 @@ function renderManagerView(membersData, tasksData) {
   const today   = new Date(); today.setHours(0,0,0,0);
   const members = Object.values(membersData).filter(m => m.avp === myAvp);
 
-  // รวม tasks ทุก member ใน AVP นี้
   let allTasks = [];
   members.forEach(m => {
     const mTasks = tasksData[m.id] ? Object.entries(tasksData[m.id]).map(([k,v])=>({...v,key:k,memberId:m.id})) : [];
@@ -577,14 +599,68 @@ function renderManagerView(membersData, tasksData) {
     return;
   }
 
-  list.innerHTML = members.map((m,i) => {
+  // ── คำนวณข้อมูลแต่ละคน ──
+  const memberStats = members.map((m,i) => {
     const mTasks  = tasksData[m.id] ? Object.entries(tasksData[m.id]).map(([k,v])=>({...v,key:k})) : [];
     const mDone   = mTasks.filter(t=>t.status==='done').length;
     const mInprog = mTasks.filter(t=>t.status==='inprogress').length;
+    const mTodo   = mTasks.filter(t=>t.status==='todo').length;
     const mOver   = mTasks.filter(t=>t.status!=='done'&&t.due&&new Date(t.due)<today).length;
+    const pct     = mTasks.length > 0 ? Math.round((mDone/mTasks.length)*100) : 0;
     const ci      = i % COLORS.length;
     const initials= m.name.length>=2 ? m.name.substring(0,2) : m.name;
+    return { m, mTasks, mDone, mInprog, mTodo, mOver, pct, ci, initials, i };
+  });
 
+  // ── ส่วนที่ 1: Progress Cards ──
+  const progressCards = memberStats.map(({m, mTasks, mDone, mInprog, mTodo, mOver, pct, ci, initials}) => {
+    const barColor = mOver>0 ? 'var(--red)' : pct>=80 ? 'var(--green)' : pct>=40 ? 'var(--yellow)' : 'var(--hp-orange)';
+    const pctColor = mOver>0 ? 'var(--red)' : pct>=80 ? 'var(--green)' : pct>=40 ? 'var(--yellow)' : 'var(--hp-orange)';
+    return `<div class="progress-card">
+      <div class="pc-top">
+        <div class="pc-av" style="background:${COLORS[ci].bg};color:${COLORS[ci].tc}">${initials}</div>
+        <div>
+          <div class="pc-name">${m.name}</div>
+          <div class="pc-role">${m.position}</div>
+        </div>
+      </div>
+      ${mTasks.length > 0 ? `
+        <div class="pc-bar-wrap">
+          <div class="pc-bar-fill" style="width:${pct}%;background:${barColor}"></div>
+        </div>
+        <div class="pc-bottom">
+          <div class="pc-pct" style="color:${pctColor}">${pct}%</div>
+          <div class="pc-nums">
+            ✅ เสร็จ ${mDone} งาน<br>
+            ⏳ ดำเนินการ ${mInprog} งาน<br>
+            📋 ยังไม่เริ่ม ${mTodo} งาน
+          </div>
+        </div>
+        ${mOver>0 ? `<div class="pc-overdue">⚑ เลยกำหนด ${mOver} งาน — ต้องติดตามด่วน!</div>` : ''}
+      ` : `<div style="text-align:center;padding:14px 0;color:var(--gray);font-size:13px">ยังไม่มีงานในระบบ</div>`}
+    </div>`;
+  }).join('');
+
+  // ── ส่วนที่ 2: Team Bar Chart ──
+  const teamBars = memberStats.map(({m, mTasks, mDone, mOver, pct}) => {
+    const barColor = mOver>0 ? 'var(--red)' : pct>=80 ? 'var(--green)' : pct>=40 ? 'var(--yellow)' : 'var(--hp-orange)';
+    const pctColor = mOver>0 ? 'var(--red)' : pct>=80 ? 'var(--green)' : pct>=40 ? 'var(--yellow)' : 'var(--hp-orange)';
+    return `<div class="tb-row">
+      <div class="tb-name">${m.name.split(' ')[0]}</div>
+      <div class="tb-bar-wrap">
+        <div class="tb-bar-fill" style="width:${pct}%;background:${barColor}"></div>
+      </div>
+      <div class="tb-pct" style="color:${pctColor}">${pct}%</div>
+      <div class="tb-tags">
+        <span class="tb-tag" style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-br)">${mDone}✓</span>
+        ${mOver>0?`<span class="tb-tag" style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-br)">${mOver}⚑</span>`:''}
+        <span class="tb-tag" style="background:var(--bg);color:var(--gray);border:1px solid var(--border)">${mTasks.length} งาน</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ── ส่วนที่ 3: รายละเอียด Task แต่ละคน ──
+  const memberBlocks = memberStats.map(({m, mTasks, mDone, mInprog, mOver, ci, initials, i}) => {
     const taskRows = !mTasks.length
       ? `<div class="mgr-no-tasks">ยังไม่มีงานในระบบ</div>`
       : mTasks.map(t => {
@@ -623,6 +699,22 @@ function renderManagerView(membersData, tasksData) {
       </div>
     </div>`;
   }).join('');
+
+  list.innerHTML = `
+    <!-- PROGRESS CARDS -->
+    <div class="prog-sec-title">📊 สรุปความคืบหน้ารายบุคคล</div>
+    <div class="progress-grid">${progressCards}</div>
+
+    <!-- TEAM BAR -->
+    <div class="team-bar-card">
+      <div class="tb-title">เปรียบเทียบความคืบหน้าทั้งทีม</div>
+      ${teamBars}
+    </div>
+
+    <!-- DETAIL -->
+    <div class="prog-sec-title">📋 รายละเอียดงานแต่ละคน</div>
+    ${memberBlocks}
+  `;
 }
 
 function toggleBlock(id, header, chId) {
