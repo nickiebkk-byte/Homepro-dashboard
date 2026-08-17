@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HomePro Team Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue, push, remove, update }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  // ══════════════════════════════════════════════════
+  //  🔧 แก้ไข Firebase Config ตรงนี้
+  //  (copy จาก Firebase Console → Project Settings)
+  // ══════════════════════════════════════════════════
+  const firebaseConfig = {
+    apiKey:            "AIzaSyBFFjV_AvxEzPWpQaVaRQp7DHM",
+    authDomain:        "work-11e8b.firebaseapp.com",
+    databaseURL:       "https://work-11e8b-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId:         "work-11e8b",
+    storageBucket:     "work-11e8b.firebasestorage.app",
+    messagingSenderId: "1086222788830",
+    appId:             "1:1086222788830:web:9c00706b2afb2a32433a4f",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  // expose ไปที่ window เพื่อให้โค้ดอื่นเรียกใช้ได้
+  window._fb = { db, ref, set, get, onValue, push, remove, update };
+  window._fbReady = true;
+  window.dispatchEvent(new Event('fb-ready'));
+</script>
+
+<style>
+:root {
+  --bg:        #f0f2f7;
+  --white:     #ffffff;
+  --surface:   #f8f9fc;
+  --border:    #e2e6f0;
+  --accent:    #0052cc;
+  --hp-orange: #f47920;
+  --green:     #1a8a4a;
+  --green-bg:  #eaf7ef;
+  --green-br:  #b2dfc4;
+  --yellow:    #b07800;
+  --yellow-bg: #fff8e6;
+  --yellow-br: #f5d87a;
+  --red:       #c0392b;
+  --red-bg:    #fdecea;
+  --red-br:    #f5b7b1;
+  --gray:      #7a8299;
+  --text:      #1a2035;
+  --text2:     #4a5370;
+  --shadow:    0 2px 12px rgba(0,0,0,.07);
+  --radius:    12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); font-family: 'Prompt', sans-serif; color: var(--text); font-size: 14px; min-height: 100vh; }
+
+/* HEADER */
+header { background: var(--white); border-bottom: 2px solid var(--border); padding: 0 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; height: 64px; box-shadow: var(--shadow); }
+.logo-hp   { background: var(--hp-orange); color: #fff; font-weight: 700; font-size: 13px; padding: 4px 10px; border-radius: 6px; }
+.logo-name { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -.3px; margin-left: 10px; }
+.logo-sub  { font-size: 11px; color: var(--gray); }
+.logo-wrap { display: flex; align-items: center; }
+.logo-info { margin-left: 10px; }
+.tab-nav { display: flex; gap: 4px; }
+.tab-btn { font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 500; border: none; background: none; color: var(--gray); padding: 8px 18px; border-radius: 8px; cursor: pointer; transition: .15s; }
+.tab-btn:hover { background: var(--bg); color: var(--text); }
+.tab-btn.active { background: var(--accent); color: #fff; font-weight: 600; }
+.date-chip { font-size: 12px; color: var(--gray); background: var(--bg); border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; font-weight: 500; }
+.user-chip { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text2); }
+.uc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+.logout-btn { font-family: 'Prompt', sans-serif; font-size: 12px; border: 1.5px solid var(--border); background: none; color: var(--gray); padding: 6px 14px; border-radius: 8px; cursor: pointer; }
+.logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* VIEWS */
+.view { display: none; padding: 28px 32px; max-width: 1300px; margin: 0 auto; }
+.view.active { display: block; }
+.sec-title { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 4px; letter-spacing: -.4px; }
+.sec-sub   { font-size: 13px; color: var(--gray); margin-bottom: 22px; }
+
+/* LOGIN */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+.login-card { background: var(--white); border-radius: 18px; padding: 44px 40px; width: 460px; box-shadow: 0 8px 40px rgba(0,0,50,.12); }
+.login-logo { text-align: center; margin-bottom: 28px; }
+.ll-hp { background: var(--hp-orange); color: #fff; font-weight: 700; font-size: 16px; display: inline-block; padding: 6px 14px; border-radius: 8px; margin-bottom: 10px; }
+.login-logo h1 { font-size: 26px; font-weight: 700; }
+.login-logo p  { font-size: 13px; color: var(--gray); margin-top: 4px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 6px; margin-top: 16px; }
+.form-input { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 14px; font-family: 'Prompt', sans-serif; color: var(--text); background: var(--surface); transition: .15s; }
+.form-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+.form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%237a8299' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
+.btn-main { width: 100%; margin-top: 22px; padding: 12px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; font-family: 'Prompt', sans-serif; cursor: pointer; transition: .15s; color: #fff; }
+.btn-blue   { background: var(--accent); }
+.btn-blue:hover { background: #003fa3; }
+.btn-orange { background: var(--hp-orange); }
+.btn-orange:hover { background: #d4660f; }
+.divider { display: flex; align-items: center; gap: 12px; margin: 20px 0 4px; }
+.divider::before,.divider::after { content:''; flex:1; border-top:1px solid var(--border); }
+.divider span { font-size: 11px; color: var(--gray); font-weight: 500; white-space: nowrap; }
+.role-tabs { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
+.role-tab { flex: 1; min-width: 80px; padding: 8px 4px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--surface); font-family: 'Prompt', sans-serif; font-size: 12px; font-weight: 500; color: var(--gray); cursor: pointer; text-align: center; transition: .15s; }
+.role-tab:hover { border-color: var(--hp-orange); color: var(--hp-orange); }
+.role-tab.selected { border-color: var(--hp-orange); background: #fff5ee; color: var(--hp-orange); font-weight: 700; }
+
+/* KPI */
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+.kpi-card { background: var(--white); border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow); border: 1.5px solid var(--border); position: relative; overflow: hidden; }
+.kpi-card::after { content:''; position:absolute; top:0; left:0; right:0; height:4px; border-radius: var(--radius) var(--radius) 0 0; }
+.kpi-card.c-blue::after   { background: var(--accent); }
+.kpi-card.c-green::after  { background: var(--green); }
+.kpi-card.c-orange::after { background: var(--hp-orange); }
+.kpi-card.c-red::after    { background: var(--red); }
+.kpi-label { font-size: 11px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.kpi-value { font-size: 34px; font-weight: 700; line-height: 1; }
+.kpi-sub   { font-size: 12px; color: var(--gray); margin-top: 6px; }
+
+/* TASK TABLE */
+.table-wrap { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+.table-header { display: grid; grid-template-columns: 1fr 150px 200px 48px; padding: 12px 20px; background: var(--surface); border-bottom: 2px solid var(--border); }
+.col-head { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; }
+.task-row { display: grid; grid-template-columns: 1fr 150px 200px 48px; padding: 12px 20px; border-bottom: 1px solid var(--border); align-items: center; transition: background .1s; }
+.task-row:last-child { border-bottom: none; }
+.task-row:hover { background: var(--surface); }
+.task-name-cell { font-size: 14px; font-weight: 500; }
+.task-name-cell.crossed { text-decoration: line-through; color: var(--gray); }
+.task-due-cell { font-size: 13px; color: var(--text2); }
+.task-due-cell.late { color: var(--red); font-weight: 600; }
+.status-sel { font-family: 'Prompt', sans-serif; font-size: 12px; font-weight: 600; border-radius: 20px; padding: 5px 10px; cursor: pointer; border: 1.5px solid; appearance: none; text-align: center; }
+.s-todo   { background: var(--bg);        color: var(--gray);   border-color: var(--border); }
+.s-inprog { background: var(--yellow-bg); color: var(--yellow); border-color: var(--yellow-br); }
+.s-done   { background: var(--green-bg);  color: var(--green);  border-color: var(--green-br); }
+.del-btn { background: none; border: none; color: var(--border); cursor: pointer; font-size: 15px; padding: 4px 8px; border-radius: 6px; transition: .15s; }
+.del-btn:hover { color: var(--red); background: var(--red-bg); }
+.add-row { display: grid; grid-template-columns: 1fr 150px 200px 48px; padding: 10px 20px; background: var(--surface); border-top: 2px dashed var(--border); align-items: center; }
+.add-row input, .add-row select { font-family: 'Prompt', sans-serif; font-size: 13px; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 10px; background: var(--white); color: var(--text); width: 95%; }
+.add-row input:focus, .add-row select:focus { outline: none; border-color: var(--accent); }
+.add-btn { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 700; font-family: 'Prompt', sans-serif; cursor: pointer; }
+.add-btn:hover { background: #003fa3; }
+.empty-state { padding: 50px; text-align: center; color: var(--gray); }
+.empty-state .ei { font-size: 40px; margin-bottom: 12px; }
+
+/* MANAGER */
+.mgr-kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
+.progress-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+.prog-sec-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+.progress-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); padding: 16px 18px; box-shadow: var(--shadow); }
+.pc-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.pc-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+.pc-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.pc-role { font-size: 11px; color: var(--gray); }
+.pc-bar-wrap { background: var(--border); border-radius: 20px; height: 8px; margin-bottom: 8px; overflow: hidden; }
+.pc-bar-fill { height: 8px; border-radius: 20px; }
+.pc-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.pc-pct { font-size: 22px; font-weight: 700; line-height: 1; }
+.pc-nums { font-size: 11px; color: var(--gray); text-align: right; line-height: 1.7; }
+.pc-overdue { margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--red); background: var(--red-bg); border: 1px solid var(--red-br); border-radius: 6px; padding: 4px 8px; }
+.team-bar-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); padding: 18px 22px; box-shadow: var(--shadow); margin-bottom: 20px; }
+.tb-title { font-size: 13px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 16px; }
+.tb-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.tb-row:last-child { margin-bottom: 0; }
+.tb-name { font-size: 13px; font-weight: 500; width: 110px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+.tb-bar-wrap { flex: 1; background: var(--border); border-radius: 20px; height: 10px; overflow: hidden; }
+.tb-bar-fill { height: 10px; border-radius: 20px; }
+.tb-pct { font-size: 12px; font-weight: 700; width: 38px; text-align: right; flex-shrink: 0; }
+.tb-tags { display: flex; gap: 5px; }
+.tb-tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+.mgr-member-block { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); margin-bottom: 12px; overflow: hidden; box-shadow: var(--shadow); }
+.mgr-member-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; cursor: pointer; transition: .15s; border-bottom: 1px solid transparent; }
+.mgr-member-header:hover { background: var(--surface); }
+.mgr-member-header.open { border-bottom-color: var(--border); }
+.mmh-left  { display: flex; align-items: center; gap: 12px; }
+.mmh-name  { font-size: 16px; font-weight: 700; }
+.mmh-meta  { font-size: 12px; color: var(--gray); margin-top: 2px; }
+.mmh-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.stat-pill { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+.pill-gray   { background: var(--bg);        color: var(--gray);   border: 1px solid var(--border); }
+.pill-green  { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-br); }
+.pill-yellow { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-br); }
+.pill-red    { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-br); }
+.chevron { font-size: 20px; color: var(--gray); transition: transform .2s; }
+.chevron.open { transform: rotate(90deg); }
+.avatar-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.mgr-task-table { display: none; }
+.mgr-task-table.open { display: block; }
+.mgr-task-header { display: grid; grid-template-columns: 1fr 150px 180px; padding: 8px 22px; background: var(--surface); font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; }
+.mgr-task-row { display: grid; grid-template-columns: 1fr 150px 180px; padding: 12px 22px; border-top: 1px solid var(--border); align-items: center; }
+.mgr-task-row:hover { background: var(--surface); }
+.mgr-task-name { font-size: 14px; font-weight: 500; }
+.mgr-task-name.crossed { text-decoration: line-through; color: var(--gray); }
+.mgr-task-due  { font-size: 13px; color: var(--text2); }
+.mgr-task-due.late { color: var(--red); font-weight: 600; }
+.status-badge { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; display: inline-block; }
+.sb-todo   { background: var(--bg);        color: var(--gray);   border: 1.5px solid var(--border); }
+.sb-inprog { background: var(--yellow-bg); color: var(--yellow); border: 1.5px solid var(--yellow-br); }
+.sb-done   { background: var(--green-bg);  color: var(--green);  border: 1.5px solid var(--green-br); }
+.mgr-no-tasks { padding: 16px 22px; font-size: 13px; color: var(--gray); }
+.avp-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: #fff5ee; color: var(--hp-orange); border: 1px solid #f5d0b0; margin-left: 6px; }
+
+/* LOADING */
+.loading-overlay { position: fixed; inset: 0; background: #fff; display: flex; align-items: center; justify-content: center; z-index: 999; flex-direction: column; gap: 16px; }
+.spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 14px; color: var(--gray); font-weight: 500; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--text); color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 13px; font-weight: 500; transition: .3s; z-index: 500; opacity: 0; pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* SYNC indicator */
+.sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; margin-right: 4px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+@media(max-width:768px) {
+  .kpi-row,.mgr-kpi-row,.progress-grid { grid-template-columns: 1fr 1fr; }
+  .table-header,.task-row,.add-row { grid-template-columns: 1fr; gap: 6px; }
+  .view { padding: 16px; }
+  header { padding: 0 16px; flex-wrap: wrap; gap: 8px; height: auto; padding: 12px 16px; }
+  .login-card { width: 95%; padding: 32px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">กำลังเชื่อมต่อ Firebase...</div>
+</div>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-screen" style="display:none">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="ll-hp">HomePro</div>
+      <h1>Team Dashboard</h1>
+      <p>แผนกบริหารสินค้า · Category Management</p>
+    </div>
+
+    <label class="form-label">ชื่อ-นามสกุล</label>
+    <input class="form-input" id="login-name" type="text" placeholder="เช่น สมชาย วงษ์ดี">
+
+    <label class="form-label">ตำแหน่ง</label>
+    <input class="form-input" id="login-position" type="text" placeholder="เช่น Sr. Buyer, Analyst">
+
+    <label class="form-label">AVP หัวหน้า</label>
+    <select class="form-input form-select" id="login-avp">
+      <option value="">— เลือก AVP หัวหน้า —</option>
+      <option>AVP SA</option>
+      <option>AVP KC</option>
+      <option>AVP HO1</option>
+      <option>AVP HO2</option>
+      <option>AVP PRO KC HO</option>
+      <option>AVP PRO SA</option>
+    </select>
+
+    <button class="btn-main btn-blue" onclick="loginMember()">เข้าสู่ระบบ (พนักงาน)</button>
+
+    <div class="divider"><span>หรือเข้าสู่ระบบในฐานะ AVP</span></div>
+
+    <label class="form-label">เลือก AVP ของคุณ</label>
+    <div class="role-tabs">
+      <button class="role-tab" onclick="selectAVP('AVP SA',this)">AVP SA</button>
+      <button class="role-tab" onclick="selectAVP('AVP KC',this)">AVP KC</button>
+      <button class="role-tab" onclick="selectAVP('AVP HO1',this)">AVP HO1</button>
+      <button class="role-tab" onclick="selectAVP('AVP HO2',this)">AVP HO2</button>
+      <button class="role-tab" onclick="selectAVP('AVP PRO KC HO',this)">AVP PRO KC HO</button>
+      <button class="role-tab" onclick="selectAVP('AVP PRO SA',this)">AVP PRO SA</button>
+    </div>
+    <div id="avp-pin-wrap" style="display:none;margin-top:14px">
+      <label class="form-label">PIN สำหรับ AVP</label>
+      <input class="form-input" id="login-pin" type="password" placeholder="••••" maxlength="4" onkeydown="if(event.key==='Enter')loginAVP()">
+      <button class="btn-main btn-orange" id="avp-login-btn" onclick="loginAVP()" style="margin-top:12px">เข้าสู่ระบบ AVP</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none">
+<header>
+  <div class="logo-wrap">
+    <div class="logo-hp">HomePro</div>
+    <div class="logo-info">
+      <div class="logo-name">Team Dashboard</div>
+      <div class="logo-sub"><span class="sync-dot"></span>Real-time · Firebase</div>
+    </div>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tab-my"  onclick="switchTab('my-tasks',this)">งานของฉัน</button>
+    <button class="tab-btn"        id="tab-mgr" onclick="switchTab('manager',this)"  style="display:none">มุมมอง AVP</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="user-chip"><div class="uc-dot"></div><span id="header-user"></span></div>
+    <div class="date-chip" id="header-date"></div>
+    <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+  </div>
+</header>
+
+<!-- MY TASKS -->
+<div class="view active" id="view-my-tasks">
+  <div class="sec-title" id="my-title">งานของฉัน</div>
+  <div class="sec-sub"   id="my-sub"></div>
+  <div class="kpi-row">
+    <div class="kpi-card c-blue">
+      <div class="kpi-label">งานทั้งหมด</div>
+      <div class="kpi-value" id="k-total">0</div>
+      <div class="kpi-sub">รายการในระบบ</div>
+    </div>
+    <div class="kpi-card c-orange">
+      <div class="kpi-label">กำลังดำเนินการ</div>
+      <div class="kpi-value" id="k-inprog" style="color:var(--yellow)">0</div>
+      <div class="kpi-sub">งานที่ยังทำอยู่</div>
+    </div>
+    <div class="kpi-card c-green">
+      <div class="kpi-label">เสร็จเรียบร้อย</div>
+      <div class="kpi-value" id="k-done" style="color:var(--green)">0</div>
+      <div class="kpi-sub">งานที่เสร็จแล้ว</div>
+    </div>
+    <div class="kpi-card c-red">
+      <div class="kpi-label">เลยกำหนด</div>
+      <div class="kpi-value" id="k-overdue" style="color:var(--red)">0</div>
+      <div class="kpi-sub">ต้องเร่งดำเนินการ</div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="col-head">ชื่องาน</div>
+      <div class="col-head">กำหนดส่ง</div>
+      <div class="col-head">สถานะ</div>
+      <div class="col-head"></div>
+    </div>
+    <div id="task-rows"></div>
+    <div class="add-row">
+      <input type="text" id="new-name" placeholder="ชื่องานใหม่..." onkeydown="if(event.key==='Enter')addTask()">
+      <input type="date" id="new-due">
+      <select id="new-status">
+        <option value="todo">ยังไม่เริ่ม</option>
+        <option value="inprogress">กำลังดำเนินการ</option>
+        <option value="done">เสร็จเรียบร้อย</option>
+      </select>
+      <button class="add-btn" onclick="addTask()">+ เพิ่ม</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANAGER VIEW -->
+<div class="view" id="view-manager">
+  <div class="sec-title" id="mgr-title">มุมมอง AVP</div>
+  <div class="sec-sub"   id="mgr-sub">ติดตามงานของทีม — อัปเดต real-time ทันที</div>
+  <div class="mgr-kpi-row">
+    <div class="kpi-card c-blue">
+      <div class="kpi-label">สมาชิกในทีม</div>
+      <div class="kpi-value" id="m-members">0</div>
+      <div class="kpi-sub">คนในระบบ</div>
+    </div>
+    <div class="kpi-card c-green">
+      <div class="kpi-label">งานเสร็จแล้ว</div>
+      <div class="kpi-value" id="m-done" style="color:var(--green)">0</div>
+      <div class="kpi-sub">รวมทุกคนในทีม</div>
+    </div>
+    <div class="kpi-card c-red">
+      <div class="kpi-label">งานเลยกำหนด</div>
+      <div class="kpi-value" id="m-overdue" style="color:var(--red)">0</div>
+      <div class="kpi-sub">ต้องติดตามด่วน</div>
+    </div>
+  </div>
+  <div id="mgr-list"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ──
+const AVP_PIN = '1234';
+const COLORS  = [
+  {bg:'#e8f0fe',tc:'#1967d2'},{bg:'#e6f4ea',tc:'#137333'},
+  {bg:'#fff3e0',tc:'#e37400'},{bg:'#fce8e6',tc:'#c5221f'},
+  {bg:'#f3e8fd',tc:'#7b1fa2'},{bg:'#e0f7fa',tc:'#006064'},
+];
+
+let me = null;
+let selectedAVP = '';
+let unsubscribe = null; // Firebase listener
+
+// ── WAIT FOR FIREBASE ──
+function waitFB() {
+  return new Promise(resolve => {
+    if (window._fbReady) { resolve(); return; }
+    window.addEventListener('fb-ready', resolve, { once: true });
+    setTimeout(() => resolve(), 5000); // fallback timeout
+  });
+}
+
+async function init() {
+  document.getElementById('header-date').textContent =
+    new Date().toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+  await waitFB();
+  document.getElementById('loading').style.display = 'none';
+  const sess = sessionStorage.getItem('hp_sess');
+  if (sess) { me = JSON.parse(sess); showApp(); }
+  else { document.getElementById('login-screen').style.display = 'flex'; }
+}
+
+// ── LOGIN ──
+function selectAVP(name, btn) {
+  selectedAVP = name;
+  document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('avp-pin-wrap').style.display = 'block';
+  document.getElementById('avp-login-btn').textContent = `เข้าสู่ระบบ ${name}`;
+}
+
+async function loginMember() {
+  const name = document.getElementById('login-name').value.trim();
+  const pos  = document.getElementById('login-position').value.trim();
+  const avp  = document.getElementById('login-avp').value;
+  if (!name) { showToast('กรุณาใส่ชื่อ'); return; }
+  if (!pos)  { showToast('กรุณาใส่ตำแหน่ง'); return; }
+  if (!avp)  { showToast('กรุณาเลือก AVP หัวหน้า'); return; }
+
+  const { db, ref, set, get } = window._fb;
+  // ใช้ชื่อเป็น key (replace space เป็น _)
+  const memberId = name.replace(/\s+/g,'_') + '_' + avp.replace(/\s+/g,'_');
+  const mRef = ref(db, `members/${memberId}`);
+  const snap = await get(mRef);
+  if (!snap.exists()) {
+    await set(mRef, { id: memberId, name, position: pos, avp, joinedAt: new Date().toISOString() });
+  }
+  me = { id: memberId, name, position: pos, avp, isAVP: false };
+  sessionStorage.setItem('hp_sess', JSON.stringify(me));
+  showApp();
+}
+
+async function loginAVP() {
+  if (!selectedAVP) { showToast('กรุณาเลือก AVP ก่อน'); return; }
+  const pin = document.getElementById('login-pin').value.trim();
+  if (pin !== AVP_PIN) { showToast('PIN ไม่ถูกต้อง'); return; }
+  me = { id: 'avp_' + selectedAVP.replace(/\s+/g,'_'), name: selectedAVP, position: selectedAVP, avp: selectedAVP, isAVP: true };
+  sessionStorage.setItem('hp_sess', JSON.stringify(me));
+  showApp();
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('main-app').style.display     = 'block';
+  document.getElementById('header-user').textContent    = me.name + (me.isAVP ? ' 👔' : '');
+  if (me.isAVP) {
+    document.getElementById('tab-mgr').style.display = 'block';
+    document.getElementById('tab-my').style.display  = 'none';
+    switchTab('manager', document.getElementById('tab-mgr'));
+  } else {
+    listenMyTasks();
+  }
+}
+
+function logout() {
+  if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  sessionStorage.removeItem('hp_sess');
+  me = null; selectedAVP = '';
+  document.getElementById('main-app').style.display     = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('tab-mgr').style.display      = 'none';
+  document.getElementById('tab-my').style.display       = 'block';
+  document.getElementById('avp-pin-wrap').style.display = 'none';
+  document.querySelectorAll('.role-tab').forEach(b=>b.classList.remove('selected'));
+}
+
+// ── TABS ──
+function switchTab(view, btn) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  btn.classList.add('active');
+  if (view === 'manager') listenManagerView();
+  else listenMyTasks();
+}
+
+// ── MY TASKS (Real-time listener) ──
+function listenMyTasks() {
+  if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  const { db, ref, onValue } = window._fb;
+  const tasksRef = ref(db, `tasks/${me.id}`);
+  unsubscribe = onValue(tasksRef, snap => {
+    const data = snap.val() || {};
+    const tasks = Object.entries(data).map(([k,v])=>({...v, key:k}));
+    renderMyTasks(tasks);
+  });
+}
+
+function renderMyTasks(tasks) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  document.getElementById('my-title').textContent = `งานของ ${me.name}`;
+  document.getElementById('my-sub').textContent   = `${me.position} · ${me.avp}`;
+  document.getElementById('k-total').textContent   = tasks.length;
+  document.getElementById('k-inprog').textContent  = tasks.filter(t=>t.status==='inprogress').length;
+  document.getElementById('k-done').textContent    = tasks.filter(t=>t.status==='done').length;
+  document.getElementById('k-overdue').textContent = tasks.filter(t=>t.status!=='done'&&t.due&&new Date(t.due)<today).length;
+
+  const container = document.getElementById('task-rows');
+  if (!tasks.length) {
+    container.innerHTML = `<div class="empty-state"><div class="ei">📋</div><p>ยังไม่มีงาน — กด "+ เพิ่ม" เพื่อเริ่มต้น</p></div>`;
+    return;
+  }
+  container.innerHTML = tasks.map(t => {
+    const due  = t.due ? new Date(t.due) : null;
+    const late = due && due < today && t.status !== 'done';
+    const dstr = due ? due.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}) : '—';
+    const sc   = t.status==='done'?'s-done':t.status==='inprogress'?'s-inprog':'s-todo';
+    return `<div class="task-row ${t.status==='done'?'done-row':''}">
+      <div class="task-name-cell ${t.status==='done'?'crossed':''}">${t.name}</div>
+      <div class="task-due-cell ${late?'late':''}">${late?'⚑ ':''}${dstr}</div>
+      <select class="status-sel ${sc}" onchange="updateStatus('${t.key}',this)" style="font-family:'Prompt',sans-serif">
+        <option value="todo"       ${t.status==='todo'?'selected':''}>ยังไม่เริ่ม</option>
+        <option value="inprogress" ${t.status==='inprogress'?'selected':''}>กำลังดำเนินการ</option>
+        <option value="done"       ${t.status==='done'?'selected':''}>เสร็จเรียบร้อย</option>
+      </select>
+      <button class="del-btn" onclick="deleteTask('${t.key}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
+async function addTask() {
+  const name = document.getElementById('new-name').value.trim();
+  if (!name) { showToast('กรุณาใส่ชื่องาน'); return; }
+  const { db, ref, push } = window._fb;
+  await push(ref(db, `tasks/${me.id}`), {
+    name, avp: me.avp, memberName: me.name, position: me.position,
+    due: document.getElementById('new-due').value,
+    status: document.getElementById('new-status').value,
+    createdAt: new Date().toISOString()
+  });
+  document.getElementById('new-name').value  = '';
+  document.getElementById('new-due').value   = '';
+  document.getElementById('new-status').value = 'todo';
+  showToast('เพิ่มงานเรียบร้อย');
+}
+
+async function updateStatus(key, sel) {
+  const { db, ref, update } = window._fb;
+  sel.className = 'status-sel ' + (sel.value==='done'?'s-done':sel.value==='inprogress'?'s-inprog':'s-todo');
+  await update(ref(db, `tasks/${me.id}/${key}`), { status: sel.value });
+  showToast('อัปเดตสถานะแล้ว');
+}
+
+async function deleteTask(key) {
+  if (!confirm('ลบงานนี้ใช่ไหม?')) return;
+  const { db, ref, remove } = window._fb;
+  await remove(ref(db, `tasks/${me.id}/${key}`));
+  showToast('ลบงานแล้ว');
+}
+
+// ── MANAGER (Real-time listener) ──
+function listenManagerView() {
+  if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+  const { db, ref, onValue } = window._fb;
+
+  // ฟัง members + tasks พร้อมกัน
+  let membersData = {}, tasksData = {};
+  let gotMembers = false, gotTasks = false;
+
+  onValue(ref(db, 'members'), snap => {
+    membersData = snap.val() || {};
+    gotMembers = true;
+    if (gotTasks) renderManagerView(membersData, tasksData);
+  });
+
+  onValue(ref(db, 'tasks'), snap => {
+    tasksData = snap.val() || {};
+    gotTasks = true;
+    if (gotMembers) renderManagerView(membersData, tasksData);
+  });
+}
+
+function renderManagerView(membersData, tasksData) {
+  const myAvp   = me.avp;
+  const today   = new Date(); today.setHours(0,0,0,0);
+  const members = Object.values(membersData).filter(m => m.avp === myAvp);
+
+  let allTasks = [];
+  members.forEach(m => {
+    const mTasks = tasksData[m.id] ? Object.entries(tasksData[m.id]).map(([k,v])=>({...v,key:k,memberId:m.id})) : [];
+    allTasks = allTasks.concat(mTasks);
+  });
+
+  document.getElementById('mgr-title').textContent = `มุมมอง ${myAvp}`;
+  document.getElementById('m-members').textContent = members.length;
+  document.getElementById('m-done').textContent    = allTasks.filter(t=>t.status==='done').length;
+  document.getElementById('m-overdue').textContent = allTasks.filter(t=>t.status!=='done'&&t.due&&new Date(t.due)<today).length;
+
+  const list = document.getElementById('mgr-list');
+  if (!members.length) {
+    list.innerHTML = `<div style="text-align:center;padding:60px;color:var(--gray);font-size:15px">ยังไม่มีสมาชิกในทีมเข้าสู่ระบบ</div>`;
+    return;
+  }
+
+  // ── คำนวณข้อมูลแต่ละคน ──
+  const memberStats = members.map((m,i) => {
+    const mTasks  = tasksData[m.id] ? Object.entries(tasksData[m.id]).map(([k,v])=>({...v,key:k})) : [];
+    const mDone   = mTasks.filter(t=>t.status==='done').length;
+    const mInprog = mTasks.filter(t=>t.status==='inprogress').length;
+    const mTodo   = mTasks.filter(t=>t.status==='todo').length;
+    const mOver   = mTasks.filter(t=>t.status!=='done'&&t.due&&new Date(t.due)<today).length;
+    const pct     = mTasks.length > 0 ? Math.round((mDone/mTasks.length)*100) : 0;
+    const ci      = i % COLORS.length;
+    const initials= m.name.length>=2 ? m.name.substring(0,2) : m.name;
+    return { m, mTasks, mDone, mInprog, mTodo, mOver, pct, ci, initials, i };
+  });
+
+  // ── ส่วนที่ 1: Progress Cards ──
+  const progressCards = memberStats.map(({m, mTasks, mDone, mInprog, mTodo, mOver, pct, ci, initials}) => {
+    const barColor = mOver>0 ? 'var(--red)' : pct>=80 ? 'var(--green)' : pct>=40 ? 'var(--yellow)' : 'var(--hp-orange)';
+    const pctColor = mOver>0 ? 'var(--red)' : pct>=80 ? 'var(--green)' : pct>=40 ? 'var(--yellow)' : 'var(--hp-orange)';
+    return `<div class="progress-card">
+      <div class="pc-top">
+        <div class="pc-av" style="background:${COLORS[ci].bg};color:${COLORS[ci].tc}">${initials}</div>
+        <div>
+          <div class="pc-name">${m.name}</div>
+          <div class="pc-role">${m.position}</div>
+        </div>
+      </div>
+      ${mTasks.length > 0 ? `
+        <div class="pc-bar-wrap">
+          <div class="pc-bar-fill" style="width:${pct}%;background:${barColor}"></div>
+        </div>
+        <div class="pc-bottom">
+          <div class="pc-pct" style="color:${pctColor}">${pct}%</div>
+          <div class="pc-nums">
+            ✅ เสร็จ ${mDone} งาน<br>
+            ⏳ ดำเนินการ ${mInprog} งาน<br>
+            📋 ยังไม่เริ่ม ${mTodo} งาน
+          </div>
+        </div>
+        ${mOver>0 ? `<div class="pc-overdue">⚑ เลยกำหนด ${mOver} งาน — ต้องติดตามด่วน!</div>` : ''}
+      ` : `<div style="text-align:center;padding:14px 0;color:var(--gray);font-size:13px">ยังไม่มีงานในระบบ</div>`}
+    </div>`;
+  }).join('');
+
+  // ── ส่วนที่ 2: Team Bar Chart ──
+  const teamBars = memberStats.map(({m, mTasks, mDone, mOver, pct}) => {
+    const barColor = mOver>0 ? 'var(--red)' : pct>=80 ? 'var(--green)' : pct>=40 ? 'var(--yellow)' : 'var(--hp-orange)';
+    const pctColor = mOver>0 ? 'var(--red)' : pct>=80 ? 'var(--green)' : pct>=40 ? 'var(--yellow)' : 'var(--hp-orange)';
+    return `<div class="tb-row">
+      <div class="tb-name">${m.name.split(' ')[0]}</div>
+      <div class="tb-bar-wrap">
+        <div class="tb-bar-fill" style="width:${pct}%;background:${barColor}"></div>
+      </div>
+      <div class="tb-pct" style="color:${pctColor}">${pct}%</div>
+      <div class="tb-tags">
+        <span class="tb-tag" style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-br)">${mDone}✓</span>
+        ${mOver>0?`<span class="tb-tag" style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-br)">${mOver}⚑</span>`:''}
+        <span class="tb-tag" style="background:var(--bg);color:var(--gray);border:1px solid var(--border)">${mTasks.length} งาน</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ── ส่วนที่ 3: รายละเอียด Task แต่ละคน ──
+  const memberBlocks = memberStats.map(({m, mTasks, mDone, mInprog, mOver, ci, initials, i}) => {
+    const taskRows = !mTasks.length
+      ? `<div class="mgr-no-tasks">ยังไม่มีงานในระบบ</div>`
+      : mTasks.map(t => {
+          const due  = t.due ? new Date(t.due) : null;
+          const late = due && due < today && t.status !== 'done';
+          const dstr = due ? due.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'}) : '—';
+          const sb   = t.status==='done'?'sb-done':t.status==='inprogress'?'sb-inprog':'sb-todo';
+          const sl   = {done:'เสร็จเรียบร้อย',inprogress:'กำลังดำเนินการ',todo:'ยังไม่เริ่ม'}[t.status];
+          return `<div class="mgr-task-row">
+            <div class="mgr-task-name ${t.status==='done'?'crossed':''}">${t.name}</div>
+            <div class="mgr-task-due ${late?'late':''}">${late?'⚑ ':''}${dstr}</div>
+            <div><span class="status-badge ${sb}">${sl}</span></div>
+          </div>`;
+        }).join('');
+
+    return `<div class="mgr-member-block">
+      <div class="mgr-member-header" onclick="toggleBlock('mb-${i}',this,'ch-${i}')">
+        <div class="mmh-left">
+          <div class="avatar-circle" style="background:${COLORS[ci].bg};color:${COLORS[ci].tc}">${initials}</div>
+          <div>
+            <div class="mmh-name">${m.name} <span class="avp-badge">${m.avp}</span></div>
+            <div class="mmh-meta">${m.position}</div>
+          </div>
+        </div>
+        <div class="mmh-right">
+          <span class="stat-pill pill-gray">${mTasks.length} งาน</span>
+          <span class="stat-pill pill-green">${mDone} เสร็จ</span>
+          <span class="stat-pill pill-yellow">${mInprog} ดำเนินการ</span>
+          ${mOver>0?`<span class="stat-pill pill-red">${mOver} เลยกำหนด ⚑</span>`:''}
+          <span class="chevron" id="ch-${i}">›</span>
+        </div>
+      </div>
+      <div class="mgr-task-table" id="mb-${i}">
+        <div class="mgr-task-header"><div>ชื่องาน</div><div>กำหนดส่ง</div><div>สถานะ</div></div>
+        ${taskRows}
+      </div>
+    </div>`;
+  }).join('');
+
+  list.innerHTML = `
+    <!-- PROGRESS CARDS -->
+    <div class="prog-sec-title">📊 สรุปความคืบหน้ารายบุคคล</div>
+    <div class="progress-grid">${progressCards}</div>
+
+    <!-- TEAM BAR -->
+    <div class="team-bar-card">
+      <div class="tb-title">เปรียบเทียบความคืบหน้าทั้งทีม</div>
+      ${teamBars}
+    </div>
+
+    <!-- DETAIL -->
+    <div class="prog-sec-title">📋 รายละเอียดงานแต่ละคน</div>
+    ${memberBlocks}
+  `;
+}
+
+function toggleBlock(id, header, chId) {
+  document.getElementById(id).classList.toggle('open');
+  header.classList.toggle('open');
+  document.getElementById(chId).classList.toggle('open');
+}
+
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2200);
+}
+
+init();
+</script>
+</body>
+</html>
