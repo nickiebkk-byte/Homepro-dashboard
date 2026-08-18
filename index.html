@@ -274,6 +274,36 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
 .ev-popup h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
 .ev-popup p  { font-size: 12px; color: var(--gray); margin-bottom: 4px; }
 .ev-popup-close { position: absolute; top: 10px; right: 12px; background: none; border: none; font-size: 16px; cursor: pointer; color: var(--gray); }
+
+/* ── MEMBER MANAGEMENT ── */
+.member-mgr-card { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; }
+.member-mgr-header { padding: 14px 22px; background: var(--surface); border-bottom: 2px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.member-mgr-title { font-size: 14px; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: .5px; }
+.member-table { width: 100%; border-collapse: collapse; }
+.member-table th { text-align: left; font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.member-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+.member-table tr:last-child td { border-bottom: none; }
+.member-table tr:hover td { background: var(--surface); }
+.member-av-sm { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; margin-right: 8px; flex-shrink: 0; }
+.member-name-cell { display: flex; align-items: center; }
+.del-member-btn { font-family: 'Prompt', sans-serif; font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 7px; border: 1.5px solid var(--red-br); background: var(--red-bg); color: var(--red); cursor: pointer; transition: .15s; }
+.del-member-btn:hover { background: var(--red); color: #fff; }
+.member-status-active { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: var(--green-bg); color: var(--green); border: 1px solid var(--green-br); }
+.member-status-removed { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: var(--bg); color: var(--gray); border: 1px solid var(--border); }
+.restore-btn { font-family: 'Prompt', sans-serif; font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 7px; border: 1.5px solid var(--green-br); background: var(--green-bg); color: var(--green); cursor: pointer; transition: .15s; }
+.restore-btn:hover { background: var(--green); color: #fff; }
+.task-count-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: var(--bg); color: var(--gray); border: 1px solid var(--border); }
+/* Confirm dialog */
+.confirm-overlay { display: none; position: fixed; inset: 0; background: #0007; z-index: 400; align-items: center; justify-content: center; }
+.confirm-overlay.open { display: flex; }
+.confirm-box { background: var(--white); border-radius: 14px; padding: 28px 30px; width: 360px; box-shadow: 0 12px 50px rgba(0,0,0,.18); }
+.confirm-box h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.confirm-box p  { font-size: 13px; color: var(--gray); margin-bottom: 6px; line-height: 1.6; }
+.confirm-box .note { font-size: 12px; color: var(--green); font-weight: 600; background: var(--green-bg); border: 1px solid var(--green-br); border-radius: 7px; padding: 8px 12px; margin: 12px 0; }
+.confirm-actions { display: flex; gap: 8px; margin-top: 18px; }
+.confirm-cancel { flex: 1; font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600; padding: 10px; border: 1.5px solid var(--border); border-radius: 8px; background: none; color: var(--gray); cursor: pointer; }
+.confirm-delete { flex: 2; font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 700; padding: 10px; border: none; border-radius: 8px; background: var(--red); color: #fff; cursor: pointer; }
+.confirm-delete:hover { background: #a93226; }
 </style>
 </head>
 <body>
@@ -422,6 +452,27 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
     </div>
   </div>
   <div id="mgr-list"></div>
+
+  <!-- MEMBER MANAGEMENT (AVP only) -->
+  <div class="member-mgr-card" id="member-mgr-section">
+    <div class="member-mgr-header">
+      <div class="member-mgr-title">👥 จัดการสมาชิกทีม</div>
+      <div style="font-size:12px;color:var(--gray)">ลบพนักงานออกจากทีม — ข้อมูลงานยังคงอยู่</div>
+    </div>
+    <table class="member-table">
+      <thead>
+        <tr>
+          <th>ชื่อ-ตำแหน่ง</th>
+          <th>งานทั้งหมด</th>
+          <th>เสร็จแล้ว</th>
+          <th>สถานะ</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody id="member-mgr-tbody"></tbody>
+    </table>
+  </div>
+
 </div>
 </div>
 
@@ -753,6 +804,7 @@ function renderManagerView(membersData, tasksData) {
     </div>`;
   }).join('');
 
+  renderMemberMgr(membersData, tasksData);
   list.innerHTML = `
     <!-- PROGRESS CARDS -->
     <div class="prog-sec-title">📊 สรุปความคืบหน้ารายบุคคล</div>
@@ -1024,6 +1076,110 @@ function showPopup(e, taskKey, memberId) {
 
 document.addEventListener('click', ()=>{ if(calPopup){ calPopup.remove(); calPopup=null; } });
 
+
+// ── MEMBER MANAGEMENT ────────────────────────────────────
+let pendingDeleteId = null;
+
+function openConfirmDelete(memberId, memberName) {
+  pendingDeleteId = memberId;
+  document.getElementById('confirm-member-name').textContent = memberName;
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-overlay').classList.remove('open');
+  pendingDeleteId = null;
+}
+
+async function confirmDeleteMember() {
+  if (!pendingDeleteId) return;
+  const { db, ref, update } = window._fb;
+  // Mark as removed — ไม่ลบข้อมูล tasks
+  await update(ref(db, `members/${pendingDeleteId}`), {
+    removed: true,
+    removedAt: new Date().toISOString(),
+    removedBy: me.name
+  });
+  closeConfirm();
+  showToast('ลบพนักงานออกจากทีมแล้ว — ข้อมูลงานยังอยู่ครบ');
+}
+
+async function restoreMember(memberId) {
+  const { db, ref, update } = window._fb;
+  await update(ref(db, `members/${memberId}`), {
+    removed: false,
+    removedAt: null,
+    removedBy: null
+  });
+  showToast('คืนสิทธิ์พนักงานเรียบร้อยแล้ว');
+}
+
+function renderMemberMgr(membersData, tasksData) {
+  const myAvp  = me.avp;
+  const today  = new Date(); today.setHours(0,0,0,0);
+  const members = Object.values(membersData).filter(m => m.avp === myAvp);
+  const tbody  = document.getElementById('member-mgr-tbody');
+  if (!tbody) return;
+
+  if (!members.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gray)">ยังไม่มีสมาชิกในทีม</td></tr>`;
+    return;
+  }
+
+  const COLORS = [
+    {bg:'#e8f0fe',tc:'#1967d2'},{bg:'#e6f4ea',tc:'#137333'},
+    {bg:'#fff3e0',tc:'#e37400'},{bg:'#fce8e6',tc:'#c5221f'},
+    {bg:'#f3e8fd',tc:'#7b1fa2'},{bg:'#e0f7fa',tc:'#006064'},
+  ];
+
+  tbody.innerHTML = members.map((m,i) => {
+    const mTasks = tasksData[m.id] ? Object.values(tasksData[m.id]) : [];
+    const mDone  = mTasks.filter(t=>t.status==='done').length;
+    const ci     = i % COLORS.length;
+    const initials = m.name.length>=2 ? m.name.substring(0,2) : m.name;
+    const isRemoved = m.removed === true;
+
+    const statusBadge = isRemoved
+      ? `<span class="member-status-removed">ถูกลบออกแล้ว</span>`
+      : `<span class="member-status-active">● ใช้งานอยู่</span>`;
+
+    const actionBtn = isRemoved
+      ? `<button class="restore-btn" onclick="restoreMember('${m.id}')">คืนสิทธิ์</button>`
+      : `<button class="del-member-btn" onclick="openConfirmDelete('${m.id}','${m.name}')">ลบออก</button>`;
+
+    return `<tr style="${isRemoved?'opacity:.6':''}">
+      <td>
+        <div class="member-name-cell">
+          <div class="member-av-sm" style="background:${COLORS[ci].bg};color:${COLORS[ci].tc}">${initials}</div>
+          <div>
+            <div style="font-weight:600;color:var(--text)">${m.name}</div>
+            <div style="font-size:11px;color:var(--gray)">${m.position}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="task-count-badge">${mTasks.length} งาน</span></td>
+      <td><span style="color:var(--green);font-weight:600">${mDone} งาน</span></td>
+      <td>${statusBadge}</td>
+      <td>${actionBtn}</td>
+    </tr>`;
+  }).join('');
+}
+
 </script>
+
+<!-- CONFIRM DELETE MEMBER -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <h3>🗑️ ลบพนักงานออกจากทีม?</h3>
+    <p id="confirm-member-name" style="font-weight:600;color:var(--text);font-size:14px"></p>
+    <p>พนักงานคนนี้จะไม่สามารถ Login เข้าระบบได้อีก</p>
+    <div class="note">✅ ข้อมูลงานที่ใส่ไว้ทั้งหมดยังคงอยู่ ไม่ถูกลบ</div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" onclick="closeConfirm()">ยกเลิก</button>
+      <button class="confirm-delete" onclick="confirmDeleteMember()">ลบพนักงาน</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
