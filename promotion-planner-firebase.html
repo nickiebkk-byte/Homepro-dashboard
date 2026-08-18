@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promotion Planner 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue, push, remove }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  const firebaseConfig = {
+    apiKey:"AIzaSyDiQt3VC9i_XOXYNAheeT3ow9qi7kxPBmQ",
+    authDomain:"promotion-plan-ce43e.firebaseapp.com",
+    databaseURL:"https://promotion-plan-ce43e-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId:"promotion-plan-ce43e",
+    storageBucket:"promotion-plan-ce43e.firebasestorage.app",
+    messagingSenderId:"734934073597",
+    appId:"1:734934073597:web:2064248122a4ed94487e94"
+  };
+  const app=initializeApp(firebaseConfig);
+  const db=getDatabase(app);
+  window._fb={db,ref,onValue,push,remove};
+  window._fbReady=true;
+  window.dispatchEvent(new Event('fb-ready'));
+</script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f7;--white:#fff;--surface:#f8f9fc;--border:#e2e6f0;
+  --accent:#1565C0;--orange:#F57C00;--green:#1a8a4a;--green-bg:#eaf7ef;
+  --red:#c0392b;--red-bg:#fdecea;--gray:#7a8299;--text:#1a2035;--text2:#4a5370;
+  --kc:#1565C0;--sa:#7B1FA2;
+  --shadow:0 2px 12px rgba(0,0,0,.07);--radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:'Prompt',sans-serif;color:var(--text);font-size:14px;min-height:100vh}
+
+header{background:var(--white);border-bottom:2px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200;height:58px;box-shadow:var(--shadow);flex-wrap:wrap}
+.logo-badge{background:var(--orange);color:#fff;font-weight:700;font-size:12px;padding:4px 10px;border-radius:6px;white-space:nowrap}
+.logo-title{font-size:16px;font-weight:700;color:var(--text)}
+.logo-sub{font-size:10px;color:var(--gray)}
+.tab-nav{display:flex;gap:4px;margin-left:8px}
+.tab-btn{font-family:'Prompt',sans-serif;font-size:12px;font-weight:500;border:none;background:none;color:var(--gray);padding:6px 14px;border-radius:8px;cursor:pointer;transition:.15s}
+.tab-btn:hover{background:var(--bg);color:var(--text)}
+.tab-btn.active{background:var(--accent);color:#fff;font-weight:600}
+
+/* TEAM SWITCHER */
+.team-sw{display:flex;gap:0;border:1.5px solid var(--border);border-radius:9px;overflow:hidden;margin-left:auto}
+.team-btn{font-family:'Prompt',sans-serif;font-size:11px;font-weight:600;border:none;background:var(--surface);color:var(--gray);padding:6px 14px;cursor:pointer;transition:.15s;white-space:nowrap}
+.team-btn:hover{background:var(--bg)}
+.team-btn.active-kc{background:var(--kc);color:#fff}
+.team-btn.active-sa{background:var(--sa);color:#fff}
+.team-indicator{font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;white-space:nowrap}
+.ti-kc{background:#e8f0fe;color:var(--kc);border:1px solid #c3d5f5}
+.ti-sa{background:#f3e8fd;color:var(--sa);border:1px solid #d4b8f5}
+
+.sync-chip{font-size:10px;color:var(--green);background:var(--green-bg);border:1px solid #b2dfc4;border-radius:20px;padding:3px 9px;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.sync-dot.syncing{background:var(--orange);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.view{display:none;padding:20px 24px;max-width:1500px;margin:0 auto}
+.view.active{display:block}
+.sec-title{font-size:19px;font-weight:700;color:var(--text);margin-bottom:2px}
+.sec-sub{font-size:12px;color:var(--gray);margin-bottom:16px}
+
+.form-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+.fc-head{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:var(--surface)}
+.fc-bar{width:5px;height:15px;border-radius:3px;flex-shrink:0}
+.fc-title{font-size:12px;font-weight:700;color:var(--text)}
+.fc-body{padding:14px 16px}
+.fg{display:grid;gap:10px}
+.fg2{grid-template-columns:1fr 1fr}.fg3{grid-template-columns:1fr 1fr 1fr}
+.fg4{grid-template-columns:1fr 1fr 1fr 1fr}.fg6{grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr}
+.full{grid-column:1/-1}
+.ff{display:flex;flex-direction:column;gap:4px}
+.fl{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.3px}
+.fl .req{color:var(--orange)}
+input[type=text],input[type=number],input[type=date],textarea{
+  font-family:'Prompt',sans-serif;font-size:12px;color:var(--text);
+  background:var(--white);border:1.5px solid var(--border);border-radius:8px;
+  padding:8px 11px;width:100%;outline:none;transition:border-color .15s}
+input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px #e8f0fe}
+input::placeholder,textarea::placeholder{color:#bbb;font-size:11px}
+textarea{resize:vertical;min-height:50px}
+.dur-box{background:#e8f0fe;border:1px solid #c3d5f5;border-radius:8px;padding:8px 13px;display:none;align-items:center;gap:8px;margin-top:6px}
+.dur-box.show{display:flex}
+.dur-text{font-size:12px;font-weight:600;color:var(--accent)}
+.dur-sub{font-size:10px;color:#5c7ec7;margin-top:1px}
+.color-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+.csw{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s,border-color .1s}
+.csw.sel{border-color:var(--text);transform:scale(1.2)}
+.form-acts{display:flex;gap:8px;align-items:center;padding:12px 16px;background:var(--surface);border-top:1.5px solid var(--border);flex-wrap:wrap}
+.btn-pri{font-family:'Prompt',sans-serif;font-size:12px;font-weight:600;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;transition:.15s}
+.btn-pri:hover{background:#0d47a1}
+.btn-sec{font-family:'Prompt',sans-serif;font-size:12px;color:var(--text2);background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 13px;cursor:pointer;transition:.15s}
+.btn-sec:hover{background:var(--bg)}
+.msg-err{font-size:11px;color:var(--red);display:none;background:var(--red-bg);padding:4px 10px;border-radius:5px}
+.msg-ok{font-size:11px;color:var(--green);font-weight:600;display:none;background:var(--green-bg);padding:4px 10px;border-radius:5px}
+
+/* ACHIEVE badge */
+.ach-badge{display:inline-flex;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700}
+.ach-hi{background:#e8f5e9;color:#1a8a4a;border:1px solid #b2dfc4}
+.ach-mid{background:#fff8e6;color:#b07800;border:1px solid #f5d87a}
+.ach-lo{background:#fdecea;color:#c0392b;border:1px solid #f5b7b1}
+
+table{width:100%;border-collapse:collapse}
+.table-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.tc-head{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1.5px solid var(--border);background:var(--surface)}
+.tc-title{font-size:13px;font-weight:700;color:var(--text)}
+.tc-count{font-size:11px;color:var(--gray);background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:2px 9px}
+thead tr{background:var(--surface)}
+th{font-size:9px;font-weight:700;color:var(--gray);text-align:left;padding:7px 11px;border-bottom:1.5px solid var(--border);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+td{font-size:11px;color:var(--text);padding:8px 11px;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface)}
+.td-name{display:flex;align-items:center;gap:6px;font-weight:600}
+.td-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block}
+.td-badge{display:inline-flex;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;white-space:nowrap}
+.td-del{font-family:'Prompt',sans-serif;font-size:10px;background:none;border:1px solid #f5c6c6;color:var(--red);border-radius:6px;padding:2px 8px;cursor:pointer}
+.td-del:hover{background:var(--red-bg)}
+.empty-td{text-align:center;color:var(--gray);padding:2rem;font-size:12px}
+
+/* DASHBOARD */
+.dash-top{background:var(--white);border-bottom:1.5px solid var(--border)}
+.kpi-dash{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1.5px solid var(--border)}
+.kpi-d{padding:12px 16px;border-right:1.5px solid var(--border)}
+.kpi-d:last-child{border-right:none}
+.kpi-d-l{font-size:9px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.kpi-d-v{font-size:22px;font-weight:700;color:var(--text);line-height:1.1;margin-top:3px}
+.kpi-d-s{font-size:10px;color:var(--gray);margin-top:2px}
+
+.filter-bar{padding:9px 16px;display:flex;gap:7px;flex-wrap:wrap;border-bottom:1.5px solid var(--border);align-items:center;background:var(--surface)}
+.filter-l{font-size:11px;color:var(--gray);font-weight:600}
+.fsel{font-family:'Prompt',sans-serif;font-size:11px;background:var(--white);border:1.5px solid var(--border);color:var(--text);border-radius:7px;padding:5px 8px;cursor:pointer;outline:none}
+.fsel:focus{border-color:var(--accent)}
+.export-btns{margin-left:auto;display:flex;gap:5px;align-items:center}
+.btn-exp{font-family:'Prompt',sans-serif;font-size:10px;font-weight:600;border:1.5px solid var(--border);background:var(--white);border-radius:7px;padding:5px 11px;cursor:pointer;transition:.15s;color:var(--text2)}
+.btn-exp:hover{background:var(--bg)}
+
+.legend-strip{padding:7px 16px;display:flex;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.leg{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);font-weight:500}
+.leg-c{width:18px;height:6px;border-radius:3px;flex-shrink:0}
+
+/* TIMELINE */
+.tl-outer{overflow-x:auto;background:var(--white)}
+.tl-inner{min-width:1000px;padding:0 16px 14px}
+.tl-head-row{display:flex;align-items:flex-end;padding-top:8px;padding-bottom:5px;border-bottom:2px solid var(--border)}
+.tl-lbl-sp{flex-shrink:0;width:150px}
+.tl-meta-sp{flex-shrink:0}
+.tl-months{flex:1;display:flex}
+.mo-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.mo-name{font-size:9px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.mo-dot{width:8px;height:8px;border-radius:50%;border:2px solid var(--border);background:var(--white)}
+.mo-dot.cur{background:var(--orange);border-color:#E65100}
+.mo-col.cur .mo-name{color:var(--orange)}
+.mo-col:not(.cur) .mo-name{color:var(--accent)}
+.tl-data-rows{}
+.tl-row{display:flex;align-items:center;padding:2px 0;border-bottom:1px solid #f0f2f7}
+.tl-row:last-child{border-bottom:none}
+.tl-row:hover .rtrack{background:#edf2ff}
+.rl{width:150px;flex-shrink:0;display:flex;align-items:center;gap:5px;padding-right:6px;overflow:hidden}
+.rl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rl-name{font-size:10px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rm{flex-shrink:0;display:grid;padding-right:6px}
+.mc{font-size:9px;color:var(--gray);display:flex;align-items:center;padding:0 3px;line-height:1.3}
+.mc.f{color:var(--orange);font-weight:700;font-size:9px}
+.mc.a{color:var(--green);font-weight:700;font-size:9px}
+.rtrack-wrap{flex:1;position:relative;height:34px}
+.rtrack{position:absolute;inset:7px 0;border-radius:20px;background:#eef0f7;transition:background .15s}
+.bpill{position:absolute;top:7px;bottom:7px;border-radius:20px;display:flex;align-items:center;padding:0 8px;font-size:9px;font-weight:600;color:#fff;cursor:pointer;overflow:hidden;white-space:nowrap;min-width:3px;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.bpill:hover{opacity:.82}
+.today-vl{position:absolute;top:0;bottom:0;width:2px;background:var(--orange);z-index:20;pointer-events:none}
+.today-tag{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--orange);white-space:nowrap;font-weight:700}
+.mo-div{position:absolute;top:0;bottom:0;width:1px;background:var(--border);z-index:1;pointer-events:none}
+.dash-page-frame{border-bottom:2px dashed var(--border)}
+.page-lbl{font-size:9px;color:var(--gray);padding:3px 16px;background:var(--surface);border-bottom:1px solid var(--border);font-weight:700}
+
+/* MODAL */
+.modal-bg{display:none;padding:12px 16px;background:var(--white);border-top:1.5px solid var(--border)}
+.modal-bg.open{display:block}
+.modal-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;max-width:560px;margin:0 auto;box-shadow:var(--shadow)}
+.modal-hd{padding:12px 16px;display:flex;align-items:flex-start;justify-content:space-between;border-bottom:1.5px solid var(--border);background:var(--surface)}
+.modal-t{font-size:14px;font-weight:700;color:var(--text)}
+.modal-s{font-size:11px;color:var(--gray);margin-top:2px}
+.modal-x{background:none;border:none;color:var(--gray);font-size:20px;cursor:pointer}
+.modal-bd{padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mf{display:flex;flex-direction:column;gap:3px}.mf.full{grid-column:1/-1}
+.mf-l{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+.mf-v{font-size:13px;color:var(--text)}
+.fbar-w{height:6px;border-radius:3px;background:var(--border);margin-top:5px}
+.fbar-f{height:100%;border-radius:3px}
+.ach-big{font-size:26px;font-weight:700}
+
+.btn-import{font-family:'Prompt',sans-serif;font-size:11px;font-weight:600;background:#fff;border:1.5px solid var(--border);color:var(--text2);border-radius:8px;padding:6px 13px;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn-import:hover{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.import-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center}
+.import-modal.open{display:flex}
+.import-box{background:#fff;border-radius:16px;padding:28px 32px;width:min(500px,92vw);box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.import-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
+.import-sub{font-size:12px;color:var(--gray);margin-bottom:18px;line-height:1.6}
+.import-preview{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px;font-size:11px;color:var(--text2);max-height:180px;overflow-y:auto;line-height:1.7}
+.import-actions{display:flex;gap:8px;justify-content:flex-end}
+.btn-confirm{font-family:'Prompt',sans-serif;font-size:12px;font-weight:700;background:var(--green);color:#fff;border:none;border-radius:8px;padding:9px 20px;cursor:pointer}
+.btn-confirm:hover{background:#145f35}
+.btn-cancel-imp{font-family:'Prompt',sans-serif;font-size:12px;color:var(--gray);background:none;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;cursor:pointer}
+.team-sel-row{display:flex;gap:8px;margin-bottom:14px}
+.team-sel-btn{flex:1;font-family:'Prompt',sans-serif;font-size:12px;font-weight:600;border:1.5px solid var(--border);border-radius:8px;padding:8px;cursor:pointer;background:var(--surface);color:var(--gray);transition:.15s}
+.team-sel-btn.sel-kc{background:#e8f0fe;border-color:var(--kc);color:var(--kc)}
+.team-sel-btn.sel-sa{background:#f3e8fd;border-color:var(--sa);color:var(--sa)}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--text);color:#fff;border-radius:10px;padding:11px 18px;font-size:12px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:999;transition:opacity .3s;pointer-events:none}
+.toast.green{background:var(--green)}.toast.red{background:var(--red)}.toast.hide{opacity:0}
+.empty-tl{text-align:center;color:var(--gray);padding:2rem;font-size:12px}
+
+@media print{header,.filter-bar,.modal-bg,.export-btns,.team-sw{display:none!important}.view{display:block!important;padding:0}.dash-page-frame{page-break-after:always;border:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-badge">PROMO</div>
+  <div><div class="logo-title">Promotion Planner 2025</div><div class="logo-sub">Real-time Team Dashboard</div></div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="goView('form',this)">📝 คีย์ข้อมูล</button>
+    <button class="tab-btn" onclick="goView('dash',this)">📊 Dashboard</button>
+  </div>
+  <div class="team-sw">
+    <button class="team-btn active-kc" id="btnKC" onclick="switchTeam('kc')">KC HO</button>
+    <button class="team-btn" id="btnSA" onclick="switchTeam('sa')">SA</button>
+  </div>
+  <div class="team-indicator ti-kc" id="teamIndicator">AVP Promotion KC HO</div>
+  <button class="btn-import" onclick="document.getElementById('importFile').click()" title="Import จากไฟล์เดิม">📂 Import ข้อมูลเดิม</button>
+  <input type="file" id="importFile" accept=".html,.json" style="display:none" onchange="importData(event)">
+  <div class="sync-chip"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">กำลังเชื่อมต่อ...</span></div>
+</header>
+
+<!-- FORM VIEW -->
+<div class="view active" id="view-form">
+  <div class="sec-title" id="formTitle">คีย์ข้อมูล — AVP Promotion KC HO</div>
+  <div class="sec-sub">ข้อมูลแยกต่อทีม sync real-time อัตโนมัติ</div>
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-bar" style="background:var(--accent)"></div><div class="fc-title">ข้อมูลหลัก Campaign</div></div>
+    <div class="fc-body"><div class="fg">
+      <div class="ff full"><div class="fl">ชื่อ Campaign <span class="req">*</span></div>
+        <input type="text" id="fName" placeholder="เช่น Songkran Mega Sale 2025"/></div>
+      <div class="ff full"><div class="fl">รายละเอียด / หมายเหตุ</div>
+        <textarea id="fDetail" placeholder="รายละเอียดโปรโมชั่น เงื่อนไข หรือหมายเหตุ"></textarea></div>
+    </div></div>
+  </div>
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-bar" style="background:var(--orange)"></div><div class="fc-title">จัดประเภท</div></div>
+    <div class="fc-body"><div class="fg fg3">
+      <div class="ff"><div class="fl">ช่องทาง <span class="req">*</span></div>
+        <input type="text" id="fCh" placeholder="เช่น Online, In-Store"/></div>
+      <div class="ff"><div class="fl">หน่วยงาน <span class="req">*</span></div>
+        <input type="text" id="fDept" placeholder="เช่น Marketing, CRM"/></div>
+      <div class="ff"><div class="fl">ประเภท Campaign</div>
+        <input type="text" id="fLabel" placeholder="เช่น Mega Sale, Seasonal"/></div>
+    </div></div>
+  </div>
+
+  <div class="form-card">
+    <div class="fc-head"><div class="fc-bar" style="background:#43a047"></div><div class="fc-title">ระยะเวลา, Forecast และ Actual</div></div>
+    <div class="fc-body">
+      <div class="fg fg4">
+        <div class="ff"><div class="fl">วันเริ่มต้น <span class="req">*</span></div>
+          <input type="date" id="fDs" onchange="calcDur()"/></div>
+        <div class="ff"><div class="fl">วันสิ้นสุด <span class="req">*</span></div>
+          <input type="date" id="fDe" onchange="calcDur()"/></div>
+        <div class="ff"><div class="fl">Forecast (ล้านบาท)</div>
+          <input type="number" id="fForecast" placeholder="0.0" min="0" step="0.1"/></div>
+        <div class="ff"><div class="fl">Actual (ล้านบาท)</div>
+          <input type="number" id="fActual" placeholder="0.0" min="0" step="0.1"/></div>
+      </div>
+      <div class="fg fg2" style="margin-top:10px">
+        <div class="ff"><div class="fl">สี Campaign</div>
+          <div class="color-row" id="colorPicker"></div></div>
+        <div class="ff">
+          <div class="fl">% Achieve (คำนวณอัตโนมัติ)</div>
+          <div id="achPreview" style="font-size:13px;font-weight:700;color:var(--gray);padding:8px 0">— กรอก Forecast และ Actual ก่อน</div>
+        </div>
+      </div>
+      <div class="dur-box" id="durBox">
+        <span>⏱</span>
+        <div><div class="dur-text" id="durText"></div><div class="dur-sub" id="durSub"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-acts">
+      <button class="btn-pri" id="btnSave" onclick="saveCampaign()">+ บันทึกและ Sync</button>
+      <button class="btn-sec" onclick="clearForm()">🗑 ล้างข้อมูล</button>
+      <span class="msg-err" id="errMsg"></span>
+      <span class="msg-ok" id="okMsg">✓ บันทึกสำเร็จ!</span>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="tc-head">
+      <div class="tc-title" id="tableTitle">รายการ Campaign — AVP Promotion KC HO</div>
+      <div class="tc-count" id="tCount">0 campaigns</div>
+    </div>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr>
+        <th>Campaign</th><th>วันเริ่ม</th><th>วันสิ้นสุด</th><th>ระยะเวลา</th>
+        <th>Forecast (ลบ.)</th><th>Actual (ลบ.)</th><th>%Achieve</th>
+        <th>ช่องทาง</th><th>หน่วยงาน</th><th>ประเภท</th><th></th>
+      </tr></thead>
+      <tbody id="tBody"></tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD VIEW -->
+<div class="view" id="view-dash">
+  <div class="dash-top">
+    <div id="dash-kpi" class="kpi-dash"></div>
+    <div class="filter-bar">
+      <span class="filter-l">กรอง:</span>
+      <select class="fsel" id="dFTeam" onchange="renderDash()">
+        <option value="all">ทั้ง 2 ทีม</option>
+        <option value="kc">KC HO</option>
+        <option value="sa">SA</option>
+      </select>
+      <select class="fsel" id="dFCh" onchange="renderDash()"><option value="">ทุกช่องทาง</option></select>
+      <select class="fsel" id="dFDept" onchange="renderDash()"><option value="">ทุกหน่วยงาน</option></select>
+      <select class="fsel" id="dFYear" onchange="renderDash()"><option value="2025">2025</option></select>
+      <select class="fsel" id="dFStatus" onchange="renderDash()">
+        <option value="">ทุก Status</option>
+        <option value="upcoming">Upcoming</option>
+        <option value="active">Active</option>
+        <option value="done">Completed</option>
+      </select>
+      <div class="export-btns">
+        <span id="expSpin" style="font-size:11px;color:var(--gray);display:none">⏳ export...</span>
+        <button class="btn-exp" onclick="exportDash('png')">🖼 PNG</button>
+        <button class="btn-exp" onclick="exportDash('pdf')">📄 PDF</button>
+        <button class="btn-exp" onclick="exportDash('pptx')">📊 PPTX</button>
+      </div>
+    </div>
+    <div id="legendStrip" class="legend-strip"></div>
+  </div>
+  <div id="dashPages"></div>
+  <div class="modal-bg" id="modalBg">
+    <div class="modal-card">
+      <div class="modal-hd">
+        <div><div class="modal-t" id="mT"></div><div class="modal-s" id="mS"></div></div>
+        <button class="modal-x" onclick="closeMod()">✕</button>
+      </div>
+      <div class="modal-bd" id="mBd"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast hide" id="toast"></div>
+
+<!-- IMPORT MODAL -->
+<div class="import-modal" id="importModal">
+  <div class="import-box">
+    <div class="import-title">📂 Import ข้อมูลจากไฟล์เดิม</div>
+    <div class="import-sub">เลือกว่าจะ import ข้อมูลเข้าทีมไหน แล้วกด Import เลยครับ<br>ระบบจะเพิ่มข้อมูลโดยไม่ลบข้อมูลเดิมที่มีอยู่ใน Firebase</div>
+    <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.3px">Import เข้าทีม:</div>
+    <div class="team-sel-row">
+      <button class="team-sel-btn sel-kc" id="impBtnKC" onclick="selectImportTeam('kc')">AVP Promotion KC HO</button>
+      <button class="team-sel-btn" id="impBtnSA" onclick="selectImportTeam('sa')">AVP Promotion SA</button>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">ข้อมูลที่พบ: <span id="impCount" style="color:var(--green)">0 campaigns</span></div>
+    <div class="import-preview" id="impPreview">—</div>
+    <div class="import-actions">
+      <button class="btn-cancel-imp" onclick="closeImportModal()">ยกเลิก</button>
+      <button class="btn-confirm" id="btnConfirmImport" onclick="confirmImport()">✓ Import เข้า Firebase</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+
+<script>
+const MO_TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const PALETTE=['#1565C0','#F57C00','#43A047','#E53935','#8E24AA','#00838F','#FB8C00','#039BE5','#D81B60','#00897B','#546E7A','#6D4C41','#7CB342','#5E35B1'];
+const TODAY=new Date(); TODAY.setHours(0,0,0,0);
+const CUR_YEAR=new Date().getFullYear();
+const ROWS_PER_PAGE=12;
+const TEAMS={kc:{name:'AVP Promotion KC HO',color:'#1565C0',path:'campaigns_kc'},sa:{name:'AVP Promotion SA',color:'#7B1FA2',path:'campaigns_sa'}};
+
+let curTeam='kc';
+let selColor=PALETTE[0];
+let allData={kc:[],sa:[]};
+let listeners={};
+
+/* ── TOAST ── */
+function showToast(msg,type='green'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;setTimeout(()=>t.classList.add('hide'),2500);}
+function setSyncing(on){document.getElementById('syncDot').className='sync-dot'+(on?' syncing':'');document.getElementById('syncLabel').textContent=on?'กำลัง sync...':'Synced ✓';}
+
+/* ── TEAM SWITCH ── */
+function switchTeam(t){
+  curTeam=t;
+  if(window._fb&&!listeners[t])listenTeam(t);
+  document.getElementById('btnKC').className='team-btn'+(t==='kc'?' active-kc':'');
+  document.getElementById('btnSA').className='team-btn'+(t==='sa'?' active-sa':'');
+  const info=TEAMS[t];
+  document.getElementById('teamIndicator').textContent=info.name;
+  document.getElementById('teamIndicator').className='team-indicator ti-'+t;
+  document.getElementById('formTitle').textContent='คีย์ข้อมูล — '+info.name;
+  document.getElementById('tableTitle').textContent='รายการ Campaign — '+info.name;
+  document.getElementById('btnSave').style.background=info.color;
+  renderTable();
+  listenTeam(t);
+}
+
+/* ── FIREBASE LISTEN ── */
+function listenTeam(t){
+  if(listeners[t])return;
+  if(!window._fb){console.warn('Firebase not ready yet');return;}
+  const{db,ref,onValue}=window._fb;
+  listeners[t]=onValue(ref(db,TEAMS[t].path),(snap)=>{
+    const data=snap.val()||{};
+    allData[t]=Object.entries(data).map(([key,v])=>({...v,_key:key,_team:t}));
+    allData[t].sort((a,b)=>a.ds.localeCompare(b.ds));
+    if(curTeam===t)renderTable();
+    if(document.getElementById('view-dash').classList.contains('active'))renderDash();
+    setSyncing(false);
+  });
+}
+function startListen(){
+  if(!window._fb){return;}
+  listenTeam('kc');
+  listenTeam('sa');
+}
+// Wait for Firebase to be ready
+if(window._fbReady){
+  startListen();
+} else {
+  window.addEventListener('fb-ready', function(){
+    startListen();
+  });
+}
+
+/* ── HELPERS ── */
+function fmtDate(s){if(!s)return '';const d=new Date(s+'T00:00:00');return `${d.getDate()} ${MO_TH[d.getMonth()]} ${d.getFullYear()+543}`;}
+function daysBetween(s,e){return Math.max(1,Math.round((new Date(e+'T00:00:00')-new Date(s+'T00:00:00'))/864e5)+1);}
+function durLabel(s,e){const d=daysBetween(s,e),w=Math.floor(d/7),r=d%7,m=Math.round(d/30.4);return{days:d,sub:m>=2?`~${m} เดือน`:w>0?`${w} สัปดาห์${r?' '+r+' วัน':''}`:null};}
+
+function achClass(pct){if(pct===null)return '';if(pct>=100)return 'ach-hi';if(pct>=80)return 'ach-mid';return 'ach-lo';}
+function achLabel(f,a){
+  if(!f||f===0)return null;
+  if(a===null||a===undefined||a==='')return null;
+  return Math.round((parseFloat(a)/parseFloat(f))*100);
+}
+
+function calcDur(){
+  const ds=document.getElementById('fDs').value,de=document.getElementById('fDe').value,box=document.getElementById('durBox');
+  if(!ds||!de||new Date(de+'T00:00:00')<new Date(ds+'T00:00:00')){box.classList.remove('show');return;}
+  const{days,sub}=durLabel(ds,de);
+  document.getElementById('durText').textContent=`ระยะเวลา ${days} วัน${sub?' ('+sub+')':''}`;
+  document.getElementById('durSub').textContent=`${fmtDate(ds)} — ${fmtDate(de)}`;
+  box.classList.add('show');
+  updateAchPreview();
+}
+
+function updateAchPreview(){
+  const f=parseFloat(document.getElementById('fForecast').value)||0;
+  const a=parseFloat(document.getElementById('fActual').value)||0;
+  const el=document.getElementById('achPreview');
+  if(!f){el.textContent='— กรอก Forecast ก่อน';el.style.color='var(--gray)';return;}
+  if(!a&&a!==0){el.textContent='— รอกรอก Actual';el.style.color='var(--gray)';return;}
+  const pct=Math.round((a/f)*100);
+  el.textContent=pct+'%';
+  el.style.color=pct>=100?'var(--green)':pct>=80?'#b07800':'var(--red)';
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('fForecast').addEventListener('input',updateAchPreview);
+  document.getElementById('fActual').addEventListener('input',updateAchPreview);
+});
+
+function buildColorPicker(){
+  document.getElementById('colorPicker').innerHTML=PALETTE.map((c,i)=>
+    `<div class="csw${i===0?' sel':''}" style="background:${c}" onclick="pickColor('${c}',this)"></div>`).join('');
+}
+function pickColor(c,el){selColor=c;document.querySelectorAll('.csw').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');}
+function goView(v,btn){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');btn.classList.add('active');
+  if(v==='dash')renderDash();
+}
+
+/* ── SAVE ── */
+async function saveCampaign(){
+  const name=document.getElementById('fName').value.trim();
+  const ch=document.getElementById('fCh').value.trim();
+  const dept=document.getElementById('fDept').value.trim();
+  const ds=document.getElementById('fDs').value,de=document.getElementById('fDe').value;
+  const err=document.getElementById('errMsg'),ok=document.getElementById('okMsg');
+  err.style.display='none';ok.style.display='none';
+  if(!name){showErr('กรุณากรอกชื่อ Campaign');return;}
+  if(!ch){showErr('กรุณากรอกช่องทาง');return;}
+  if(!dept){showErr('กรุณากรอกหน่วยงาน');return;}
+  if(!ds||!de){showErr('กรุณาระบุวันเริ่มต้นและสิ้นสุด');return;}
+  if(new Date(de+'T00:00:00')<new Date(ds+'T00:00:00')){showErr('วันสิ้นสุดต้องไม่ก่อนวันเริ่มต้น');return;}
+  setSyncing(true);
+  if(!window._fb){showErr('Firebase ยังไม่พร้อม รอสักครู่แล้วลองใหม่');setSyncing(false);return;}
+  const{db,ref,push}=window._fb;
+  const forecast=parseFloat(document.getElementById('fForecast').value)||0;
+  const actual=parseFloat(document.getElementById('fActual').value)||0;
+  const data={
+    name,detail:document.getElementById('fDetail').value.trim()||'-',
+    channel:ch,dept,label:document.getElementById('fLabel').value.trim()||'Campaign',
+    forecast,actual,ds,de,color:selColor,
+    team:curTeam,createdAt:new Date().toISOString()
+  };
+  try{
+    await push(ref(db,TEAMS[curTeam].path),data);
+    ok.style.display='inline';setTimeout(()=>ok.style.display='none',2500);
+    showToast('บันทึกสำเร็จ! Sync แล้ว ✓');
+    clearForm();
+  }catch(e){showErr('บันทึกไม่สำเร็จ: '+e.message);setSyncing(false);}
+}
+
+function showErr(msg){const e=document.getElementById('errMsg');e.textContent=msg;e.style.display='inline';setTimeout(()=>e.style.display='none',3000);}
+
+async function deleteCampaign(key,team){
+  if(!confirm('ลบ Campaign นี้?'))return;
+  setSyncing(true);
+  if(!window._fb){showToast('Firebase ยังไม่พร้อม','red');setSyncing(false);return;}
+  const{db,ref,remove}=window._fb;
+  try{await remove(ref(db,TEAMS[team].path+'/'+key));showToast('ลบแล้ว','red');}
+  catch(e){showToast('ลบไม่สำเร็จ','red');setSyncing(false);}
+}
+
+function clearForm(){
+  ['fName','fDetail','fCh','fDept','fLabel','fForecast','fActual','fDs','fDe'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('durBox').classList.remove('show');
+  document.getElementById('achPreview').textContent='— กรอก Forecast และ Actual ก่อน';
+  document.getElementById('achPreview').style.color='var(--gray)';
+  selColor=PALETTE[0];document.querySelectorAll('.csw').forEach((el,i)=>el.classList.toggle('sel',i===0));
+  document.getElementById('errMsg').style.display='none';
+  document.getElementById('okMsg').style.display='none';
+  document.getElementById('fName').focus();
+}
+
+/* ── RENDER TABLE ── */
+function renderTable(){
+  const list=allData[curTeam];
+  const tb=document.getElementById('tBody');
+  document.getElementById('tCount').textContent=list.length+' campaigns';
+  if(!list.length){tb.innerHTML='<tr><td colspan="11" class="empty-td">ยังไม่มีข้อมูล — กรอกแบบฟอร์มด้านบนเพื่อเพิ่ม Campaign</td></tr>';return;}
+  tb.innerHTML=list.map(c=>{
+    const{days,sub}=durLabel(c.ds,c.de);
+    const pct=achLabel(c.forecast,c.actual);
+    const achCls=pct!==null?achClass(pct):'';
+    return `<tr>
+      <td><div class="td-name"><span class="td-dot" style="background:${c.color}"></span>${c.name}</div></td>
+      <td style="color:var(--text2)">${fmtDate(c.ds)}</td>
+      <td style="color:var(--text2)">${fmtDate(c.de)}</td>
+      <td style="color:var(--accent);font-weight:600">${days}วัน${sub?'<br><span style="font-size:9px;color:var(--gray)">'+sub+'</span>':''}</td>
+      <td style="color:var(--orange);font-weight:700">${c.forecast?c.forecast.toFixed(1):'-'}</td>
+      <td style="color:var(--green);font-weight:700">${c.actual!==undefined&&c.actual!==''?parseFloat(c.actual).toFixed(1):'-'}</td>
+      <td>${pct!==null?`<span class="ach-badge ${achCls}">${pct}%</span>`:'<span style="color:var(--gray);font-size:10px">รอ Actual</span>'}</td>
+      <td><span class="td-badge" style="background:${c.color}18;color:${c.color};border:1px solid ${c.color}40">${c.channel}</span></td>
+      <td style="color:var(--text2)">${c.dept}</td>
+      <td style="color:var(--gray);font-size:10px">${c.label}</td>
+      <td><button class="td-del" onclick="deleteCampaign('${c._key}','${c._team}')">ลบ</button></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── DASHBOARD ── */
+function getFilteredList(){
+  const teamF=document.getElementById('dFTeam').value;
+  const ch=document.getElementById('dFCh').value;
+  const dept=document.getElementById('dFDept').value;
+  const yr=document.getElementById('dFYear').value||String(CUR_YEAR);
+  const status=document.getElementById('dFStatus').value;
+  let list=teamF==='all'?[...allData.kc,...allData.sa]:allData[teamF]||[];
+  list=list.filter(c=>{
+    if(ch&&c.channel!==ch)return false;
+    if(dept&&c.dept!==dept)return false;
+    if(yr&&!c.ds.startsWith(yr)&&!c.de.startsWith(yr))return false;
+    if(status){
+      const ds=new Date(c.ds+'T00:00:00'),de=new Date(c.de+'T00:00:00');
+      if(status==='upcoming'&&ds<=TODAY)return false;
+      if(status==='active'&&!(ds<=TODAY&&de>=TODAY))return false;
+      if(status==='done'&&de>=TODAY)return false;
+    }
+    return true;
+  });
+  return list.sort((a,b)=>a.ds.localeCompare(b.ds));
+}
+
+function buildDashFilters(list){
+  const all=[...allData.kc,...allData.sa];
+  const chs=[...new Set(all.map(c=>c.channel))],depts=[...new Set(all.map(c=>c.dept))];
+  const yrs=[...new Set(all.flatMap(c=>[c.ds.slice(0,4),c.de.slice(0,4)]))].sort();
+  const chEl=document.getElementById('dFCh'),pCh=chEl.value;chEl.innerHTML='<option value="">ทุกช่องทาง</option>'+chs.map(c=>`<option${c===pCh?' selected':''}>${c}</option>`).join('');
+  const dEl=document.getElementById('dFDept'),pD=dEl.value;dEl.innerHTML='<option value="">ทุกหน่วยงาน</option>'+depts.map(d=>`<option${d===pD?' selected':''}>${d}</option>`).join('');
+  const yEl=document.getElementById('dFYear'),pY=yEl.value||String(CUR_YEAR);yEl.innerHTML=yrs.length?yrs.map(y=>`<option value="${y}"${y===pY?' selected':''}>${y}</option>`).join(''):'<option value="2025">2025</option>';
+}
+
+function renderKPIs(list){
+  const totalF=list.reduce((s,c)=>s+(c.forecast||0),0);
+  const totalA=list.reduce((s,c)=>s+(parseFloat(c.actual)||0),0);
+  const overallPct=totalF>0?Math.round((totalA/totalF)*100):null;
+  const active=list.filter(c=>new Date(c.ds+'T00:00:00')<=TODAY&&new Date(c.de+'T00:00:00')>=TODAY).length;
+  const top=list.length?list.reduce((t,c)=>(c.forecast||0)>(t.forecast||0)?c:t,list[0]):null;
+  document.getElementById('dash-kpi').innerHTML=`
+    <div class="kpi-d"><div class="kpi-d-l">Campaign ทั้งหมด</div><div class="kpi-d-v" style="color:var(--accent)">${list.length}</div><div class="kpi-d-s">campaigns</div></div>
+    <div class="kpi-d"><div class="kpi-d-l">Total Forecast</div><div class="kpi-d-v" style="color:var(--orange)">${totalF.toFixed(1)}</div><div class="kpi-d-s">ล้านบาท</div></div>
+    <div class="kpi-d"><div class="kpi-d-l">Total Actual</div><div class="kpi-d-v" style="color:var(--green)">${totalA.toFixed(1)}</div><div class="kpi-d-s">ล้านบาท</div></div>
+    <div class="kpi-d"><div class="kpi-d-l">Overall %Achieve</div><div class="kpi-d-v" style="color:${overallPct===null?'var(--gray)':overallPct>=100?'var(--green)':overallPct>=80?'#b07800':'var(--red)'}">${overallPct!==null?overallPct+'%':'—'}</div><div class="kpi-d-s">${top?'Top: '+top.name:''}</div></div>
+    <div class="kpi-d"><div class="kpi-d-l">Active วันนี้</div><div class="kpi-d-v" style="color:#43a047">${active}</div><div class="kpi-d-s">campaigns</div></div>`;
+}
+
+function renderLegend(list){
+  const seen=new Map();list.forEach(c=>seen.set(c.channel,c.color));
+  // team colors
+  const teamF=document.getElementById('dFTeam').value;
+  let teamLeg='';
+  if(teamF==='all'){teamLeg=`<div class="leg"><div class="leg-c" style="background:var(--kc)"></div>KC HO</div><div class="leg"><div class="leg-c" style="background:var(--sa)"></div>SA</div>`;}
+  document.getElementById('legendStrip').innerHTML=teamLeg+[...seen.entries()].map(([ch,col])=>`<div class="leg"><div class="leg-c" style="background:${col}"></div>${ch}</div>`).join('');
+}
+
+function buildMonthHeader(yr){
+  const metaW=320;
+  return `<div class="tl-head-row">
+    <div class="tl-lbl-sp"></div>
+    <div class="tl-meta-sp" style="width:${metaW}px;display:grid;grid-template-columns:95px 50px 56px 55px 64px;padding-right:6px">
+      <div style="font-size:8px;color:var(--gray);padding:0 2px;font-weight:700;align-self:end;padding-bottom:5px">ช่วงเวลา</div>
+      <div style="font-size:8px;color:var(--gray);padding:0 2px;font-weight:700;align-self:end;padding-bottom:5px">ระยะ</div>
+      <div style="font-size:8px;color:var(--orange);padding:0 2px;font-weight:700;align-self:end;padding-bottom:5px">Forecast</div>
+      <div style="font-size:8px;color:var(--green);padding:0 2px;font-weight:700;align-self:end;padding-bottom:5px">Actual</div>
+      <div style="font-size:8px;color:#5c7ec7;padding:0 2px;font-weight:700;align-self:end;padding-bottom:5px">%Achieve</div>
+    </div>
+    <div class="tl-months">${MO_TH.map((m,i)=>{const isCur=(i===TODAY.getMonth()&&yr===CUR_YEAR);return `<div class="mo-col${isCur?' cur':''}"><div class="mo-name">${m}</div><div class="mo-dot${isCur?' cur':''}"></div></div>`;}).join('')}</div>
+  </div>`;
+}
+
+function buildRows(rows,yr){
+  const metaW=320;
+  const yS=new Date(yr,0,1),yE=new Date(yr,11,31),yD=(yE-yS)/864e5+1;
+  function doy(s){return Math.round((new Date(s+'T00:00:00')-yS)/864e5);}
+  const tp=(doy(TODAY.toISOString().slice(0,10))/yD*100).toFixed(2);
+  const divs=MO_TH.map((_,i)=>{if(i===11)return '';const pp=((new Date(yr,i+1,1)-yS)/864e5/yD*100).toFixed(2);return `<div class="mo-div" style="left:${pp}%"></div>`;}).join('');
+  return rows.map(c=>{
+    const ds=new Date(c.ds+'T00:00:00'),de=new Date(c.de+'T00:00:00'),clS=new Date(Math.max(ds,yS)),clE=new Date(Math.min(de,yE));
+    if(clS>clE)return '';
+    const lp=(doy(clS.toISOString().slice(0,10))/yD*100).toFixed(2),wp=((doy(clE.toISOString().slice(0,10))-doy(clS.toISOString().slice(0,10))+1)/yD*100).toFixed(2);
+    const{days}=durLabel(c.ds,c.de);
+    const pct=achLabel(c.forecast,c.actual);
+    const achCls=pct!==null?achClass(pct):'';
+    const teamDot=`<span style="width:6px;height:6px;border-radius:50%;background:${c._team==='kc'?'var(--kc)':'var(--sa)'};display:inline-block;margin-right:3px;flex-shrink:0"></span>`;
+    return `<div class="tl-row">
+      <div class="rl"><div class="rl-dot" style="background:${c.color}"></div><div class="rl-name">${teamDot}${c.name}</div></div>
+      <div class="rm" style="width:${metaW}px;grid-template-columns:95px 50px 56px 55px 64px">
+        <div class="mc" style="font-size:8px;line-height:1.4;color:var(--text2)">${fmtDate(c.ds)}<br>${fmtDate(c.de)}</div>
+        <div class="mc">${days}วัน</div>
+        <div class="mc f">${c.forecast?c.forecast.toFixed(1):'-'}</div>
+        <div class="mc a">${c.actual!==undefined&&c.actual!==''?parseFloat(c.actual).toFixed(1):'-'}</div>
+        <div class="mc">${pct!==null?`<span class="ach-badge ${achCls}" style="font-size:8px;padding:1px 5px">${pct}%</span>`:'<span style="color:var(--gray);font-size:8px">—</span>'}</div>
+      </div>
+      <div class="rtrack-wrap">
+        <div class="rtrack">${divs}</div>
+        ${yr===CUR_YEAR?`<div class="today-vl" style="left:${tp}%"><div class="today-tag">วันนี้</div></div>`:''}
+        <div class="bpill" style="left:${lp}%;width:calc(${wp}% - 2px);background:${c.color}" onclick="showMod('${c._key}','${c._team}')">
+          <span style="overflow:hidden;text-overflow:ellipsis">${parseFloat(wp)>7?c.name:''}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDash(){
+  const yr=parseInt(document.getElementById('dFYear').value||CUR_YEAR);
+  const list=getFilteredList();
+  buildDashFilters(list);renderKPIs(list);renderLegend(list);
+  document.getElementById('modalBg').classList.remove('open');
+  const container=document.getElementById('dashPages');
+  if(!list.length){container.innerHTML='<div class="empty-tl">ยังไม่มีข้อมูล หรือไม่มี Campaign ตรงกับเงื่อนไข</div>';return;}
+  const chunks=[];for(let i=0;i<list.length;i+=ROWS_PER_PAGE)chunks.push(list.slice(i,i+ROWS_PER_PAGE));
+  container.innerHTML=chunks.map((chunk,pi)=>{
+    let html=`<div class="dash-page-frame">`;
+    if(pi>0)html+=`<div class="page-lbl">หน้า ${pi+1} / ${chunks.length} — Promotion Timeline ${yr}</div>`;
+    html+=`<div class="tl-outer"><div class="tl-inner">${buildMonthHeader(yr)}<div class="tl-data-rows">${buildRows(chunk,yr)}</div></div></div></div>`;
+    return html;
+  }).join('');
+}
+
+function showMod(key,team){
+  const c=allData[team].find(x=>x._key===key);if(!c)return;
+  const allList=[...allData.kc,...allData.sa];
+  const maxF=Math.max(...allList.map(x=>x.forecast||0));
+  const pct=Math.round((c.forecast||0)/maxF*100);
+  const achPct=achLabel(c.forecast,c.actual);
+  const{days,sub}=durLabel(c.ds,c.de);
+  document.getElementById('mT').textContent=c.name;
+  document.getElementById('mS').textContent=`${TEAMS[team].name} | ${fmtDate(c.ds)} — ${fmtDate(c.de)}`;
+  document.getElementById('mBd').innerHTML=`
+    <div class="mf full"><div class="mf-l">รายละเอียด</div><div class="mf-v">${c.detail}</div></div>
+    <div class="mf"><div class="mf-l">ทีม</div><div class="mf-v" style="color:${TEAMS[team].color};font-weight:700">${TEAMS[team].name}</div></div>
+    <div class="mf"><div class="mf-l">ช่องทาง</div><span style="display:inline-flex;font-size:10px;padding:3px 10px;border-radius:20px;background:${c.color}18;color:${c.color};border:1px solid ${c.color}40;font-weight:600">${c.channel}</span></div>
+    <div class="mf"><div class="mf-l">หน่วยงาน</div><div class="mf-v">${c.dept}</div></div>
+    <div class="mf"><div class="mf-l">ประเภท</div><div class="mf-v">${c.label}</div></div>
+    <div class="mf"><div class="mf-l">ระยะเวลา</div><div class="mf-v" style="color:var(--accent);font-weight:600">${days} วัน${sub?' ('+sub+')':''}</div></div>
+    <div class="mf"><div class="mf-l">Forecast</div><div class="mf-v" style="font-size:20px;font-weight:700;color:var(--orange)">${c.forecast?c.forecast.toFixed(1):'-'} <span style="font-size:11px;color:var(--gray)">ลบ.</span></div></div>
+    <div class="mf"><div class="mf-l">Actual</div><div class="mf-v" style="font-size:20px;font-weight:700;color:var(--green)">${c.actual!==undefined&&c.actual!==''?parseFloat(c.actual).toFixed(1):'-'} <span style="font-size:11px;color:var(--gray)">ลบ.</span></div></div>
+    <div class="mf full">
+      <div class="mf-l">%Achieve</div>
+      ${achPct!==null?`<div class="ach-big ${achClass(achPct)}" style="font-size:32px;font-weight:700;color:${achPct>=100?'var(--green)':achPct>=80?'#b07800':'var(--red)'}">${achPct}%</div>
+      <div class="fbar-w"><div class="fbar-f" style="width:${Math.min(achPct,100)}%;background:${achPct>=100?'var(--green)':achPct>=80?'#b07800':'var(--red)'}"></div></div>`
+      :'<div style="color:var(--gray);font-size:13px">— รอข้อมูล Actual</div>'}
+    </div>`;
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeMod(){document.getElementById('modalBg').classList.remove('open');}
+
+/* ── EXPORT ── */
+const W169=1280,H169=720;
+async function exportDash(type){
+  const spin=document.getElementById('expSpin');spin.style.display='inline';
+  renderDash();await new Promise(r=>setTimeout(r,500));
+  const frames=[...document.querySelectorAll('.dash-page-frame')];
+  if(!frames.length){spin.style.display='none';alert('ไม่มีข้อมูล');return;}
+  async function toCanvas(el){
+    const c=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#fff',width:el.scrollWidth,windowWidth:1500});
+    const out=document.createElement('canvas');out.width=W169*2;out.height=H169*2;
+    const ctx=out.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);
+    const sc=Math.min((W169*2)/c.width,(H169*2)/c.height);
+    ctx.drawImage(c,(out.width-c.width*sc)/2,0,c.width*sc,c.height*sc);
+    return out;
+  }
+  try{
+    if(type==='png'){
+      for(let i=0;i<frames.length;i++){const out=await toCanvas(frames[i]);const a=document.createElement('a');a.download=`promotion-p${i+1}.png`;a.href=out.toDataURL('image/png');a.click();await new Promise(r=>setTimeout(r,400));}
+    } else if(type==='pdf'){
+      const{jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+      for(let i=0;i<frames.length;i++){if(i>0)pdf.addPage();const out=await toCanvas(frames[i]);pdf.addImage(out.toDataURL('image/jpeg',.95),'JPEG',0,0,297,210);pdf.setFontSize(7);pdf.setTextColor(180);pdf.text(`Promotion Timeline 2025 | หน้า ${i+1}/${frames.length}`,148.5,207,{align:'center'});}
+      pdf.save('promotion-timeline-2025.pdf');
+    } else if(type==='pptx'){
+      const pres=new PptxGenJS();pres.layout='LAYOUT_16x9';
+      for(let i=0;i<frames.length;i++){const out=await toCanvas(frames[i]);const slide=pres.addSlide();slide.addImage({data:out.toDataURL('image/jpeg',.95),x:0,y:0,w:'100%',h:'100%'});}
+      await pres.writeFile({fileName:'promotion-timeline-2025.pptx'});
+    }
+    showToast('Export สำเร็จ! ✓');
+  }catch(e){alert('Export ไม่สำเร็จ: '+e.message);}
+  spin.style.display='none';
+}
+
+/* ── IMPORT ── */
+let importedCampaigns = [];
+let importTeam = 'kc';
+
+function selectImportTeam(t){
+  importTeam = t;
+  document.getElementById('impBtnKC').className = 'team-sel-btn' + (t==='kc'?' sel-kc':'');
+  document.getElementById('impBtnSA').className = 'team-sel-btn' + (t==='sa'?' sel-sa':'');
+}
+
+function closeImportModal(){
+  document.getElementById('importModal').classList.remove('open');
+  importedCampaigns = [];
+}
+
+async function importData(event){
+  const file = event.target.files[0];
+  if(!file){ return; }
+  event.target.value = ''; // reset so same file can be selected again
+
+  const text = await file.text();
+  let found = [];
+
+  if(file.name.endsWith('.json')){
+    // Raw JSON array
+    try{
+      const parsed = JSON.parse(text);
+      if(Array.isArray(parsed)) found = parsed;
+      else if(typeof parsed === 'object'){
+        // Firebase export format { key: {...} }
+        found = Object.values(parsed).filter(v=>v && v.name && v.ds);
+      }
+    }catch(e){ alert('JSON ไม่ถูกต้อง: ' + e.message); return; }
+  } else {
+    // HTML file — extract campaigns array from JS
+    // Try to find localStorage data first, then JS array
+    const patterns = [
+      /let campaigns\s*=\s*(\[[\s\S]*?\]);/,
+      /campaigns\s*=\s*(\[[\s\S]*?\]);/,
+      /var campaigns\s*=\s*(\[[\s\S]*?\]);/,
+    ];
+    let raw = null;
+    for(const pat of patterns){
+      const m = text.match(pat);
+      if(m){ raw = m[1]; break; }
+    }
+    if(!raw){ alert('ไม่พบข้อมูล campaigns ในไฟล์ HTML นี้\nลองเปลี่ยนเป็นไฟล์ JSON แทนครับ'); return; }
+    try{
+      found = eval(raw); // safe here — user's own file
+    }catch(e){ alert('อ่านข้อมูลไม่ได้: ' + e.message); return; }
+  }
+
+  // Filter only valid campaigns
+  found = found.filter(c => c && c.name && c.ds && c.de);
+
+  if(!found.length){ alert('ไม่พบข้อมูล campaign ที่ถูกต้องในไฟล์นี้'); return; }
+
+  importedCampaigns = found;
+
+  // Show preview
+  document.getElementById('impCount').textContent = found.length + ' campaigns';
+  document.getElementById('impPreview').innerHTML = found.map((c,i) =>
+    `<div style="padding:3px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px">
+      <span style="width:8px;height:8px;border-radius:50%;background:${c.color||'#1976D2'};display:inline-block;flex-shrink:0"></span>
+      <span style="font-weight:600">${c.name}</span>
+      <span style="color:var(--gray);font-size:10px;margin-left:auto">${c.ds} → ${c.de}</span>
+      <span style="color:var(--orange);font-size:10px;font-weight:600">${c.forecast||0} ลบ.</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('importModal').classList.add('open');
+}
+
+async function confirmImport(){
+  if(!importedCampaigns.length){ return; }
+  if(!window._fb){ alert('Firebase ยังไม่พร้อม รอสักครู่แล้วลองใหม่'); return; }
+
+  const btn = document.getElementById('btnConfirmImport');
+  btn.textContent = '⏳ กำลัง import...';
+  btn.disabled = true;
+
+  const {db, ref, push} = window._fb;
+  const path = TEAMS[importTeam].path;
+  let success = 0, fail = 0;
+
+  for(const c of importedCampaigns){
+    try{
+      await push(ref(db, path), {
+        name:     c.name     || '',
+        detail:   c.detail   || '-',
+        channel:  c.channel  || '',
+        dept:     c.dept     || '',
+        label:    c.label    || 'Campaign',
+        forecast: parseFloat(c.forecast) || 0,
+        actual:   parseFloat(c.actual)   || 0,
+        ds:       c.ds       || '',
+        de:       c.de       || '',
+        color:    c.color    || '#1976D2',
+        team:     importTeam,
+        createdAt: new Date().toISOString()
+      });
+      success++;
+    }catch(e){ fail++; }
+  }
+
+  btn.textContent = '✓ Import เข้า Firebase';
+  btn.disabled = false;
+  closeImportModal();
+
+  const msg = `Import สำเร็จ ${success} campaigns${fail>0?' (ล้มเหลว '+fail+')':''}`;
+  showToast(msg, fail>0?'red':'green');
+  if(success>0) switchTeam(importTeam);
+}
+
+buildColorPicker();
+
+// Retry startListen every 500ms until Firebase is ready (max 10s)
+let _fbRetry = 0;
+const _fbCheck = setInterval(function(){
+  _fbRetry++;
+  if(window._fb && window._fbReady){
+    clearInterval(_fbCheck);
+    startListen();
+    document.getElementById('syncLabel').textContent = 'เชื่อมต่อแล้ว';
+  } else if(_fbRetry > 20){
+    clearInterval(_fbCheck);
+    document.getElementById('syncLabel').textContent = 'เชื่อมต่อไม่ได้ — refresh';
+    document.getElementById('syncDot').style.background = 'var(--red)';
+  }
+}, 500);
+</script>
+</body>
+</html>
