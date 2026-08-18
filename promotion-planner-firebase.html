@@ -122,6 +122,19 @@ tr:hover td{background:var(--surface)}
 .td-badge{display:inline-flex;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;white-space:nowrap}
 .td-del{font-family:'Prompt',sans-serif;font-size:10px;background:none;border:1px solid #f5c6c6;color:var(--red);border-radius:6px;padding:2px 8px;cursor:pointer}
 .td-del:hover{background:var(--red-bg)}
+.td-edit{font-family:'Prompt',sans-serif;font-size:10px;background:none;border:1px solid #c3d5f5;color:var(--accent);border-radius:6px;padding:2px 8px;cursor:pointer;margin-right:4px}
+.td-edit:hover{background:#e8f0fe}
+.edit-modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center}
+.edit-modal-bg.open{display:flex}
+.edit-modal{background:#fff;border-radius:14px;width:min(580px,94vw);max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.edit-modal-hd{padding:16px 20px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface);position:sticky;top:0}
+.edit-modal-title{font-size:15px;font-weight:700;color:var(--text)}
+.edit-modal-x{background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray)}
+.edit-modal-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.edit-modal-acts{padding:14px 20px;border-top:1.5px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:var(--surface)}
+.btn-save-edit{font-family:'Prompt',sans-serif;font-size:13px;font-weight:600;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 22px;cursor:pointer}
+.btn-save-edit:hover{background:#0d47a1}
+.btn-cancel-edit{font-family:'Prompt',sans-serif;font-size:13px;color:var(--gray);background:none;border:1.5px solid var(--border);border-radius:8px;padding:9px 16px;cursor:pointer}
 .empty-td{text-align:center;color:var(--gray);padding:2rem;font-size:12px}
 
 /* DASHBOARD */
@@ -364,6 +377,44 @@ tr:hover td{background:var(--surface)}
 
 <div class="toast hide" id="toast"></div>
 
+<!-- EDIT MODAL -->
+<div class="edit-modal-bg" id="editModalBg">
+  <div class="edit-modal">
+    <div class="edit-modal-hd">
+      <div class="edit-modal-title">✏️ แก้ไข Campaign</div>
+      <button class="edit-modal-x" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="edit-modal-body">
+      <div class="fg fg2">
+        <div class="ff full"><div class="fl">ชื่อ Campaign <span class="req">*</span></div>
+          <input type="text" id="eName" placeholder="ชื่อ Campaign"/></div>
+        <div class="ff full"><div class="fl">รายละเอียด</div>
+          <textarea id="eDetail" placeholder="รายละเอียด"></textarea></div>
+        <div class="ff"><div class="fl">ช่องทาง</div>
+          <input type="text" id="eCh" placeholder="เช่น Online, In-Store"/></div>
+        <div class="ff"><div class="fl">หน่วยงาน</div>
+          <input type="text" id="eDept" placeholder="เช่น Marketing, CRM"/></div>
+        <div class="ff"><div class="fl">ประเภท Campaign</div>
+          <input type="text" id="eLabel" placeholder="เช่น Mega Sale"/></div>
+        <div class="ff"><div class="fl">สี Campaign</div>
+          <div class="color-row" id="editColorPicker"></div></div>
+        <div class="ff"><div class="fl">วันเริ่มต้น</div>
+          <input type="date" id="eDs"/></div>
+        <div class="ff"><div class="fl">วันสิ้นสุด</div>
+          <input type="date" id="eDe"/></div>
+        <div class="ff"><div class="fl">Forecast (ล้านบาท)</div>
+          <input type="number" id="eForecast" min="0" step="0.1"/></div>
+        <div class="ff"><div class="fl">Actual (ล้านบาท)</div>
+          <input type="number" id="eActual" min="0" step="0.1"/></div>
+      </div>
+    </div>
+    <div class="edit-modal-acts">
+      <button class="btn-cancel-edit" onclick="closeEditModal()">ยกเลิก</button>
+      <button class="btn-save-edit" onclick="saveEdit()">💾 บันทึกการแก้ไข</button>
+    </div>
+  </div>
+</div>
+
 <!-- IMPORT MODAL -->
 <div class="import-modal" id="importModal">
   <div class="import-box">
@@ -573,7 +624,7 @@ function renderTable(){
       <td><span class="td-badge" style="background:${c.color}18;color:${c.color};border:1px solid ${c.color}40">${c.channel}</span></td>
       <td style="color:var(--text2)">${c.dept}</td>
       <td style="color:var(--gray);font-size:10px">${c.label}</td>
-      <td><button class="td-del" onclick="deleteCampaign('${c._key}','${c._team}')">ลบ</button></td>
+      <td><button class="td-edit" onclick="openEditModal('${c._key}','${c._team}')">✏️ แก้ไข</button><button class="td-del" onclick="deleteCampaign('${c._key}','${c._team}')">ลบ</button></td>
     </tr>`;
   }).join('');
 }
@@ -872,7 +923,103 @@ async function confirmImport(){
   if(success>0) switchTeam(importTeam);
 }
 
+/* ── EDIT ── */
+let editKey = null;
+let editTeam = null;
+let editSelColor = '#1976D2';
+
+function buildEditColorPicker(){
+  document.getElementById('editColorPicker').innerHTML = PALETTE.map((c,i) =>
+    `<div class="csw" style="background:${c}" onclick="editPickColor('${c}',this)"></div>`
+  ).join('');
+}
+
+function editPickColor(c, el){
+  editSelColor = c;
+  document.querySelectorAll('#editColorPicker .csw').forEach(x => x.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function openEditModal(key, team){
+  const c = allData[team].find(x => x._key === key);
+  if(!c) return;
+  editKey = key;
+  editTeam = team;
+  editSelColor = c.color || '#1976D2';
+
+  document.getElementById('eName').value = c.name || '';
+  document.getElementById('eDetail').value = c.detail || '';
+  document.getElementById('eCh').value = c.channel || '';
+  document.getElementById('eDept').value = c.dept || '';
+  document.getElementById('eLabel').value = c.label || '';
+  document.getElementById('eDs').value = c.ds || '';
+  document.getElementById('eDe').value = c.de || '';
+  document.getElementById('eForecast').value = c.forecast || 0;
+  document.getElementById('eActual').value = c.actual || 0;
+
+  // set color picker
+  buildEditColorPicker();
+  document.querySelectorAll('#editColorPicker .csw').forEach(el => {
+    if(el.style.background === c.color || el.style.backgroundColor === c.color){
+      el.classList.add('sel');
+    }
+  });
+
+  document.getElementById('editModalBg').classList.add('open');
+}
+
+function closeEditModal(){
+  document.getElementById('editModalBg').classList.remove('open');
+  editKey = null; editTeam = null;
+}
+
+async function saveEdit(){
+  if(!editKey || !editTeam) return;
+  if(!window._fb){ alert('Firebase ยังไม่พร้อม'); return; }
+
+  const name = document.getElementById('eName').value.trim();
+  if(!name){ alert('กรุณากรอกชื่อ Campaign'); return; }
+
+  setSyncing(true);
+  const {db, ref, update} = window._fb;
+
+  // need update function — import it
+  const { getDatabase, ref: fbRef, update: fbUpdate } = await import(
+    "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"
+  );
+
+  const data = {
+    name,
+    detail: document.getElementById('eDetail').value.trim() || '-',
+    channel: document.getElementById('eCh').value.trim(),
+    dept: document.getElementById('eDept').value.trim(),
+    label: document.getElementById('eLabel').value.trim() || 'Campaign',
+    forecast: parseFloat(document.getElementById('eForecast').value) || 0,
+    actual: parseFloat(document.getElementById('eActual').value) || 0,
+    ds: document.getElementById('eDs').value,
+    de: document.getElementById('eDe').value,
+    color: editSelColor,
+  };
+
+  try{
+    const dbInst = window._fb.db;
+    const path = TEAMS[editTeam].path + '/' + editKey;
+    await fbUpdate(fbRef(dbInst, path), data);
+    showToast('แก้ไขสำเร็จ! ✓');
+    closeEditModal();
+  } catch(e){
+    alert('แก้ไขไม่สำเร็จ: ' + e.message);
+    setSyncing(false);
+  }
+}
+
+// close edit modal on bg click
+document.getElementById('editModalBg').addEventListener('click', function(e){
+  if(e.target === this) closeEditModal();
+});
+
 buildColorPicker();
+buildEditColorPicker();
 
 // Retry startListen every 500ms until Firebase is ready (max 10s)
 let _fbRetry = 0;
