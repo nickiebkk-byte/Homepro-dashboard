@@ -299,7 +299,7 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
 .confirm-box { background: var(--white); border-radius: 14px; padding: 28px 30px; width: 360px; box-shadow: 0 12px 50px rgba(0,0,0,.18); }
 .confirm-box h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
 .confirm-box p  { font-size: 13px; color: var(--gray); margin-bottom: 6px; line-height: 1.6; }
-.confirm-box .note { font-size: 12px; color: var(--green); font-weight: 600; background: var(--green-bg); border: 1px solid var(--green-br); border-radius: 7px; padding: 8px 12px; margin: 12px 0; }
+.confirm-box .note { font-size: 12px; font-weight: 600; background: var(--red-bg); border: 1px solid var(--red-br); color: var(--red); border-radius: 7px; padding: 8px 12px; margin: 12px 0; }
 .confirm-actions { display: flex; gap: 8px; margin-top: 18px; }
 .confirm-cancel { flex: 1; font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 600; padding: 10px; border: 1.5px solid var(--border); border-radius: 8px; background: none; color: var(--gray); cursor: pointer; }
 .confirm-delete { flex: 2; font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 700; padding: 10px; border: none; border-radius: 8px; background: var(--red); color: #fff; cursor: pointer; }
@@ -373,7 +373,7 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
   </div>
   <div class="tab-nav">
     <button class="tab-btn active" id="tab-my"  onclick="switchTab('my-tasks',this)">งานของฉัน</button>
-    <button class="tab-btn"        id="tab-cal" onclick="switchTab('calendar',this)">📅 ปฏิทิน</button>
+    <button class="tab-btn" style="display:none" id="tab-cal" onclick="switchTab('calendar',this)">📅 ปฏิทิน</button>
     <button class="tab-btn"        id="tab-mgr" onclick="switchTab('manager',this)"  style="display:none">มุมมอง AVP</button>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -457,14 +457,13 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
   <div class="member-mgr-card" id="member-mgr-section">
     <div class="member-mgr-header">
       <div class="member-mgr-title">👥 จัดการสมาชิกทีม</div>
-      <div style="font-size:12px;color:var(--gray)">ลบพนักงานออกจากทีม — ข้อมูลงานยังคงอยู่</div>
+      <div style="font-size:12px;color:var(--gray)">ลบพนักงานออกจากระบบถาวร</div>
     </div>
     <table class="member-table">
       <thead>
         <tr>
           <th>ชื่อ-ตำแหน่ง</th>
-          <th>งานทั้งหมด</th>
-          <th>เสร็จแล้ว</th>
+          <th>งาน</th>
           <th>สถานะ</th>
           <th>จัดการ</th>
         </tr>
@@ -555,9 +554,16 @@ function showApp() {
   document.getElementById('header-user').textContent    = me.name + (me.isAVP ? ' 👔' : '');
   if (me.isAVP) {
     document.getElementById('tab-mgr').style.display = 'block';
+    document.getElementById('tab-cal').style.display = 'block';
     document.getElementById('tab-my').style.display  = 'none';
-    switchTab('manager', document.getElementById('tab-mgr'));
+    // Set manager as active default
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('tab-mgr').classList.add('active');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-manager').classList.add('active');
+    listenManagerView();
   } else {
+    document.getElementById('tab-cal').style.display = 'block';
     listenMyTasks();
   }
 }
@@ -569,6 +575,7 @@ function logout() {
   document.getElementById('main-app').style.display     = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('tab-mgr').style.display      = 'none';
+  document.getElementById('tab-cal').style.display      = 'none';
   document.getElementById('tab-my').style.display       = 'block';
   document.getElementById('avp-pin-wrap').style.display = 'none';
   document.querySelectorAll('.role-tab').forEach(b=>b.classList.remove('selected'));
@@ -581,7 +588,7 @@ function switchTab(view, btn) {
   document.getElementById('view-'+view).classList.add('active');
   btn.classList.add('active');
   if (view === 'manager') listenManagerView();
-  else if (view === 'calendar') listenCalendar();
+  else if (view === 'calendar') { calDate = new Date(); listenCalendar(); }
   else listenMyTasks();
 }
 
@@ -684,7 +691,7 @@ function listenManagerView() {
 function renderManagerView(membersData, tasksData) {
   const myAvp   = me.avp;
   const today   = new Date(); today.setHours(0,0,0,0);
-  const members = Object.values(membersData).filter(m => m.avp === myAvp);
+  const members = Object.values(membersData).filter(m => m.avp === myAvp && !m.removed);
 
   let allTasks = [];
   members.forEach(m => {
@@ -1093,36 +1100,25 @@ function closeConfirm() {
 
 async function confirmDeleteMember() {
   if (!pendingDeleteId) return;
-  const { db, ref, update } = window._fb;
-  // Mark as removed — ไม่ลบข้อมูล tasks
-  await update(ref(db, `members/${pendingDeleteId}`), {
-    removed: true,
-    removedAt: new Date().toISOString(),
-    removedBy: me.name
-  });
+  const { db, ref, remove } = window._fb;
+  // ลบออกจากระบบถาวร
+  await remove(ref(db, `members/${pendingDeleteId}`));
   closeConfirm();
-  showToast('ลบพนักงานออกจากทีมแล้ว — ข้อมูลงานยังอยู่ครบ');
+  showToast('ลบพนักงานออกจากระบบเรียบร้อยแล้ว');
 }
 
 async function restoreMember(memberId) {
-  const { db, ref, update } = window._fb;
-  await update(ref(db, `members/${memberId}`), {
-    removed: false,
-    removedAt: null,
-    removedBy: null
-  });
-  showToast('คืนสิทธิ์พนักงานเรียบร้อยแล้ว');
+  // ไม่ใช้งานแล้ว
 }
 
 function renderMemberMgr(membersData, tasksData) {
-  const myAvp  = me.avp;
-  const today  = new Date(); today.setHours(0,0,0,0);
-  const members = Object.values(membersData).filter(m => m.avp === myAvp);
-  const tbody  = document.getElementById('member-mgr-tbody');
+  const myAvp   = me.avp;
+  const members = Object.values(membersData).filter(m => m.avp === myAvp && !m.removed);
+  const tbody   = document.getElementById('member-mgr-tbody');
   if (!tbody) return;
 
   if (!members.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gray)">ยังไม่มีสมาชิกในทีม</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--gray)">ยังไม่มีสมาชิกในทีม</td></tr>`;
     return;
   }
 
@@ -1133,21 +1129,13 @@ function renderMemberMgr(membersData, tasksData) {
   ];
 
   tbody.innerHTML = members.map((m,i) => {
-    const mTasks = tasksData[m.id] ? Object.values(tasksData[m.id]) : [];
-    const mDone  = mTasks.filter(t=>t.status==='done').length;
-    const ci     = i % COLORS.length;
+    const mTasks   = tasksData[m.id] ? Object.values(tasksData[m.id]) : [];
+    const mDone    = mTasks.filter(t=>t.status==='done').length;
+    const mInprog  = mTasks.filter(t=>t.status==='inprogress').length;
+    const ci       = i % COLORS.length;
     const initials = m.name.length>=2 ? m.name.substring(0,2) : m.name;
-    const isRemoved = m.removed === true;
 
-    const statusBadge = isRemoved
-      ? `<span class="member-status-removed">ถูกลบออกแล้ว</span>`
-      : `<span class="member-status-active">● ใช้งานอยู่</span>`;
-
-    const actionBtn = isRemoved
-      ? `<button class="restore-btn" onclick="restoreMember('${m.id}')">คืนสิทธิ์</button>`
-      : `<button class="del-member-btn" onclick="openConfirmDelete('${m.id}','${m.name}')">ลบออก</button>`;
-
-    return `<tr style="${isRemoved?'opacity:.6':''}">
+    return `<tr>
       <td>
         <div class="member-name-cell">
           <div class="member-av-sm" style="background:${COLORS[ci].bg};color:${COLORS[ci].tc}">${initials}</div>
@@ -1157,10 +1145,13 @@ function renderMemberMgr(membersData, tasksData) {
           </div>
         </div>
       </td>
-      <td><span class="task-count-badge">${mTasks.length} งาน</span></td>
-      <td><span style="color:var(--green);font-weight:600">${mDone} งาน</span></td>
-      <td>${statusBadge}</td>
-      <td>${actionBtn}</td>
+      <td>
+        <span class="task-count-badge">${mTasks.length} งาน</span>
+        <span style="font-size:11px;color:var(--green);margin-left:6px">✓${mDone}</span>
+        ${mInprog>0?`<span style="font-size:11px;color:var(--yellow);margin-left:4px">⏳${mInprog}</span>`:''}
+      </td>
+      <td><span class="member-status-active">● ใช้งานอยู่</span></td>
+      <td><button class="del-member-btn" onclick="openConfirmDelete('${m.id}','${m.name}')">🗑️ ลบออก</button></td>
     </tr>`;
   }).join('');
 }
@@ -1170,10 +1161,10 @@ function renderMemberMgr(membersData, tasksData) {
 <!-- CONFIRM DELETE MEMBER -->
 <div class="confirm-overlay" id="confirm-overlay">
   <div class="confirm-box">
-    <h3>🗑️ ลบพนักงานออกจากทีม?</h3>
+    <h3>🗑️ ลบพนักงานออกจากระบบ?</h3>
     <p id="confirm-member-name" style="font-weight:600;color:var(--text);font-size:14px"></p>
-    <p>พนักงานคนนี้จะไม่สามารถ Login เข้าระบบได้อีก</p>
-    <div class="note">✅ ข้อมูลงานที่ใส่ไว้ทั้งหมดยังคงอยู่ ไม่ถูกลบ</div>
+    <p>พนักงานคนนี้จะถูกลบออกจากระบบถาวร ไม่สามารถ Login ได้อีก</p>
+    <div class="note" style="background:var(--red-bg);border-color:var(--red-br);color:var(--red)">⚠️ การลบนี้ไม่สามารถกู้คืนได้</div>
     <div class="confirm-actions">
       <button class="confirm-cancel" onclick="closeConfirm()">ยกเลิก</button>
       <button class="confirm-delete" onclick="confirmDeleteMember()">ลบพนักงาน</button>
