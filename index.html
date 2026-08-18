@@ -1101,10 +1101,11 @@ function closeConfirm() {
 async function confirmDeleteMember() {
   if (!pendingDeleteId) return;
   const { db, ref, remove } = window._fb;
-  // ลบออกจากระบบถาวร
+  // ลบ member และ tasks ทั้งหมดออกจาก Firebase
   await remove(ref(db, `members/${pendingDeleteId}`));
+  await remove(ref(db, `tasks/${pendingDeleteId}`));
   closeConfirm();
-  showToast('ลบพนักงานออกจากระบบเรียบร้อยแล้ว');
+  showToast('ลบพนักงานและข้อมูลทั้งหมดออกจากระบบแล้ว');
 }
 
 async function restoreMember(memberId) {
@@ -1164,7 +1165,7 @@ function renderMemberMgr(membersData, tasksData) {
     <h3>🗑️ ลบพนักงานออกจากระบบ?</h3>
     <p id="confirm-member-name" style="font-weight:600;color:var(--text);font-size:14px"></p>
     <p>พนักงานคนนี้จะถูกลบออกจากระบบถาวร ไม่สามารถ Login ได้อีก</p>
-    <div class="note" style="background:var(--red-bg);border-color:var(--red-br);color:var(--red)">⚠️ การลบนี้ไม่สามารถกู้คืนได้</div>
+    <div class="note" style="background:var(--red-bg);border-color:var(--red-br);color:var(--red)">⚠️ ชื่อ ตำแหน่ง และงานทั้งหมดจะถูกลบออกจากระบบถาวร กู้คืนไม่ได้</div>
     <div class="confirm-actions">
       <button class="confirm-cancel" onclick="closeConfirm()">ยกเลิก</button>
       <button class="confirm-delete" onclick="confirmDeleteMember()">ลบพนักงาน</button>
