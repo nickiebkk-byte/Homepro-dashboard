@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Idea Workshop 2027 — HomePro</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#005B54;--teal2:#007A6E;--tealLt:#E6F4F2;
+  --navy:#0D2137;--gold:#F5A623;--goldLt:#FEF6E4;
+  --red:#D94F4F;--green:#2E9E6B;--greenLt:#E8F7F0;
+  --gray:#6B7B8D;--grayLt:#F4F6F8;--dark:#1A2B35;
+  --border:#E2E8ED;--radius:14px;--shadow:0 8px 32px rgba(0,0,0,0.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Prompt',sans-serif;background:#0D2137;color:var(--dark);min-height:100vh}
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
+
+/* ── STARS ── */
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d,3s) ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:0.08}50%{opacity:0.45}}
+
+/* ══ LOGIN ══ */
+#screen-login{background:linear-gradient(160deg,var(--navy) 0%,#0a3d35 100%);align-items:center;justify-content:center;padding:32px 16px}
+.login-card{position:relative;z-index:1;background:white;border-radius:20px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.3)}
+.login-top{background:linear-gradient(135deg,var(--navy),var(--teal2));padding:32px 28px 24px;text-align:center}
+.lt-badge{display:inline-block;background:rgba(245,166,35,0.2);border:1px solid var(--gold);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:99px;margin-bottom:14px}
+.login-top h1{font-size:24px;font-weight:800;color:white;line-height:1.2;margin-bottom:6px}
+.login-top p{font-size:12px;color:rgba(255,255,255,0.5)}
+.login-body{padding:28px}
+.login-label{font-size:12px;font-weight:700;color:var(--gray);margin-bottom:10px;letter-spacing:0.5px;text-transform:uppercase}
+.role-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.role-btn{width:100%;padding:13px 16px;border-radius:10px;border:1.5px solid var(--border);background:white;font-family:'Prompt',sans-serif;font-size:14px;font-weight:600;color:var(--dark);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:12px;text-align:left}
+.role-btn:hover{border-color:var(--teal);background:var(--tealLt);color:var(--teal)}
+.role-btn.selected{border-color:var(--teal);background:var(--teal);color:white}
+.role-btn.nick-btn:hover{border-color:var(--gold);background:var(--goldLt);color:#8B6000}
+.role-btn.nick-btn.selected{border-color:var(--gold);background:var(--gold);color:var(--navy)}
+.role-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:rgba(0,0,0,0.06)}
+.role-btn.selected .role-icon{background:rgba(255,255,255,0.2)}
+.role-sub{font-size:11px;font-weight:400;opacity:0.7;margin-top:1px}
+.divider{height:1px;background:var(--border);margin:8px 0 16px}
+.btn-enter{width:100%;padding:14px;border-radius:10px;border:none;background:var(--teal);color:white;font-family:'Prompt',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.btn-enter:hover{background:var(--teal2)}
+.btn-enter:disabled{background:var(--border);color:var(--gray);cursor:not-allowed}
+.btn-enter.gold{background:var(--gold);color:var(--navy)}
+
+/* ══ TOPBAR ══ */
+.topbar{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.tb-dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.topbar-brand span{font-size:14px;font-weight:700;color:white}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-user{font-size:12px;color:rgba(255,255,255,0.5)}
+.topbar-user strong{color:var(--gold)}
+.btn-sm{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Prompt',sans-serif;transition:all 0.2s}
+.btn-sm-teal{background:var(--teal);color:white}
+.btn-sm-ghost{background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2)}
+.btn-sm-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ══ BOARD ══ */
+#screen-board{background:#F0F3F5}
+.board-content{padding:24px;max-width:1100px;margin:0 auto}
+.section-title{font-size:13px;font-weight:700;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.4)}}
+
+/* Nick stats */
+.nick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:white;border-radius:12px;padding:16px;border:1.5px solid var(--border);text-align:center}
+.stat-val{font-size:28px;font-weight:800;color:var(--teal)}
+.stat-label{font-size:11px;color:var(--gray);margin-top:3px}
+
+/* Leaderboard */
+.leaderboard{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+.lb-row{background:white;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;border:1.5px solid var(--border);transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.lb-row.rank-1{border-color:#FFD700;background:linear-gradient(90deg,#FFFBEA,white)}
+.lb-row.rank-2{border-color:#C0C0C0;background:linear-gradient(90deg,#F8F8F8,white)}
+.lb-row.rank-3{border-color:#CD7F32;background:linear-gradient(90deg,#FFF5EE,white)}
+.lb-row.me{border-color:var(--teal);background:var(--tealLt)}
+.lb-rank{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;background:var(--grayLt);color:var(--gray)}
+.lb-row.rank-1 .lb-rank{background:#FFD700;color:white;font-size:18px}
+.lb-row.rank-2 .lb-rank{background:#A8A8A8;color:white;font-size:16px}
+.lb-row.rank-3 .lb-rank{background:#CD7F32;color:white}
+.lb-info{flex:1}
+.lb-name{font-size:14px;font-weight:700;color:var(--dark)}
+.lb-div{font-size:11px;color:var(--gray);margin-top:1px}
+.lb-status{font-size:12px;padding:3px 10px;border-radius:99px;font-weight:700;flex-shrink:0}
+.status-done{background:var(--greenLt);color:var(--green)}
+.status-wip{background:#FEF3DC;color:#B87A00}
+.status-none{background:var(--grayLt);color:var(--gray)}
+.me-tag{background:var(--teal);color:white;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;margin-left:6px}
+
+/* Team grid */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:28px}
+.team-card{background:white;border-radius:var(--radius);padding:18px;border:1.5px solid var(--border);transition:all 0.3s;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.team-card.me-card{border-color:var(--teal);background:var(--tealLt)}
+.team-card.done-card{border-color:var(--green)}
+.tc-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.tc-avatar{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--grayLt);flex-shrink:0}
+.tc-name{font-size:14px;font-weight:700;color:var(--dark)}
+.tc-div{font-size:11px;color:var(--gray);margin-top:2px}
+.tc-step-wrap{margin-bottom:10px}
+.tc-step-label{font-size:11px;color:var(--gray);margin-bottom:6px}
+.step-dots{display:flex;gap:5px}
+.step-dot{width:28px;height:8px;border-radius:99px;background:var(--grayLt);transition:all 0.3s}
+.step-dot.done{background:var(--green)}
+.step-dot.current{background:var(--gold)}
+.tc-prog-bg{height:6px;background:var(--grayLt);border-radius:99px;overflow:hidden;margin-bottom:8px}
+.tc-prog-fill{height:100%;border-radius:99px;transition:width 0.8s ease}
+.tc-status-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px}
+.btn-start{width:100%;margin-top:10px;padding:10px;border-radius:8px;border:none;background:var(--teal);color:white;font-family:'Prompt',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.btn-start:hover{background:var(--teal2)}
+
+/* Nick canvas viewer */
+.canvas-viewer{background:white;border-radius:var(--radius);padding:20px;border:1.5px solid var(--border);margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.cv-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.cv-toggle{margin-left:auto;font-size:12px;color:var(--teal);font-weight:700;cursor:pointer;background:var(--tealLt);padding:5px 12px;border-radius:8px;border:none;font-family:'Prompt',sans-serif}
+.cv-body{display:none}
+.cv-body.open{display:block}
+.cv-big-idea{background:linear-gradient(135deg,var(--navy),var(--teal2));border-radius:10px;padding:18px 20px;margin-bottom:12px;color:white}
+.cv-bi-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.cv-bi-text{font-size:16px;font-weight:700;line-height:1.4}
+.cv-theme{display:inline-block;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;padding:3px 12px;border-radius:99px;margin-top:8px}
+.cv-pillars{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.cv-pillar{background:var(--grayLt);border-radius:8px;padding:12px}
+.cv-pillar-title{font-size:12px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.cv-pillar-desc{font-size:11px;color:var(--gray);line-height:1.5}
+.cv-story{background:var(--tealLt);border-left:3px solid var(--teal);border-radius:6px;padding:12px 14px;margin-bottom:10px}
+.cv-story-label{font-size:10px;font-weight:700;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.cv-story-text{font-size:12px;color:var(--dark);line-height:1.65;font-style:italic}
+.cv-slogan{text-align:center;background:var(--navy);border-radius:8px;padding:12px;color:white;font-size:14px;font-weight:700}
+.cv-slogan span{color:var(--gold)}
+
+/* ══ WORKSHOP ══ */
+#screen-workshop{background:#0D2137}
+.workshop-shell{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 16px 60px}
+.w-header{width:100%;max-width:780px;padding:32px 0 24px;text-align:center}
+.w-badge{display:inline-block;background:rgba(245,166,35,0.2);border:1px solid var(--gold);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:99px;margin-bottom:14px}
+.w-header h1{font-size:clamp(26px,5vw,42px);font-weight:800;color:white;line-height:1.15;margin-bottom:8px}
+.w-header h1 span{color:var(--gold)}
+.w-header p{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.7}
+.prog-wrap{width:100%;max-width:780px;margin-bottom:24px}
+.prog-steps{display:flex;gap:0;background:rgba(255,255,255,0.06);border-radius:99px;padding:4px;margin-bottom:8px}
+.prog-step{flex:1;text-align:center;font-size:11px;font-weight:600;padding:7px 4px;border-radius:99px;color:rgba(255,255,255,0.35);transition:all 0.3s}
+.prog-step.active{background:var(--teal);color:white}
+.prog-step.done{background:rgba(46,158,107,0.3);color:#7DE0B0}
+.prog-bar{height:3px;background:rgba(255,255,255,0.1);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--gold));border-radius:99px;transition:width 0.5s ease}
+
+/* Cards */
+.w-card{width:100%;max-width:780px;background:white;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:none;animation:rise 0.4s ease}
+.w-card.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.card-top{padding:24px 28px 20px;border-bottom:1px solid var(--border)}
+.card-top .eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:7px}
+.card-top h2{font-size:20px;font-weight:700;color:var(--dark);line-height:1.3;margin-bottom:6px}
+.why-box{background:var(--grayLt);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:12px;color:var(--gray);line-height:1.6}
+.why-box strong{color:var(--teal)}
+.card-body{padding:22px 28px 26px}
+.ql{display:block;font-size:12px;font-weight:700;color:var(--dark);margin-bottom:7px;margin-top:18px}
+.ql:first-of-type{margin-top:0}
+input[type=text],textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;font-family:'Prompt',sans-serif;font-size:13px;color:var(--dark);padding:11px 13px;transition:border 0.2s;background:white;resize:vertical}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,91,84,0.1)}
+textarea{min-height:80px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.chip{padding:7px 14px;border-radius:99px;border:1.5px solid var(--border);font-size:12px;font-weight:500;color:var(--gray);cursor:pointer;transition:all 0.18s;background:white;user-select:none}
+.chip:hover{border-color:var(--teal);color:var(--teal)}
+.chip.selected{background:var(--teal);border-color:var(--teal);color:white;font-weight:600}
+.chip.gold.selected{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.slider-wrap{margin-top:6px}
+.slider-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.slider-row label{font-size:12px;color:var(--dark);width:150px;flex-shrink:0}
+input[type=range]{flex:1;accent-color:var(--teal);cursor:pointer}
+.slider-val{font-size:12px;font-weight:700;color:var(--teal);width:28px;text-align:right}
+.card-foot{padding:14px 28px;background:var(--grayLt);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.btn{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Prompt',sans-serif;transition:all 0.2s;display:inline-flex;align-items:center;gap:7px}
+.btn-teal{background:var(--teal);color:white}
+.btn-teal:hover{background:var(--teal2)}
+.btn-ghost{background:transparent;color:var(--gray);border:1.5px solid var(--border)}
+.btn-ghost:hover{border-color:var(--teal);color:var(--teal)}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:#e09510}
+.err-box{background:#FFF0F0;border:1.5px solid #FFBBBB;border-radius:8px;padding:11px 14px;font-size:12px;color:#A33;margin-top:10px;display:none}
+
+/* Generating */
+.generating{display:none;width:100%;max-width:780px;background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:48px 32px;text-align:center}
+.generating.active{display:block;animation:rise 0.4s ease}
+.gen-icon{font-size:44px;margin-bottom:14px;animation:spin 2s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.gen-title{font-size:17px;font-weight:700;color:var(--dark);margin-bottom:6px}
+.gen-sub{font-size:12px;color:var(--gray);margin-bottom:20px}
+.gen-dots{display:flex;justify-content:center;gap:6px}
+.gen-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);animation:bounce 1.2s ease-in-out infinite}
+.gen-dot:nth-child(2){animation-delay:.2s}
+.gen-dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:scale(0.8);opacity:0.4}40%{transform:scale(1.2);opacity:1}}
+
+/* Canvas output */
+.canvas-wrap{display:none;width:100%;max-width:780px}
+.canvas-wrap.active{display:block;animation:rise 0.4s ease}
+.canvas-hdr{padding:28px 28px 22px;color:white}
+.canvas-hdr .ch-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.canvas-hdr .ch-owner{font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:7px}
+.canvas-hdr .bi-line{font-size:clamp(17px,3vw,26px);font-weight:800;color:white;line-height:1.3;margin-bottom:12px}
+.theme-badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;padding:4px 14px;border-radius:99px}
+.canvas-body{background:white;border-radius:0 0 var(--radius) var(--radius)}
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
+.m-cell{padding:13px 14px;border-right:1px solid var(--border);text-align:center}
+.m-cell:last-child{border-right:none}
+.m-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);margin-bottom:3px}
+.m-val{font-size:15px;font-weight:800;color:var(--teal)}
+.pillars-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)}
+.p-cell{padding:16px 18px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.p-cell:nth-child(even){border-right:none}
+.p-cell.full{grid-column:1/-1;border-right:none;border-bottom:none}
+.p-cell:nth-last-child(-n+2):not(.full){border-bottom:none}
+.p-num{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px}
+.p-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:5px}
+.p-body{font-size:11px;color:var(--gray);line-height:1.6}
+.p-body ul{padding-left:13px;margin-top:4px}
+.p-body ul li{margin-bottom:2px}
+.story-box{padding:18px 20px;background:var(--tealLt);border-bottom:1px solid var(--border)}
+.story-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:6px}
+.story-text{font-size:12px;color:var(--dark);line-height:1.75;font-style:italic}
+.slogan-box{padding:20px;background:var(--navy);text-align:center;border-radius:0 0 var(--radius) var(--radius)}
+.slogan-label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:6px}
+.slogan-text{font-size:16px;font-weight:700;color:white}
+.slogan-text span{color:var(--gold)}
+.canvas-actions{padding:16px 20px;background:white;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:center;flex-wrap:wrap;border-radius:0 0 var(--radius) var(--radius)}
+
+/* Save indicator */
+.save-ind{position:fixed;bottom:20px;right:20px;background:var(--green);color:white;font-size:12px;font-weight:700;padding:8px 16px;border-radius:99px;display:none;z-index:999;animation:rise 0.3s ease}
+.save-ind.show{display:block}
+
+/* ══ SIDEBAR REFERENCE ══ */
+.workshop-layout{display:flex;gap:20px;width:100%;max-width:1060px;align-items:flex-start}
+.sidebar-ref{width:260px;flex-shrink:0;position:sticky;top:80px}
+.sidebar-ref .sr-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;overflow:hidden}
+.sr-head{background:rgba(245,166,35,0.15);border-bottom:1px solid rgba(255,255,255,0.1);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.sr-icon{font-size:22px}
+.sr-head-text .sr-role{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase}
+.sr-head-text .sr-name{font-size:13px;font-weight:700;color:white;margin-top:2px}
+.sr-body{padding:14px}
+.sr-section{margin-bottom:14px}
+.sr-section:last-child{margin-bottom:0}
+.sr-sec-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:8px}
+.sr-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+.sr-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px}
+.sr-text{font-size:11px;color:rgba(255,255,255,0.75);line-height:1.55}
+.sr-tag{display:inline-block;background:rgba(0,91,84,0.4);border:1px solid rgba(0,91,84,0.6);color:var(--tealLt);font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;margin:2px 2px 0 0}
+.sr-hint{background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.2);border-radius:8px;padding:10px 12px;margin-top:12px}
+.sr-hint p{font-size:11px;color:rgba(255,255,255,0.6);line-height:1.6}
+.sr-hint strong{color:var(--gold)}
+.workshop-main{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center}
+.workshop-main .w-card,.workshop-main .generating,.workshop-main .canvas-wrap{width:100%;max-width:100%}
+@media(max-width:860px){.workshop-layout{flex-direction:column}.sidebar-ref{width:100%;position:static}.sidebar-ref .sr-card{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ══ SCREEN: LOGIN ══ -->
+<div class="screen active" id="screen-login">
+  <div class="stars" id="stars"></div>
+  <div class="login-card">
+    <div class="login-top">
+      <div class="lt-badge">Big Idea Workshop 2027</div>
+      <h1>HomePro &<br>MegaHome</h1>
+      <p>เลือกตำแหน่งของคุณเพื่อเข้าสู่ Workshop</p>
+    </div>
+    <div class="login-body">
+      <div class="login-label">AVP Leaders</div>
+      <div class="role-grid">
+        <button class="role-btn" onclick="selectRole(this,'avp_sa','📊','AVP SA','Smart & Appliance')">
+          <div class="role-icon">📊</div><div><div>AVP SA</div><div class="role-sub">Smart & Appliance</div></div>
+        </button>
+        <button class="role-btn" onclick="selectRole(this,'avp_kc','🍳','AVP KC','Kitchen & Cabinet')">
+          <div class="role-icon">🍳</div><div><div>AVP KC</div><div class="role-sub">Kitchen & Cabinet</div></div>
+        </button>
+        <button class="role-btn" onclick="selectRole(this,'avp_ho1','🏠','AVP HO1','Home 1')">
+          <div class="role-icon">🏠</div><div><div>AVP HO1</div><div class="role-sub">Home 1</div></div>
+        </button>
+        <button class="role-btn" onclick="selectRole(this,'avp_ho2','🛋️','AVP HO2','Home 2')">
+          <div class="role-icon">🛋️</div><div><div>AVP HO2</div><div class="role-sub">Home 2</div></div>
+        </button>
+      </div>
+      <div class="login-label" style="margin-top:14px">Promotion Team</div>
+      <div class="role-grid">
+        <button class="role-btn" onclick="selectRole(this,'avp_pro_sa','🎯','AVP PRO SA','Promotion SA')">
+          <div class="role-icon">🎯</div><div><div>AVP PRO SA</div><div class="role-sub">Promotion SA</div></div>
+        </button>
+        <button class="role-btn" onclick="selectRole(this,'avp_pro_kcho','📣','AVP PRO KC HO','Promotion KC & HO')">
+          <div class="role-icon">📣</div><div><div>AVP PRO KC HO</div><div class="role-sub">Promotion KC & HO</div></div>
+        </button>
+      </div>
+      <div class="divider"></div>
+      <div class="role-grid">
+        <button class="role-btn nick-btn" onclick="selectRole(this,'nick','👑','Nick','Executive Monitor')">
+          <div class="role-icon">👑</div><div><div>Nick</div><div class="role-sub">Executive Monitor</div></div>
+        </button>
+      </div>
+      <button class="btn-enter" id="btn-enter" disabled onclick="enterApp()">เข้าสู่ระบบ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: BOARD ══ -->
+<div class="screen" id="screen-board">
+  <div class="topbar">
+    <div class="topbar-brand"><div class="tb-dot"></div><span>Big Idea Workshop 2027</span></div>
+    <div class="topbar-right">
+      <span class="topbar-user">เข้าใช้เป็น: <strong id="tb-user">—</strong></span>
+      <button class="btn-sm btn-sm-teal" id="btn-go-workshop" style="display:none" onclick="goWorkshop()">✦ เข้า Workshop →</button>
+      <button class="btn-sm btn-sm-ghost" onclick="logout()">ออกจากระบบ</button>
+    </div>
+  </div>
+  <div class="board-content">
+
+    <!-- Nick Stats -->
+    <div id="nick-stats-wrap" style="display:none;margin-bottom:24px">
+      <div class="nick-stats">
+        <div class="stat-card"><div class="stat-val" id="ns-total">6</div><div class="stat-label">สมาชิกทั้งหมด</div></div>
+        <div class="stat-card"><div class="stat-val" id="ns-done">0</div><div class="stat-label">เสร็จสมบูรณ์</div></div>
+        <div class="stat-card"><div class="stat-val" id="ns-wip">0</div><div class="stat-label">กำลังทำ</div></div>
+        <div class="stat-card"><div class="stat-val" id="ns-pending">6</div><div class="stat-label">ยังไม่เริ่ม</div></div>
+      </div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="section-title">🏆 Leaderboard <div class="live-dot"></div><span style="font-size:11px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--green)">Live</span></div>
+    <div class="leaderboard" id="leaderboard"></div>
+
+    <!-- Team Grid -->
+    <div class="section-title">📋 สถานะแต่ละคน</div>
+    <div class="team-grid" id="team-grid"></div>
+
+    <!-- Nick Canvas Viewer -->
+    <div id="nick-canvas-section" style="display:none">
+      <div class="section-title">💡 Big Idea Canvas ของทีม</div>
+      <div id="nick-canvases"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ SCREEN: WORKSHOP ══ -->
+<div class="screen" id="screen-workshop">
+  <div class="topbar">
+    <div class="topbar-brand"><div class="tb-dot"></div><span>Big Idea Workshop 2027</span></div>
+    <div class="topbar-right">
+      <span class="topbar-user"><strong id="w-user">—</strong></span>
+      <button class="btn-sm btn-sm-ghost" onclick="showBoard()">← Team Board</button>
+    </div>
+  </div>
+
+  <div class="workshop-shell">
+    <div class="w-header">
+      <div class="w-badge">✦ HomePro & MegaHome · 2027</div>
+      <h1>Big Idea<br><span>Workshop</span></h1>
+      <p>ตอบ 5 คำถาม · AI สร้าง Big Idea Canvas ให้ทันที</p>
+    </div>
+
+    <div class="prog-wrap" style="width:100%;max-width:1060px">
+      <div class="prog-steps" id="w-prog-steps">
+        <div class="prog-step active">ตัวตน</div>
+        <div class="prog-step">สถานการณ์</div>
+        <div class="prog-step">โอกาส</div>
+        <div class="prog-step">กลยุทธ์</div>
+        <div class="prog-step">ความฝัน</div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="w-prog-fill" style="width:10%"></div></div>
+    </div>
+
+    <div class="workshop-layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar-ref">
+      <div class="sr-card" id="sidebar-ref-card">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+    <!-- MAIN -->
+    <div class="workshop-main">
+
+    <!-- STEP 0 -->
+    <div class="w-card active" id="wc-0">
+      <div class="card-top">
+        <div class="eyebrow">STEP 1 / 5 · ตัวตน</div>
+        <h2>Division และช่องทางของคุณ</h2>
+        <div class="why-box"><strong>ทำไมถามนี้ก่อน?</strong> AI จะสร้าง Idea ที่ "ใช่" สำหรับ Division คุณโดยเฉพาะ ไม่ Generic</div>
+      </div>
+      <div class="card-body">
+        <label class="ql">Division ที่ดูแล (เลือกได้หลายข้อ)</label>
+        <div class="chips" id="chips-div">
+          <div class="chip" onclick="toggleChip(this,'chips-div')">Kitchen & Home</div>
+          <div class="chip" onclick="toggleChip(this,'chips-div')">SA (Smart & Appliance)</div>
+          <div class="chip" onclick="toggleChip(this,'chips-div')">KC (Kitchen & Cabinet)</div>
+          <div class="chip" onclick="toggleChip(this,'chips-div')">HO1 (Home 1)</div>
+          <div class="chip" onclick="toggleChip(this,'chips-div')">HO2 (Home 2)</div>
+          <div class="chip" onclick="toggleChip(this,'chips-div')">Promotion Team</div>
+          <div class="chip" onclick="toggleChip(this,'chips-div')">MegaHome / B2B</div>
+        </div>
+        <label class="ql">ช่องทางหลักที่รับผิดชอบ</label>
+        <div class="chips" id="chips-ch">
+          <div class="chip" onclick="toggleChip(this,'chips-ch')">🏬 HomePro Offline</div>
+          <div class="chip" onclick="toggleChip(this,'chips-ch')">🏪 MegaHome</div>
+          <div class="chip" onclick="toggleChip(this,'chips-ch')">💻 ECOM / Online</div>
+          <div class="chip" onclick="toggleChip(this,'chips-ch')">🛍️ Marketplace</div>
+          <div class="chip" onclick="toggleChip(this,'chips-ch')">📦 ทุก Channel</div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <span style="font-size:12px;color:var(--gray)">เลือก Division ก่อนไปต่อ</span>
+        <button class="btn btn-teal" onclick="nextStep(0)">ถัดไป →</button>
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="w-card" id="wc-1">
+      <div class="card-top">
+        <div class="eyebrow">STEP 2 / 5 · สถานการณ์</div>
+        <h2>ตอนนี้ธุรกิจของคุณอยู่ที่ไหน?</h2>
+        <div class="why-box"><strong>ทำไมถามนี้?</strong> Big Idea ที่ดีต้องแก้ปัญหาจริง ไม่ใช่แค่ฟังดูดี</div>
+      </div>
+      <div class="card-body">
+        <label class="ql">จุดแข็งที่ทำได้ดีที่สุดตอนนี้</label>
+        <textarea id="q1_strength" placeholder="เช่น ยอดขาย Kitchen โตต่อเนื่อง ทีมมีความรู้สูง Vendor แข็งแกร่ง..."></textarea>
+        <label class="ql">ปัญหาหรืออุปสรรคใหญ่ที่สุด</label>
+        <textarea id="q1_pain" placeholder="เช่น Online ยังไม่โต Marketplace กิน Margin ลูกค้าใหม่หายาก..."></textarea>
+        <label class="ql">ผลงาน 2026 เทียบกับเป้าหมาย</label>
+        <div class="chips" id="chips-perf">
+          <div class="chip gold" onclick="toggleChip(this,'chips-perf',true)">🚀 เกินเป้าทุก KPI</div>
+          <div class="chip gold" onclick="toggleChip(this,'chips-perf',true)">✅ ส่วนใหญ่ได้เป้า</div>
+          <div class="chip gold" onclick="toggleChip(this,'chips-perf',true)">⚠️ ได้บางตัว พลาดบางตัว</div>
+          <div class="chip gold" onclick="toggleChip(this,'chips-perf',true)">❌ ต่ำกว่าเป้าส่วนใหญ่</div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <button class="btn btn-ghost" onclick="prevStep(1)">← ย้อนกลับ</button>
+        <button class="btn btn-teal" onclick="nextStep(1)">ถัดไป →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="w-card" id="wc-2">
+      <div class="card-top">
+        <div class="eyebrow">STEP 3 / 5 · โอกาส</div>
+        <h2>โอกาสที่ใหญ่ที่สุดสำหรับปี 2027</h2>
+        <div class="why-box"><strong>ทำไมถามนี้?</strong> Big Idea ที่ยิ่งใหญ่ต้องคว้าโอกาสที่ใหญ่พอ</div>
+      </div>
+      <div class="card-body">
+        <label class="ql">เทรนด์ตลาดที่ใหญ่ที่สุดสำหรับ Category ของคุณ</label>
+        <div class="chips" id="chips-trend">
+          <div class="chip" onclick="toggleChip(this,'chips-trend')">🏠 Renovation Boom</div>
+          <div class="chip" onclick="toggleChip(this,'chips-trend')">🤖 Smart Home / IoT</div>
+          <div class="chip" onclick="toggleChip(this,'chips-trend')">🌿 Sustainability</div>
+          <div class="chip" onclick="toggleChip(this,'chips-trend')">📱 Live Commerce / TikTok</div>
+          <div class="chip" onclick="toggleChip(this,'chips-trend')">🏗️ B2B / Contractor</div>
+          <div class="chip" onclick="toggleChip(this,'chips-trend')">⚡ EV & Energy</div>
+          <div class="chip" onclick="toggleChip(this,'chips-trend')">🛋️ Lifestyle & Design</div>
+          <div class="chip" onclick="toggleChip(this,'chips-trend')">💳 Subscription</div>
+        </div>
+        <label class="ql">1 สิ่งที่จะเปลี่ยน Division คุณมากที่สุดในปี 2027</label>
+        <textarea id="q2_one" placeholder="เช่น สร้าง Kitchen Studio ให้เป็น Destination / ขยาย B2B Program..."></textarea>
+        <label class="ql">คู่แข่งที่กลัวที่สุดและกำลังทำอะไร</label>
+        <textarea id="q2_comp" placeholder="เช่น Global House ขยายสาขา / Lazada ดัน Flash Sale Kitchen..."></textarea>
+      </div>
+      <div class="card-foot">
+        <button class="btn btn-ghost" onclick="prevStep(2)">← ย้อนกลับ</button>
+        <button class="btn btn-teal" onclick="nextStep(2)">ถัดไป →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="w-card" id="wc-3">
+      <div class="card-top">
+        <div class="eyebrow">STEP 4 / 5 · กลยุทธ์</div>
+        <h2>คุณจะชนะด้วยอะไรในปี 2027?</h2>
+        <div class="why-box"><strong>ทำไมถามนี้?</strong> Big Idea ต้องมี Winning Logic ชัดเจน</div>
+      </div>
+      <div class="card-body">
+        <label class="ql">จะชนะด้วย (เลือก 1–2 ข้อหลัก)</label>
+        <div class="chips" id="chips-win">
+          <div class="chip" onclick="toggleChip(this,'chips-win')">📦 SKU ที่ครบกว่าคู่แข่ง</div>
+          <div class="chip" onclick="toggleChip(this,'chips-win')">🏷️ ราคาที่แข่งขันได้</div>
+          <div class="chip" onclick="toggleChip(this,'chips-win')">🛎️ Service & Installation</div>
+          <div class="chip" onclick="toggleChip(this,'chips-win')">🎯 Personalization & CRM</div>
+          <div class="chip" onclick="toggleChip(this,'chips-win')">🚀 Speed to Market</div>
+          <div class="chip" onclick="toggleChip(this,'chips-win')">💡 Innovation</div>
+          <div class="chip" onclick="toggleChip(this,'chips-win')">🤝 Vendor Partnership</div>
+          <div class="chip" onclick="toggleChip(this,'chips-win')">📱 Digital & Data</div>
+        </div>
+        <label class="ql" style="margin-top:18px">Priority ของ KPI หลัก (1=น้อย, 5=สำคัญมาก)</label>
+        <div class="slider-wrap">
+          <div class="slider-row"><label>📈 Revenue</label><input type="range" min="1" max="5" value="3" id="sl-rev" oninput="document.getElementById('sv-rev').textContent=this.value"><span class="slider-val" id="sv-rev">3</span></div>
+          <div class="slider-row"><label>💰 GP%</label><input type="range" min="1" max="5" value="3" id="sl-gp" oninput="document.getElementById('sv-gp').textContent=this.value"><span class="slider-val" id="sv-gp">3</span></div>
+          <div class="slider-row"><label>🛒 Transaction</label><input type="range" min="1" max="5" value="3" id="sl-txn" oninput="document.getElementById('sv-txn').textContent=this.value"><span class="slider-val" id="sv-txn">3</span></div>
+          <div class="slider-row"><label>🏆 Market Share</label><input type="range" min="1" max="5" value="3" id="sl-ms" oninput="document.getElementById('sv-ms').textContent=this.value"><span class="slider-val" id="sv-ms">3</span></div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <button class="btn btn-ghost" onclick="prevStep(3)">← ย้อนกลับ</button>
+        <button class="btn btn-teal" onclick="nextStep(3)">ถัดไป →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="w-card" id="wc-4">
+      <div class="card-top">
+        <div class="eyebrow">STEP 5 / 5 · ความฝัน</div>
+        <h2>ปลายปี 2027 — คุณอยากให้คนจำคุณว่าอะไร?</h2>
+        <div class="why-box"><strong>ทำไมถามนี้?</strong> Big Idea ที่ดีต้องมี Soul ไม่ใช่แค่ตัวเลข</div>
+      </div>
+      <div class="card-body">
+        <label class="ql">ถ้าทุกอย่างสำเร็จ — ทีมจะพูดว่าอะไร?</label>
+        <textarea id="q4_dream" placeholder="เช่น 'ปีนี้เราทำให้ Kitchen เป็น #1 ของ HomePro ได้จริงๆ'..."></textarea>
+        <label class="ql">คำ Theme 1 คำ สำหรับ Division ปี 2027</label>
+        <div class="chips" id="chips-theme">
+          <div class="chip" onclick="toggleChip(this,'chips-theme',true)">🚀 Growth</div>
+          <div class="chip" onclick="toggleChip(this,'chips-theme',true)">🏆 Dominance</div>
+          <div class="chip" onclick="toggleChip(this,'chips-theme',true)">🔄 Transformation</div>
+          <div class="chip" onclick="toggleChip(this,'chips-theme',true)">💡 Innovation</div>
+          <div class="chip" onclick="toggleChip(this,'chips-theme',true)">🤝 Partnership</div>
+          <div class="chip" onclick="toggleChip(this,'chips-theme',true)">⚡ Speed</div>
+          <div class="chip" onclick="toggleChip(this,'chips-theme',true)">💎 Quality</div>
+          <div class="chip" onclick="toggleChip(this,'chips-theme',true)">🌱 Sustainability</div>
+        </div>
+        <label class="ql">ข้อมูลพิเศษที่อยากให้ AI รู้ (ถ้ามี)</label>
+        <textarea id="q4_extra" placeholder="งบประมาณ ข้อจำกัด โอกาสพิเศษ..." style="min-height:60px"></textarea>
+        <div class="err-box" id="err-box">กรุณากรอกข้อมูลให้ครบก่อนสร้าง Big Idea</div>
+      </div>
+      <div class="card-foot">
+        <button class="btn btn-ghost" onclick="prevStep(4)">← ย้อนกลับ</button>
+        <button class="btn btn-gold" onclick="generateIdea()">✦ สร้าง Big Idea Canvas</button>
+      </div>
+    </div>
+
+    <!-- Generating -->
+    <div class="generating" id="generating">
+      <div class="gen-icon">✦</div>
+      <div class="gen-title">AI กำลังสร้าง Big Idea...</div>
+      <div class="gen-sub">วิเคราะห์ข้อมูล · สังเคราะห์กลยุทธ์ · สร้าง Canvas</div>
+      <div class="gen-dots"><div class="gen-dot"></div><div class="gen-dot"></div><div class="gen-dot"></div></div>
+    </div>
+
+    <!-- Canvas Output -->
+    <div class="canvas-wrap" id="canvas-wrap"></div>
+
+    </div><!-- /workshop-main -->
+    </div><!-- /workshop-layout -->
+  </div>
+</div>
+
+<!-- Save indicator -->
+<div class="save-ind" id="save-ind">✓ บันทึกแล้ว</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot }
+  from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyExample",
+  authDomain: "work-11e8b.firebaseapp.com",
+  projectId: "work-11e8b",
+  storageBucket: "work-11e8b.appspot.com",
+  messagingSenderId: "000000000000",
+  appId: "1:000000000000:web:000000"
+};
+
+let db;
+try {
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+} catch(e){ console.warn('Firebase init failed, using localStorage'); }
+
+// Save progress + canvas
+window._fbSave = async function(userId, data) {
+  if (!db) { lsSave(userId, data); return; }
+  try {
+    await setDoc(doc(db,'bigidea_progress',userId), { ...data, updatedAt: new Date().toISOString() }, { merge: true });
+    showSaveInd();
+  } catch(e) { lsSave(userId, data); }
+};
+
+window._fbLoad = async function(userId) {
+  if (!db) return lsLoad(userId);
+  try {
+    const snap = await getDoc(doc(db,'bigidea_progress',userId));
+    return snap.exists() ? snap.data() : null;
+  } catch(e) { return lsLoad(userId); }
+};
+
+window._fbSubscribeAll = function(cb) {
+  if (!db) { cb(lsLoadAll()); return ()=>{}; }
+  try {
+    return onSnapshot(collection(db,'bigidea_progress'), snap => {
+      const res = {};
+      snap.forEach(d => { res[d.id] = d.data(); });
+      cb(res);
+    });
+  } catch(e) { cb(lsLoadAll()); return ()=>{}; }
+};
+
+// localStorage fallback
+function lsSave(uid, data) {
+  const all = JSON.parse(localStorage.getItem('bigidea_v1')||'{}');
+  all[uid] = { ...all[uid], ...data };
+  localStorage.setItem('bigidea_v1', JSON.stringify(all));
+  showSaveInd();
+}
+function lsLoad(uid) {
+  const all = JSON.parse(localStorage.getItem('bigidea_v1')||'{}');
+  return all[uid] || null;
+}
+function lsLoadAll() {
+  return JSON.parse(localStorage.getItem('bigidea_v1')||'{}');
+}
+
+function showSaveInd() {
+  const el = document.getElementById('save-ind');
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2000);
+}
+</script>
+
+<script>
+// ── DIVISION REFERENCE DATA ──
+const DIV_DATA = {
+  avp_sa: {
+    name: 'AVP SA',
+    fullName: 'Small Appliances & Small Lover',
+    icon: '📊',
+    categories: [
+      'เครื่องใช้ไฟฟ้าขนาดเล็กในครัว — หม้อหุงข้าว กาต้มน้ำ เตาอบ ไมโครเวฟ',
+      'เครื่องใช้ไฟฟ้าในบ้าน — พัดลม เครื่องดูดฝุ่น ไดร์เป่าผม เตารีด',
+      'ร้าน Small Lover — เครื่องชงกาแฟ Coffee Accessories อุปกรณ์เสริม',
+      'การจัด In-store Demo & Workshop (กาแฟ / เครื่องใช้ไฟฟ้า)',
+      'Private Brand สินค้า Small Appliances',
+    ],
+    channels: ['HomePro Offline', 'ECOM', 'Marketplace', 'Small Lover Store'],
+    keyOpportunity: 'Smart Appliance + Coffee Culture + Private Brand Margin',
+    hints: [
+      'Small Lover คือ Differentiation ที่คู่แข่งไม่มี',
+      'Workshop / Demo สร้าง Engagement และ ATV ที่สูงกว่า',
+      'Private Brand ช่วยปกป้อง Margin จาก Marketplace Price War',
+    ],
+  },
+  avp_kc: {
+    name: 'AVP KC',
+    fullName: 'Kitchen & Cabinet (Built-in)',
+    icon: '🍳',
+    categories: [
+      'เครื่องใช้ไฟฟ้า Built-in — HOB HOOD OVEN DISHWASHER',
+      'ชุดครัว Built-in และ Compact ทุกประเภท',
+      'หน้าบาน ตู้แขวน และอุปกรณ์เสริมครัว',
+      'Sink เตาแก๊ส และ Accessories',
+      'Private Brand และทีม Kitchen Design',
+    ],
+    channels: ['HomePro Offline Showroom', 'ECOM', 'Design Consultation'],
+    keyOpportunity: 'Renovation Boom + One-stop Kitchen Solution + Design Service',
+    hints: [
+      'ทีม Kitchen Design คือจุดแข็งที่คู่แข่งทำได้ยาก',
+      'Package Deal (Design + Product + Install) เพิ่ม ATV สูงมาก',
+      'Showroom Experience เป็น Reason to Visit ที่ Online ทำไม่ได้',
+    ],
+  },
+  avp_ho1: {
+    name: 'AVP HO1',
+    fullName: 'Home Organization & Cleaning',
+    icon: '🏠',
+    categories: [
+      'สินค้าจัดเก็บทุกประเภท — ตู้ ลิ้นชัก กล่อง ชั้นวาง',
+      'อุปกรณ์แขวนติดผนัง Rail System & Wall Storage',
+      'อุปกรณ์ทำความสะอาดบ้าน — แปรง ไม้ขัด ไม้ถู',
+      'น้ำยา Daily Use — ซักผ้า ทำความสะอาดบ้าน น้ำยาปรับผ้านุ่ม',
+      'Private Brand สินค้าจัดเก็บและทำความสะอาด',
+    ],
+    channels: ['HomePro Offline', 'ECOM', 'Marketplace'],
+    keyOpportunity: 'Condo Living Trend + Subscription Cleaning + Private Brand Growth',
+    hints: [
+      'Condo เล็กลง ความต้องการ Storage Solution โตขึ้นทุกปี',
+      'น้ำยาและอุปกรณ์ทำความสะอาดคือ High-frequency Purchase → เหมาะ Subscription',
+      'Private Brand ใน Cleaning มี Margin สูงและลูกค้า Loyal',
+    ],
+  },
+  avp_ho2: {
+    name: 'AVP HO2',
+    fullName: 'Kitchen Tools, Laundry & Travel',
+    icon: '🛋️',
+    categories: [
+      'Kitchen Storage — อุปกรณ์จัดเก็บในครัว ที่วางของ กล่องข้าว',
+      'Cookware & Tableware — หม้อ กระทะ จาน ชาม แก้ว ช้อนส้อม',
+      'Laundry — กะกร้า ราวแขวน ที่ตากผ้า อุปกรณ์ซักรีด',
+      'กระดาษและสินค้าใช้แล้วทิ้งทุกประเภท',
+      'กระเป๋าเดินทางและ Travel Accessories',
+    ],
+    channels: ['HomePro Offline', 'ECOM', 'Marketplace'],
+    keyOpportunity: 'Everyday Essential + Travel Recovery + Bundle Cross-category',
+    hints: [
+      'Cookware + Tableware เหมาะ Bundle กับ AVP KC (ครัวครบเซ็ต)',
+      'กระเป๋าเดินทางโตตามการท่องเที่ยว Post-COVID',
+      'กระดาษและ Laundry คือ High-frequency → ดึง Traffic สม่ำเสมอ',
+    ],
+  },
+  avp_pro_sa: {
+    name: 'AVP PRO SA',
+    fullName: 'Promotion — Small Appliances',
+    icon: '🎯',
+    categories: [
+      'วางแผนและจัด Promotion ทุกรูปแบบสำหรับ Small Appliances',
+      'In-store Activity — Display, Demo, Event ในสาขา',
+      'Online Promotion — Campaign บน ECOM และ Marketplace',
+      'Seasonal Campaign — ไฮไลท์สินค้าตามเทศกาลและ Trend',
+      'ประสานงาน Vendor Co-invest สำหรับ Promotional Activity',
+    ],
+    channels: ['HomePro Offline (In-store)', 'ECOM', 'Marketplace', 'Social Media'],
+    keyOpportunity: 'Live Commerce + In-store Experience + Data-driven Campaign',
+    hints: [
+      'In-store Demo ของ Small Lover สร้าง Conversion สูงกว่า Online',
+      'Live Commerce บน TikTok/Shopee เหมาะมากสำหรับ Demo สินค้า',
+      'วัดผล Campaign ด้วย Data — ปรับแผนได้เร็วกว่าคู่แข่ง',
+    ],
+  },
+  avp_pro_kcho: {
+    name: 'AVP PRO KC HO',
+    fullName: 'Promotion — Kitchen & Home',
+    icon: '📣',
+    categories: [
+      'วางแผนและจัด Promotion ทุกรูปแบบสำหรับ KC และ HO ทั้งหมด',
+      'In-store Campaign — Planogram, Display, In-store Event',
+      'Online Promotion — ECOM Campaign และ Marketplace',
+      'Bundle & Package Campaign ข้าม Category (KC + HO)',
+      'ประสานงาน Vendor สำหรับ Co-invest และ Joint Campaign',
+    ],
+    channels: ['HomePro Offline (In-store)', 'ECOM', 'Marketplace', 'Social Media'],
+    keyOpportunity: 'Cross-category Bundle + Renovation Season Campaign + Digital Promotion',
+    hints: [
+      'Bundle KC + HO (ครัวครบเซ็ต) เพิ่ม ATV ได้หลายเท่า',
+      'Renovation Season (Q3) คือช่วงทอง ต้องเตรียม Campaign ล่วงหน้า',
+      'Online + Offline เชื่อมกันทำให้ Campaign มี Impact มากกว่าทำแยก',
+    ],
+  },
+};
+
+// ── TEAM ──
+const TEAM = [
+  {id:'avp_sa',     label:'AVP SA',        icon:'📊', div:'Smart & Appliance'},
+  {id:'avp_kc',     label:'AVP KC',        icon:'🍳', div:'Kitchen & Cabinet'},
+  {id:'avp_ho1',    label:'AVP HO1',       icon:'🏠', div:'Home 1'},
+  {id:'avp_ho2',    label:'AVP HO2',       icon:'🛋️', div:'Home 2'},
+  {id:'avp_pro_sa', label:'AVP PRO SA',    icon:'🎯', div:'Promotion SA'},
+  {id:'avp_pro_kcho',label:'AVP PRO KC HO',icon:'📣', div:'Promotion KC & HO'},
+];
+
+// ── STATE ──
+let currentUser = null;
+let currentStep = 0;
+let allData = {};
+let unsubscribe = null;
+let userSavedCanvas = null;
+
+// ── STARS ──
+(function(){
+  const c = document.getElementById('stars');
+  for(let i=0;i<55;i++){
+    const s=document.createElement('div'); s.className='star';
+    const sz=Math.random()*2+0.8;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
+    c.appendChild(s);
+  }
+})();
+
+// ── LOGIN ──
+function selectRole(btn, id, icon, label, div) {
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  window._sel = {id, icon, label, div};
+  const eb = document.getElementById('btn-enter');
+  eb.disabled = false;
+  eb.textContent = `เข้าสู่ระบบ — ${label} →`;
+  eb.className = id==='nick' ? 'btn-enter gold' : 'btn-enter';
+}
+
+async function enterApp() {
+  if (!window._sel) return;
+  currentUser = window._sel;
+  await waitFb();
+  if (currentUser.id !== 'nick') {
+    const saved = await window._fbLoad(currentUser.id);
+    if (saved) userSavedCanvas = saved.canvas || null;
+  }
+  showBoard();
+}
+
+async function waitFb() {
+  let t=0;
+  while(!window._fbLoad && t<20){ await new Promise(r=>setTimeout(r,200)); t++; }
+}
+
+function logout() {
+  if (unsubscribe) unsubscribe();
+  currentUser = null; userSavedCanvas = null;
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'));
+  const eb = document.getElementById('btn-enter');
+  eb.disabled=true; eb.textContent='เข้าสู่ระบบ →'; eb.className='btn-enter';
+  showScreen('screen-login');
+}
+
+// ── SCREENS ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── BOARD ──
+function showBoard() {
+  showScreen('screen-board');
+  document.getElementById('tb-user').textContent = currentUser.label;
+  const isNick = currentUser.id === 'nick';
+  document.getElementById('btn-go-workshop').style.display = isNick ? 'none' : 'block';
+  document.getElementById('nick-stats-wrap').style.display = isNick ? 'block' : 'none';
+  document.getElementById('nick-canvas-section').style.display = isNick ? 'block' : 'none';
+
+  if (unsubscribe) unsubscribe();
+  if (window._fbSubscribeAll) {
+    unsubscribe = window._fbSubscribeAll(data => { allData = data; renderBoard(); });
+  } else {
+    setTimeout(()=>{ if(window._fbLoad) renderBoard(); }, 600);
+  }
+}
+
+function getStatus(data) {
+  if (!data) return 'none';
+  if (data.canvas) return 'done';
+  if (data.step > 0) return 'wip';
+  return 'none';
+}
+
+function getStep(data) { return data ? (data.step||0) : 0; }
+
+function renderBoard() {
+  const medals = ['🥇','🥈','🥉'];
+  const sorted = TEAM.map(m => ({
+    ...m,
+    data: allData[m.id]||null,
+    status: getStatus(allData[m.id]),
+    step: getStep(allData[m.id]),
+  })).sort((a,b)=>{
+    const rank = {done:3, wip:2, none:1};
+    if (rank[b.status] !== rank[a.status]) return rank[b.status]-rank[a.status];
+    return b.step - a.step;
+  });
+
+  // Nick stats
+  if (currentUser.id === 'nick') {
+    const done = sorted.filter(m=>m.status==='done').length;
+    const wip  = sorted.filter(m=>m.status==='wip').length;
+    const pend = sorted.filter(m=>m.status==='none').length;
+    document.getElementById('ns-done').textContent = done;
+    document.getElementById('ns-wip').textContent  = wip;
+    document.getElementById('ns-pending').textContent = pend;
+  }
+
+  // Leaderboard
+  const lb = document.getElementById('leaderboard');
+  lb.innerHTML = sorted.map((m,i) => {
+    const isMe = currentUser && m.id === currentUser.id;
+    const rankCls = i<3 ? `rank-${i+1}` : '';
+    const pct = m.status==='done' ? 100 : m.status==='wip' ? Math.round(m.step/5*100) : 0;
+    const statusHtml = m.status==='done'
+      ? '<span class="lb-status status-done">✓ เสร็จแล้ว</span>'
+      : m.status==='wip'
+      ? `<span class="lb-status status-wip">Step ${m.step}/5</span>`
+      : '<span class="lb-status status-none">ยังไม่เริ่ม</span>';
+    return `
+      <div class="lb-row ${rankCls} ${isMe?'me':''}">
+        <div class="lb-rank">${i<3?medals[i]:i+1}</div>
+        <div class="lb-info">
+          <div class="lb-name">${m.icon} ${m.label}${isMe?'<span class="me-tag">คุณ</span>':''}</div>
+          <div class="lb-div">${m.div}</div>
+        </div>
+        ${statusHtml}
+      </div>`;
+  }).join('');
+
+  // Team grid
+  const grid = document.getElementById('team-grid');
+  grid.innerHTML = sorted.map(m => {
+    const isMe = currentUser && m.id === currentUser.id;
+    const pct = m.status==='done' ? 100 : Math.round(m.step/5*100);
+    const fillColor = m.status==='done' ? 'var(--green)' : m.status==='wip' ? 'var(--gold)' : 'var(--grayLt)';
+    const dots = [0,1,2,3,4].map(i=>{
+      const cls = m.step > i+1 || m.status==='done' ? 'done' : m.step===i+1 ? 'current' : '';
+      return `<div class="step-dot ${cls}"></div>`;
+    }).join('');
+    const badgeHtml = m.status==='done'
+      ? '<span class="tc-status-badge" style="background:var(--greenLt);color:var(--green)">✓ Canvas พร้อมแล้ว</span>'
+      : m.status==='wip'
+      ? `<span class="tc-status-badge" style="background:#FEF3DC;color:#B87A00">กำลังทำ Step ${m.step}/5</span>`
+      : '<span class="tc-status-badge" style="background:var(--grayLt);color:var(--gray)">ยังไม่เริ่ม</span>';
+    return `
+      <div class="team-card ${isMe?'me-card':''} ${m.status==='done'?'done-card':''}">
+        <div class="tc-head">
+          <div class="tc-avatar">${m.icon}</div>
+          <div>
+            <div class="tc-name">${m.label}${isMe?'<span class="me-tag">คุณ</span>':''}</div>
+            <div class="tc-div">${m.div}</div>
+          </div>
+        </div>
+        <div class="tc-step-wrap">
+          <div class="tc-step-label">Progress (5 Steps)</div>
+          <div class="step-dots">${dots}</div>
+        </div>
+        <div class="tc-prog-bg"><div class="tc-prog-fill" style="width:${pct}%;background:${fillColor}"></div></div>
+        <div style="margin-top:8px">${badgeHtml}</div>
+        ${isMe ? '<button class="btn-start" onclick="goWorkshop()">'+( m.status==='done' ? '✦ ดู Canvas ของฉัน' : '✦ ไปทำ Workshop' )+'</button>' : ''}
+      </div>`;
+  }).join('');
+
+  // Nick canvases
+  if (currentUser.id === 'nick') {
+    const nc = document.getElementById('nick-canvases');
+    const withCanvas = TEAM.filter(m => allData[m.id] && allData[m.id].canvas);
+    if (withCanvas.length === 0) {
+      nc.innerHTML = '<div style="background:white;border-radius:12px;padding:24px;text-align:center;color:var(--gray);border:1.5px solid var(--border)">ยังไม่มีสมาชิกคนไหน Generate Canvas เสร็จ</div>';
+    } else {
+      nc.innerHTML = withCanvas.map(m => {
+        const d = allData[m.id];
+        const r = d.canvas;
+        const pillarsHtml = (r.pillars||[]).slice(0,4).map((p,i)=>`
+          <div class="cv-pillar">
+            <div class="cv-pillar-title">${p.emoji||''} ${p.title}</div>
+            <div class="cv-pillar-desc">${p.desc}</div>
+          </div>`).join('');
+        let slogan = r.slogan||'';
+        if (r.sloganHighlight) slogan = slogan.replace(r.sloganHighlight,`<span>${r.sloganHighlight}</span>`);
+        return `
+          <div class="canvas-viewer">
+            <div class="cv-head">
+              <span style="font-size:20px">${m.icon}</span>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--dark)">${m.label}</div>
+                <div style="font-size:11px;color:var(--gray)">${m.div}</div>
+              </div>
+              <button class="cv-toggle" onclick="toggleCanvas(this)">ดู Canvas ▾</button>
+            </div>
+            <div class="cv-body">
+              <div class="cv-big-idea">
+                <div class="cv-bi-label">Big Idea 2027</div>
+                <div class="cv-bi-text">"${r.bigIdeaLine||''}"</div>
+                <div class="cv-theme">✦ ${r.theme||''} · ${r.oneLiner||''}</div>
+              </div>
+              <div class="cv-pillars">${pillarsHtml}</div>
+              <div class="cv-story">
+                <div class="cv-story-label">✦ ภาพสำเร็จปลายปี 2027</div>
+                <div class="cv-story-text">${r.story||''}</div>
+              </div>
+              <div class="cv-slogan">${slogan}</div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+  }
+}
+
+function toggleCanvas(btn) {
+  const body = btn.closest('.canvas-viewer').querySelector('.cv-body');
+  body.classList.toggle('open');
+  btn.textContent = body.classList.contains('open') ? 'ซ่อน ▴' : 'ดู Canvas ▾';
+}
+
+// ── SIDEBAR RENDER ──
+function renderSidebar() {
+  const d = DIV_DATA[currentUser.id];
+  if (!d) { document.getElementById('sidebar-ref-card').innerHTML=''; return; }
+  const catsHtml = d.categories.map(c=>`<div class="sr-item"><div class="sr-dot"></div><div class="sr-text">${c}</div></div>`).join('');
+  const hintsHtml = d.hints.map(h=>`<div class="sr-item"><div class="sr-dot" style="background:rgba(255,255,255,0.4)"></div><div class="sr-text" style="color:rgba(255,255,255,0.6)">${h}</div></div>`).join('');
+  const chHtml = d.channels.map(c=>`<span class="sr-tag">${c}</span>`).join('');
+  document.getElementById('sidebar-ref-card').innerHTML = `
+    <div class="sr-head">
+      <div class="sr-icon">${d.icon}</div>
+      <div class="sr-head-text">
+        <div class="sr-role">${d.name}</div>
+        <div class="sr-name">${d.fullName}</div>
+      </div>
+    </div>
+    <div class="sr-body">
+      <div class="sr-section">
+        <div class="sr-sec-title">สินค้าที่ดูแล</div>
+        ${catsHtml}
+      </div>
+      <div class="sr-section">
+        <div class="sr-sec-title">ช่องทาง</div>
+        <div style="margin-top:4px">${chHtml}</div>
+      </div>
+      <div class="sr-section">
+        <div class="sr-sec-title">โอกาสหลัก</div>
+        <div class="sr-item"><div class="sr-dot" style="background:var(--gold)"></div><div class="sr-text" style="color:var(--gold);font-weight:600">${d.keyOpportunity}</div></div>
+      </div>
+      <div class="sr-hint">
+        <div class="sr-sec-title" style="margin-bottom:6px">💡 Tips สำหรับ Division คุณ</div>
+        ${hintsHtml}
+      </div>
+    </div>
+  `;
+}
+
+// ── WORKSHOP ──
+function goWorkshop() {
+  if (!currentUser || currentUser.id==='nick') return;
+  showScreen('screen-workshop');
+  document.getElementById('w-user').textContent = currentUser.label;
+  renderSidebar();
+  // If already done, show canvas
+  if (userSavedCanvas) {
+    showSavedCanvas(userSavedCanvas);
+  } else {
+    currentStep = 0;
+    renderStep();
+  }
+}
+
+function showSavedCanvas(r) {
+  document.querySelectorAll('.w-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('generating').classList.remove('active');
+  renderCanvasOutput(currentUser, r);
+}
+
+// ── STEP NAV ──
+function renderStep() {
+  for(let i=0;i<5;i++){
+    document.getElementById(`wc-${i}`).classList.toggle('active', i===currentStep);
+  }
+  document.querySelectorAll('.prog-step').forEach((s,i)=>{
+    s.classList.remove('active','done');
+    if(i<currentStep) s.classList.add('done');
+    else if(i===currentStep) s.classList.add('active');
+  });
+  document.getElementById('w-prog-fill').style.width = ((currentStep+1)/5*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+  // Save step progress
+  if (window._fbSave && currentUser) {
+    window._fbSave(currentUser.id, { step: currentStep+1, role: currentUser.id, label: currentUser.label });
+  }
+}
+
+function nextStep(from) {
+  if (from===0 && !getChips('chips-div')) { alert('กรุณาเลือก Division ก่อนครับ'); return; }
+  if (from < 4) { currentStep = from+1; renderStep(); }
+}
+function prevStep(from) { if(from>0){ currentStep=from-1; renderStep(); } }
+
+// ── CHIPS ──
+function toggleChip(el, groupId, single=false) {
+  if (single) document.querySelectorAll('#'+groupId+' .chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.toggle('selected');
+}
+function getChips(groupId) {
+  return [...document.querySelectorAll('#'+groupId+' .chip.selected')].map(c=>c.textContent.trim()).join(', ');
+}
+
+// ── GENERATE ──
+function collectData() {
+  return {
+    division: getChips('chips-div'),
+    channels: getChips('chips-ch'),
+    strength: document.getElementById('q1_strength').value.trim(),
+    pain:     document.getElementById('q1_pain').value.trim(),
+    perf:     getChips('chips-perf'),
+    trends:   getChips('chips-trend'),
+    onething: document.getElementById('q2_one').value.trim(),
+    competitor: document.getElementById('q2_comp').value.trim(),
+    winby:    getChips('chips-win'),
+    revPri:   document.getElementById('sl-rev').value,
+    gpPri:    document.getElementById('sl-gp').value,
+    txnPri:   document.getElementById('sl-txn').value,
+    msPri:    document.getElementById('sl-ms').value,
+    dream:    document.getElementById('q4_dream').value.trim(),
+    theme:    getChips('chips-theme'),
+    extra:    document.getElementById('q4_extra').value.trim(),
+  };
+}
+
+function buildPrompt(d) {
+  const ref = DIV_DATA[currentUser.id];
+  const divContext = ref ? `
+ข้อมูล Division อ้างอิง (ใช้เป็นบริบทหลักในการสร้าง Big Idea):
+- Division: ${ref.fullName}
+- สินค้าที่ดูแล: ${ref.categories.join(' / ')}
+- ช่องทาง: ${ref.channels.join(', ')}
+- โอกาสหลักของ Division: ${ref.keyOpportunity}
+` : '';
+
+  return `คุณเป็น Senior Strategy Consultant เชี่ยวชาญธุรกิจค้าปลีก Home Improvement ไทย
+${divContext}
+ข้อมูลจาก ${currentUser.label} ที่กรอกเพิ่มเติม:
+- จุดแข็ง: ${d.strength||'ไม่ระบุ'}
+- ปัญหา: ${d.pain||'ไม่ระบุ'}
+- ผลงาน 2026: ${d.perf||'ไม่ระบุ'}
+- เทรนด์ที่จับตา: ${d.trends||'ไม่ระบุ'}
+- 1 สิ่งที่จะเปลี่ยน Division: ${d.onething||'ไม่ระบุ'}
+- คู่แข่งที่กังวล: ${d.competitor||'ไม่ระบุ'}
+- จะชนะด้วย: ${d.winby||'ไม่ระบุ'}
+- Priority KPI (1-5): Revenue=${d.revPri}, GP%=${d.gpPri}, Transaction=${d.txnPri}, Market Share=${d.msPri}
+- ความฝันปลายปี 2027: ${d.dream||'ไม่ระบุ'}
+- Theme: ${d.theme||'ไม่ระบุ'}
+- ข้อมูลพิเศษ: ${d.extra||'ไม่มี'}
+
+บริบทบริษัท: HomePro & MegaHome ค้าปลีก Home Improvement ไทย แข่งกับ Global House, Thai Watsadu, IKEA, Lazada, Shopee, TikTok Shop
+
+สร้าง Big Idea Canvas ที่สะท้อนสินค้าและหน้าที่จริงของ Division นี้โดยเฉพาะ ไม่ใช่ Generic
+ตอบใน JSON เท่านั้น ไม่มี text อื่น:
+{"bigIdeaLine":"ประโยค Big Idea 1 ประโยค","theme":"Theme 1 คำ","oneLiner":"One-liner ≤12 คำ","pillars":[{"emoji":"","title":"","desc":"2-3 ประโยค","actions":["","",""]}],"metrics":{"revenue":"","gp":"","transaction":"","marketShare":""},"story":"3-4 ประโยค","slogan":"≤8 คำ","sloganHighlight":"1-2 คำ"}
+
+สร้าง 5 Pillars ที่ตรงกับ Category และโอกาสของ ${ref ? ref.fullName : currentUser.label} จริงๆ`;
+}
+
+async function generateIdea() {
+  const d = collectData();
+  if (!d.division) { document.getElementById('err-box').style.display='block'; return; }
+  document.getElementById('err-box').style.display='none';
+  document.querySelectorAll('.w-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('generating').classList.add('active');
+  document.getElementById('w-prog-fill').style.width='100%';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1800, messages:[{role:'user',content:buildPrompt(d)}] })
+    });
+    const data = await res.json();
+    let raw = data.content.map(b=>b.text||'').join('');
+    raw = raw.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
+    const s = raw.indexOf('{'), e = raw.lastIndexOf('}');
+    if(s>-1&&e>-1) raw = raw.slice(s,e+1);
+    raw = raw.replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/,\s*([}\]])/g,'$1');
+    const result = JSON.parse(raw);
+
+    // Save canvas to Firebase
+    if (window._fbSave && currentUser) {
+      await window._fbSave(currentUser.id, {
+        canvas: result, step: 5, role: currentUser.id,
+        label: currentUser.label, div: currentUser.div, completedAt: new Date().toISOString()
+      });
+    }
+    userSavedCanvas = result;
+    document.getElementById('generating').classList.remove('active');
+    renderCanvasOutput(currentUser, result);
+  } catch(e) {
+    document.getElementById('generating').classList.remove('active');
+    document.getElementById(`wc-4`).classList.add('active');
+    document.getElementById('err-box').textContent='เกิดข้อผิดพลาด: '+e.message+' — กรุณาลองใหม่';
+    document.getElementById('err-box').style.display='block';
+  }
+}
+
+function renderCanvasOutput(user, r) {
+  const pillarsHtml = (r.pillars||[]).map((p,i)=>`
+    <div class="p-cell ${r.pillars.length===5&&i===4?'full':''}">
+      <div class="p-num">PILLAR ${i+1}</div>
+      <div class="p-title">${p.emoji||''} ${p.title}</div>
+      <div class="p-body">${p.desc}<ul>${(p.actions||[]).map(a=>`<li>${a}</li>`).join('')}</ul></div>
+    </div>`).join('');
+
+  let slogan = r.slogan||'';
+  if (r.sloganHighlight) slogan = slogan.replace(r.sloganHighlight,`<span>${r.sloganHighlight}</span>`);
+
+  const wrap = document.getElementById('canvas-wrap');
+  wrap.innerHTML = `
+    <div style="width:100%;max-width:780px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:12px;color:rgba(255,255,255,0.4)">${user.label} · Big Idea Canvas 2027</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost" style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.2);font-size:12px;padding:7px 14px" onclick="resetWorkshop()">↺ ทำใหม่</button>
+        <button class="btn btn-teal" style="font-size:12px;padding:7px 14px" onclick="printCanvas()">🖨️ Print</button>
+        <button class="btn btn-sm-ghost" style="color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:'Prompt',sans-serif;font-size:12px;font-weight:700" onclick="showBoard()">← Team Board</button>
+      </div>
+    </div>
+    <div id="printable" style="border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)">
+      <div class="canvas-hdr" style="background:linear-gradient(135deg,#0D2137,#007A6E)">
+        <div class="ch-label">Big Idea Canvas 2027</div>
+        <div class="ch-owner">${user.label} · ${user.div||''}</div>
+        <div class="bi-line">"${r.bigIdeaLine||''}"</div>
+        <span class="theme-badge">✦ ${r.theme||''} · ${r.oneLiner||''}</span>
+      </div>
+      <div class="canvas-body">
+        <div class="metrics-row">
+          <div class="m-cell"><div class="m-label">📈 Revenue</div><div class="m-val">${r.metrics?.revenue||'—'}</div></div>
+          <div class="m-cell"><div class="m-label">💰 GP%</div><div class="m-val">${r.metrics?.gp||'—'}</div></div>
+          <div class="m-cell"><div class="m-label">🛒 Transaction</div><div class="m-val">${r.metrics?.transaction||'—'}</div></div>
+          <div class="m-cell"><div class="m-label">🏆 Market Share</div><div class="m-val">${r.metrics?.marketShare||'—'}</div></div>
+        </div>
+        <div class="pillars-grid">${pillarsHtml}</div>
+        <div class="story-box"><div class="story-label">✦ ภาพสำเร็จปลายปี 2027</div><div class="story-text">${r.story||''}</div></div>
+        <div class="slogan-box"><div class="slogan-label">Division Slogan 2027</div><div class="slogan-text">${slogan}</div></div>
+      </div>
+    </div>`;
+  wrap.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function printCanvas() {
+  const c = document.getElementById('printable').innerHTML;
+  const w = window.open('','_blank');
+  w.document.write(`<html><head><meta charset="UTF-8"><title>Big Idea Canvas 2027</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Prompt,sans-serif;padding:20px}
+  .canvas-hdr{background:linear-gradient(135deg,#0D2137,#007A6E);border-radius:14px 14px 0 0;padding:28px;color:white}
+  .ch-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#F5A623;margin-bottom:7px}
+  .ch-owner{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:7px}
+  .bi-line{font-size:22px;font-weight:800;color:white;line-height:1.3;margin-bottom:10px}
+  .theme-badge{display:inline-block;background:#F5A623;color:#0D2137;font-size:12px;font-weight:700;padding:4px 14px;border-radius:99px}
+  .canvas-body{background:white;border:1px solid #E2E8ED;border-top:none;border-radius:0 0 14px 14px}
+  .metrics-row{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #E2E8ED}
+  .m-cell{padding:12px 14px;border-right:1px solid #E2E8ED;text-align:center}.m-cell:last-child{border-right:none}
+  .m-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6B7B8D;margin-bottom:3px}
+  .m-val{font-size:14px;font-weight:800;color:#005B54}
+  .pillars-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #E2E8ED}
+  .p-cell{padding:14px 16px;border-right:1px solid #E2E8ED;border-bottom:1px solid #E2E8ED}.p-cell:nth-child(even){border-right:none}.p-cell.full{grid-column:1/-1;border-right:none;border-bottom:none}
+  .p-num{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#6B7B8D;margin-bottom:4px}
+  .p-title{font-size:13px;font-weight:700;color:#1A2B35;margin-bottom:5px}
+  .p-body{font-size:11px;color:#6B7B8D;line-height:1.6}.p-body ul{padding-left:12px;margin-top:3px}.p-body ul li{margin-bottom:2px}
+  .story-box{padding:16px 18px;background:#E6F4F2;border-bottom:1px solid #E2E8ED}
+  .story-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#005B54;margin-bottom:5px}
+  .story-text{font-size:12px;color:#1A2B35;line-height:1.7;font-style:italic}
+  .slogan-box{padding:18px;background:#0D2137;text-align:center;border-radius:0 0 14px 14px}
+  .slogan-label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:5px}
+  .slogan-text{font-size:16px;font-weight:700;color:white}.slogan-text span{color:#F5A623}
+  @media print{body{padding:0}}</style></head><body>${c}</body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(), 600);
+}
+
+function resetWorkshop() {
+  userSavedCanvas = null;
+  document.getElementById('canvas-wrap').classList.remove('active');
+  document.getElementById('canvas-wrap').innerHTML='';
+  document.querySelectorAll('input[type=text],textarea').forEach(el=>el.value='');
+  document.querySelectorAll('.chip.selected').forEach(el=>el.classList.remove('selected'));
+  document.querySelectorAll('input[type=range]').forEach(el=>el.value=3);
+  document.querySelectorAll('.slider-val').forEach(el=>el.textContent='3');
+  currentStep=0; renderStep();
+  if (window._fbSave && currentUser) {
+    window._fbSave(currentUser.id, { canvas: null, step: 0 });
+  }
+}
+</script>
+</body>
+</html>
