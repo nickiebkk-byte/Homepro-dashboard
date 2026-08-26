@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Category Strategy Canvas 2027 — HomePro</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a4ed8;--blue2:#2563eb;--blueLt:#EFF6FF;--blueMid:#DBEAFE;
+  --or:#f5822a;--or2:#fb923c;--orLt:#FFF7ED;--orMid:#FFEDD5;
+  --navy:#0f172a;--dark:#1e293b;--mid:#475569;--gray:#94a3b8;
+  --grayLt:#f8fafc;--border:#e2e8f0;--white:#ffffff;
+  --green:#16a34a;--greenLt:#f0fdf4;--red:#dc2626;--redLt:#fef2f2;
+  --purple:#7c3aed;--purpleLt:#f5f3ff;
+  --radius:14px;--shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Prompt',sans-serif;background:var(--white);color:var(--dark);min-height:100vh}
+.screen{display:none}.screen.active{display:flex;flex-direction:column;min-height:100vh}
+
+/* LOGIN */
+#screen-login{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#1d4ed8 100%);align-items:center;justify-content:center;padding:40px 16px}
+.login-card{background:var(--white);border-radius:24px;width:100%;max-width:480px;box-shadow:0 32px 80px rgba(0,0,0,0.35);overflow:hidden}
+.login-hero{background:linear-gradient(135deg,var(--blue) 0%,var(--or) 100%);padding:32px 32px 24px;text-align:center}
+.login-hero .badge{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:white;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:14px}
+.login-hero h1{font-size:24px;font-weight:900;color:white;line-height:1.2;margin-bottom:6px}
+.login-hero p{font-size:13px;color:rgba(255,255,255,0.7)}
+.login-body{padding:28px}
+.login-lbl{font-size:11px;font-weight:800;color:var(--gray);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.role-grid{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+.role-btn{width:100%;padding:12px 16px;border-radius:12px;border:2px solid var(--border);background:var(--white);font-family:'Prompt',sans-serif;font-size:13px;font-weight:600;color:var(--dark);cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:12px;text-align:left}
+.role-btn:hover{border-color:var(--blue);background:var(--blueLt);color:var(--blue)}
+.role-btn.selected{border-color:var(--blue);background:var(--blue);color:white}
+.role-btn.nick-mon:hover{border-color:var(--purple);background:var(--purpleLt);color:var(--purple)}
+.role-btn.nick-mon.selected{border-color:var(--purple);background:var(--purple);color:white}
+.role-btn.nick-svp:hover{border-color:var(--or);background:var(--orLt);color:var(--or)}
+.role-btn.nick-svp.selected{border-color:var(--or);background:var(--or);color:white}
+.role-icon{width:36px;height:36px;border-radius:9px;background:var(--grayLt);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.role-btn.selected .role-icon{background:rgba(255,255,255,0.2)}
+.role-sub{font-size:11px;font-weight:400;opacity:.75;margin-top:1px}
+.hr{height:1px;background:var(--border);margin:12px 0}
+.btn-login{width:100%;padding:15px;border-radius:12px;border:none;background:var(--blue);color:white;font-family:'Prompt',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .18s;margin-top:4px}
+.btn-login:disabled{background:var(--border);color:var(--gray);cursor:not-allowed}
+.btn-login:not(:disabled):hover{transform:translateY(-1px)}
+.btn-login.or{background:var(--or)}.btn-login.purple{background:var(--purple)}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,0.2)}
+.tb-left{display:flex;align-items:center;gap:10px}
+.tb-logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--or));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:white}
+.tb-title{font-size:13px;font-weight:700;color:white}
+.tb-badge{font-size:10px;font-weight:800;padding:3px 10px;border-radius:99px;letter-spacing:1px;text-transform:uppercase}
+.tb-badge.blue{background:var(--blue);color:white}
+.tb-badge.or{background:var(--or);color:white}
+.tb-badge.purple{background:var(--purple);color:white}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-user{font-size:12px;color:rgba(255,255,255,0.55)}
+.tb-user strong{color:var(--or);font-weight:700}
+.btn-tb{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Prompt',sans-serif;transition:all .18s}
+.btn-tb-ghost{background:transparent;color:rgba(255,255,255,0.6);border:1.5px solid rgba(255,255,255,0.2)}
+.btn-tb-ghost:hover{border-color:var(--or);color:var(--or)}
+.btn-tb-or{background:var(--or);color:white}
+
+/* SHARED PAGE */
+.page-body{padding:24px;max-width:1240px;margin:0 auto}
+#screen-canvas{background:#f1f5f9}
+#screen-svp{background:#f1f5f9}
+#screen-nick{background:#f1f5f9}
+
+/* COMPLETION */
+.comp-header{background:var(--white);border-radius:var(--radius);padding:16px 22px;margin-bottom:20px;border:2px solid var(--border);display:flex;align-items:center;gap:18px;box-shadow:var(--shadow)}
+.comp-info{flex:1}
+.comp-title{font-size:17px;font-weight:800;color:var(--dark);margin-bottom:3px}
+.comp-sub{font-size:12px;color:var(--mid)}
+.comp-pct-big{font-size:40px;font-weight:900;color:var(--blue);line-height:1;flex-shrink:0}
+.prog-bar-big{height:7px;background:var(--blueMid);border-radius:99px;overflow:hidden;margin-top:8px}
+.prog-fill-big{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--or));transition:width .6s}
+
+/* SECTION CARDS */
+.sec-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:18px;border:1.5px solid var(--border);overflow:hidden}
+.sec-header{padding:16px 22px;display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--border)}
+.sec-letter{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;color:white;flex-shrink:0}
+.sec-header-text h3{font-size:17px;font-weight:800;color:var(--dark);line-height:1.2}
+.sec-header-text p{font-size:12px;color:var(--mid);margin-top:2px}
+.sec-body{padding:22px}
+
+/* METRICS */
+.metric-block{background:var(--grayLt);border-radius:12px;padding:14px 18px;margin-bottom:12px;border:1.5px solid var(--border)}
+.metric-block-title{font-size:12px;font-weight:800;color:var(--mid);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.metric-3col{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.m-tag{display:inline-block;font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px;margin-bottom:7px}
+.tag-25{background:var(--blueMid);color:var(--blue)}
+.tag-tg{background:var(--orMid);color:#c2410c}
+.tag-26{background:#dcfce7;color:var(--green)}
+.m-input{width:100%;border:2px solid var(--border);border-radius:10px;font-family:'Prompt',sans-serif;font-size:22px;font-weight:900;color:var(--dark);padding:9px 12px;background:var(--white);text-align:right;transition:border .18s}
+.m-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,78,216,.1)}
+.m-unit{font-size:11px;color:var(--gray);margin-top:3px;text-align:right;font-weight:500}
+
+/* SW */
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+.sw-head{font-size:14px;font-weight:800;padding:9px 14px;border-radius:10px;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.sw-head.s{background:var(--greenLt);color:var(--green)}
+.sw-head.w{background:var(--redLt);color:var(--red)}
+.sw-row{display:flex;gap:8px;align-items:center;margin-bottom:7px}
+.sw-num{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white}
+.sw-num.s{background:var(--green)}.sw-num.w{background:var(--red)}
+.sw-input{flex:1;border:2px solid var(--border);border-radius:8px;font-family:'Prompt',sans-serif;font-size:14px;color:var(--dark);padding:8px 11px;background:var(--white);transition:border .18s}
+.sw-input:focus{outline:none;border-color:var(--blue)}
+
+/* MARKET */
+.market-3col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.m-card{border-radius:12px;padding:16px;border:2px solid var(--border)}
+.m-card.trend{background:var(--blueLt);border-color:var(--blueMid)}
+.m-card.comp{background:var(--redLt);border-color:#fecaca}
+.m-card.opp{background:var(--greenLt);border-color:#bbf7d0}
+.m-card-head{font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.m-card.trend .m-card-head{color:var(--blue)}.m-card.comp .m-card-head{color:var(--red)}.m-card.opp .m-card-head{color:var(--green)}
+.big-textarea{width:100%;border:2px solid var(--border);border-radius:10px;font-family:'Prompt',sans-serif;font-size:14px;color:var(--dark);padding:11px 13px;background:var(--white);resize:vertical;min-height:95px;line-height:1.7;transition:border .18s}
+.big-textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,78,216,.08)}
+
+/* MATRIX */
+.matrix-2x2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mx-cell{border-radius:12px;padding:16px;border:2px solid var(--border)}
+.mx-cell.attack{background:#fff1f2;border-color:#fecdd3}.mx-cell.defend{background:var(--blueLt);border-color:var(--blueMid)}
+.mx-cell.harvest{background:var(--orLt);border-color:#fed7aa}.mx-cell.explore{background:var(--greenLt);border-color:#bbf7d0}
+.mx-head{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.mx-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;color:white;flex-shrink:0}
+.attack .mx-icon{background:var(--red)}.defend .mx-icon{background:var(--blue)}.harvest .mx-icon{background:var(--or)}.explore .mx-icon{background:var(--green)}
+.mx-head-text h4{font-size:14px;font-weight:800}
+.attack .mx-head-text h4{color:var(--red)}.defend .mx-head-text h4{color:var(--blue)}.harvest .mx-head-text h4{color:#c2410c}.explore .mx-head-text h4{color:var(--green)}
+.mx-head-text p{font-size:11px;color:var(--mid);margin-top:1px}
+
+/* CHANNELS */
+.ch-5col{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.ch-card{border-radius:12px;padding:14px;border:2px solid var(--border);background:var(--white)}
+.ch-card.hp-off{border-top:5px solid var(--blue)}.ch-card.mega{border-top:5px solid var(--red)}
+.ch-card.hp-on{border-top:5px solid var(--green)}.ch-card.mkt{border-top:5px solid var(--or)}.ch-card.mart{border-top:5px solid var(--mid)}
+.ch-emoji{font-size:26px;margin-bottom:5px}.ch-name{font-size:12px;font-weight:800;color:var(--dark);margin-bottom:10px}
+.ch-f{margin-bottom:7px}
+.ch-lbl{font-size:10px;font-weight:700;color:var(--mid);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;display:block}
+.ch-ta{width:100%;border:2px solid var(--border);border-radius:8px;font-family:'Prompt',sans-serif;font-size:13px;color:var(--dark);padding:7px 9px;background:var(--grayLt);resize:vertical;min-height:68px;line-height:1.6;transition:border .18s}
+.ch-ta:focus{outline:none;border-color:var(--blue)}
+.ch-inp{width:100%;border:2px solid var(--border);border-radius:8px;font-family:'Prompt',sans-serif;font-size:15px;font-weight:800;color:var(--dark);padding:7px 9px;background:var(--grayLt);transition:border .18s}
+.ch-inp:focus{outline:none;border-color:var(--or)}
+
+/* KPI */
+.kpi-5col{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.kpi-card{border-radius:12px;padding:16px 12px;text-align:center;border:2px solid var(--border);background:var(--white)}
+.kpi-card.revenue{border-top:5px solid var(--blue)}.kpi-card.gp{border-top:5px solid var(--green)}
+.kpi-card.gpa{border-top:5px solid var(--or)}.kpi-card.txn{border-top:5px solid var(--purple)}.kpi-card.ms{border-top:5px solid var(--red)}
+.kpi-lbl{font-size:11px;font-weight:800;color:var(--mid);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.kpi-inp{width:100%;border:2px solid var(--border);border-radius:10px;font-family:'Prompt',sans-serif;font-size:26px;font-weight:900;color:var(--dark);padding:9px 7px;background:var(--grayLt);text-align:center;transition:all .18s}
+.kpi-inp:focus{outline:none;border-color:var(--blue);background:var(--white);box-shadow:0 0 0 3px rgba(26,78,216,.1)}
+.kpi-unit{font-size:11px;color:var(--gray);margin-top:5px;font-weight:600}
+
+/* ACTION BAR */
+.action-bar{background:var(--white);border-top:2px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;bottom:0;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.ab-left{font-size:13px;color:var(--mid)}
+.ab-left strong{color:var(--dark);font-weight:800;font-size:14px}
+.ab-right{display:flex;gap:9px}
+.btn{padding:11px 22px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'Prompt',sans-serif;transition:all .18s;display:inline-flex;align-items:center;gap:7px}
+.btn-blue{background:var(--blue);color:white}.btn-blue:hover{background:var(--blue2);transform:translateY(-1px)}
+.btn-or{background:var(--or);color:white}.btn-or:hover{background:var(--or2);transform:translateY(-1px)}
+.btn-purple{background:var(--purple);color:white}.btn-purple:hover{opacity:.9;transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--mid);border:2px solid var(--border)}.btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ══ SVP CANVAS ══ */
+.svp-div-card{background:var(--white);border-radius:var(--radius);border:2px solid var(--border);margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow)}
+.svp-div-head{padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--border);cursor:pointer;user-select:none}
+.svp-div-head:hover{background:var(--grayLt)}
+.svp-div-icon{width:40px;height:40px;border-radius:10px;background:var(--blueLt);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.svp-div-title{font-size:15px;font-weight:800;color:var(--dark)}
+.svp-div-sub{font-size:12px;color:var(--mid);margin-top:1px}
+.svp-toggle{margin-left:auto;font-size:12px;font-weight:800;color:var(--blue);background:var(--blueLt);padding:6px 13px;border-radius:8px;border:none;font-family:'Prompt',sans-serif;cursor:pointer;white-space:nowrap}
+.svp-div-body{display:none;padding:20px;background:var(--grayLt)}
+.svp-div-body.open{display:block}
+
+/* Division metrics row */
+.div-metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.div-metric{background:var(--white);border-radius:10px;padding:12px;border:1.5px solid var(--border)}
+.div-metric-lbl{font-size:10px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.div-metric-3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.div-m-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;text-align:center;margin-bottom:4px}
+.div-m-inp{width:100%;border:1.5px solid var(--border);border-radius:7px;font-family:'Prompt',sans-serif;font-size:16px;font-weight:800;color:var(--dark);padding:7px 8px;background:var(--white);text-align:right;transition:border .18s}
+.div-m-inp:focus{outline:none;border-color:var(--blue)}
+.div-m-unit{font-size:10px;color:var(--gray);text-align:right;margin-top:2px}
+
+/* Rating */
+.rating-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.rating-lbl{font-size:13px;font-weight:700;color:var(--dark);min-width:120px}
+.star-wrap{display:flex;gap:4px}
+.star{font-size:22px;cursor:pointer;opacity:.3;transition:all .15s;user-select:none}
+.star.on{opacity:1}
+.rating-comment{flex:1}
+.rating-ta{width:100%;border:2px solid var(--border);border-radius:8px;font-family:'Prompt',sans-serif;font-size:13px;color:var(--dark);padding:8px 11px;background:var(--white);resize:vertical;min-height:60px;line-height:1.6;transition:border .18s}
+.rating-ta:focus{outline:none;border-color:var(--blue)}
+
+/* OVERALL SUMMARY */
+.overall-card{background:linear-gradient(135deg,var(--navy) 0%,#1e3a8a 100%);border-radius:var(--radius);padding:22px;margin-bottom:18px;color:white}
+.overall-title{font-size:18px;font-weight:900;color:white;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.overall-sub{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:18px}
+.overall-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.ok-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:12px;text-align:center}
+.ok-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.ok-val{font-size:22px;font-weight:900;color:var(--or)}
+.ok-unit{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+.ok-inp{width:100%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:8px;font-family:'Prompt',sans-serif;font-size:20px;font-weight:900;color:var(--or);padding:8px;text-align:center}
+.ok-inp:focus{outline:none;border-color:var(--or)}
+.svp-strategy-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.svp-strat-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:14px}
+.svp-strat-lbl{font-size:11px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.svp-strat-ta{width:100%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:8px;font-family:'Prompt',sans-serif;font-size:13px;color:white;padding:10px 12px;resize:vertical;min-height:80px;line-height:1.7}
+.svp-strat-ta::placeholder{color:rgba(255,255,255,.35)}
+.svp-strat-ta:focus{outline:none;border-color:var(--or)}
+
+/* NICK DASHBOARD */
+.stats-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-box{background:var(--white);border-radius:var(--radius);padding:18px 22px;border:1.5px solid var(--border);box-shadow:var(--shadow)}
+.stat-box.blue{border-top:5px solid var(--blue)}.stat-box.or{border-top:5px solid var(--or)}
+.stat-box.green{border-top:5px solid var(--green)}.stat-box.gray{border-top:5px solid var(--gray)}
+.stat-val{font-size:48px;font-weight:900;line-height:1}
+.stat-box.blue .stat-val{color:var(--blue)}.stat-box.or .stat-val{color:var(--or)}
+.stat-box.green .stat-val{color:var(--green)}.stat-box.gray .stat-val{color:var(--gray)}
+.stat-lbl{font-size:13px;color:var(--mid);margin-top:5px;font-weight:600}
+.sec-label{font-size:11px;font-weight:800;color:var(--mid);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.avp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:24px}
+.avp-card{background:var(--white);border-radius:var(--radius);padding:18px;border:2px solid var(--border);box-shadow:var(--shadow);transition:border .2s}
+.avp-card.done{border-color:var(--green)}.avp-card.wip{border-color:var(--or)}
+.avp-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.avp-ava{width:44px;height:44px;border-radius:11px;background:var(--blueLt);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.avp-name{font-size:15px;font-weight:800;color:var(--dark)}.avp-div{font-size:11px;color:var(--mid);margin-top:2px}
+.prog-row{display:flex;justify-content:space-between;font-size:12px;color:var(--mid);margin-bottom:5px;font-weight:600}
+.prog-bg{height:7px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:9px}
+.prog-fill{height:100%;border-radius:99px;transition:width .6s}
+.status-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 11px;border-radius:99px}
+.chip-done{background:var(--greenLt);color:var(--green)}.chip-wip{background:var(--orLt);color:#c2410c}.chip-none{background:var(--grayLt);color:var(--gray)}
+.sec-dots{display:flex;gap:3px;margin-top:8px}
+.sd{flex:1;height:5px;border-radius:99px;background:var(--border)}
+.sd.done{background:var(--green)}.sd.partial{background:var(--or)}
+.sd-label{font-size:9px;font-weight:800;color:var(--gray);margin-top:2px;text-align:center}
+.canvas-detail{background:var(--white);border-radius:var(--radius);border:2px solid var(--border);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow)}
+.cd-head{padding:14px 18px;display:flex;align-items:center;gap:11px;border-bottom:2px solid var(--border);background:var(--grayLt)}
+.cd-toggle{margin-left:auto;font-size:12px;font-weight:800;color:var(--blue);cursor:pointer;background:var(--blueLt);padding:5px 13px;border-radius:8px;border:none;font-family:'Prompt',sans-serif;white-space:nowrap}
+.cd-body{display:none;padding:18px}.cd-body.open{display:block}
+.kpi-mini{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
+.km-box{background:var(--grayLt);border-radius:10px;padding:11px;text-align:center;border:1.5px solid var(--border)}
+.km-lbl{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.km-val{font-size:22px;font-weight:900;color:var(--blue)}.km-unit{font-size:10px;color:var(--gray);margin-top:1px}
+.kpi27-row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}
+.k27{background:var(--navy);border-radius:10px;padding:10px;text-align:center}
+.k27-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:3px}
+.k27-val{font-size:18px;font-weight:900;color:var(--or)}
+.sw-mini{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.swm{border-radius:10px;padding:12px}.swm.s{background:var(--greenLt)}.swm.w{background:var(--redLt)}
+.swm-title{font-size:12px;font-weight:800;margin-bottom:6px}
+.swm.s .swm-title{color:var(--green)}.swm.w .swm-title{color:var(--red)}
+.swm li{font-size:12px;color:var(--dark);margin-bottom:3px;padding-left:2px}
+
+/* SVP summary card in Nick dash */
+.svp-summary-card{background:linear-gradient(135deg,var(--navy),#1e3a8a);border-radius:var(--radius);padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
+.svp-sum-title{font-size:16px;font-weight:900;color:white;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.svp-sum-sub{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:14px}
+.svp-sum-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}
+.ssk{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px;text-align:center}
+.ssk-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:3px}
+.ssk-val{font-size:20px;font-weight:900;color:var(--or)}
+.ssk-unit{font-size:9px;color:rgba(255,255,255,.35);margin-top:1px}
+.svp-rating-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.srs{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:10px}
+.srs-name{font-size:11px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:5px}
+.srs-stars{font-size:14px;letter-spacing:1px}
+.srs-comment{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;line-height:1.5}
+
+.toast{position:fixed;bottom:85px;right:22px;background:var(--navy);color:white;font-size:13px;font-weight:700;padding:11px 18px;border-radius:10px;display:none;z-index:9999;border-left:4px solid var(--green)}
+.toast.show{display:flex;align-items:center;gap:7px}
+
+@media(max-width:900px){
+  .ch-5col,.kpi-5col,.overall-kpi,.div-metrics-row{grid-template-columns:repeat(2,1fr)}
+  .market-3col,.matrix-2x2{grid-template-columns:1fr 1fr}
+  .stats-4{grid-template-columns:repeat(2,1fr)}
+  .svp-rating-summary{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .ch-5col,.kpi-5col,.market-3col,.matrix-2x2,.sw-grid,.svp-strategy-grid{grid-template-columns:1fr}
+  .page-body{padding:14px}.stat-val{font-size:36px}.m-input{font-size:18px}.kpi-inp{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div class="screen active" id="screen-login">
+  <div class="login-card">
+    <div class="login-hero">
+      <div class="badge">HomePro & MegaHome · 2027</div>
+      <h1>Category Strategy Canvas 360°</h1>
+      <p>วิเคราะห์ครบทุกมิติ · วางแผนชัดเจน · ติดตามได้จริง</p>
+    </div>
+    <div class="login-body">
+      <div class="login-lbl">AVP Leaders</div>
+      <div class="role-grid">
+        <button class="role-btn" data-id="avp_sa" onclick="pickById(this)">
+          <div class="role-icon">📊</div><div><div>AVP SA</div><div class="role-sub">Small Appliances · Small Lover</div></div>
+        </button>
+        <button class="role-btn" data-id="avp_kc" onclick="pickById(this)">
+          <div class="role-icon">🍳</div><div><div>AVP KC</div><div class="role-sub">Kitchen & Cabinet Built-in</div></div>
+        </button>
+        <button class="role-btn" data-id="avp_ho1" onclick="pickById(this)">
+          <div class="role-icon">🏠</div><div><div>AVP HO1</div><div class="role-sub">Storage · Cleaning · Daily Use</div></div>
+        </button>
+        <button class="role-btn" data-id="avp_ho2" onclick="pickById(this)">
+          <div class="role-icon">🛋️</div><div><div>AVP HO2</div><div class="role-sub">Kitchen Tools · Laundry · Travel</div></div>
+        </button>
+        <button class="role-btn" data-id="avp_pro_sa" onclick="pickById(this)">
+          <div class="role-icon">🎯</div><div><div>AVP PRO SA</div><div class="role-sub">Promotion Small Appliances</div></div>
+        </button>
+        <button class="role-btn" data-id="avp_pro_kcho" onclick="pickById(this)">
+          <div class="role-icon">📣</div><div><div>AVP PRO KC HO</div><div class="role-sub">Promotion KC & HO</div></div>
+        </button>
+      </div>
+      <div class="hr"></div>
+      <div class="login-lbl">Nick — SVP Kitchen & Home</div>
+      <div class="role-grid" style="margin-bottom:20px">
+        <button class="role-btn nick-mon" data-id="nick_mon" onclick="pickById(this)">
+          <div class="role-icon">👑</div><div><div>Executive Monitor</div><div class="role-sub">ดู Dashboard ภาพรวมทีมทั้งหมด</div></div>
+        </button>
+        <button class="role-btn nick-svp" data-id="nick_svp" onclick="pickById(this)">
+          <div class="role-icon">📊</div><div><div>SVP Overall Canvas</div><div class="role-sub">ประเมินแต่ละ Division + ภาพรวม K&H Portfolio</div></div>
+        </button>
+      </div>
+      <button class="btn-login" id="btn-login" disabled onclick="enter()">เลือกตำแหน่งก่อนครับ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AVP CANVAS ══ -->
+<div class="screen" id="screen-canvas">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">C</div>
+      <div class="tb-title">Category Strategy Canvas 2027</div>
+      <div class="tb-badge blue">360°</div>
+    </div>
+    <div class="tb-right">
+      <span class="tb-user">เข้าใช้เป็น: <strong id="tb-name">—</strong></span>
+      <button class="btn-tb btn-tb-ghost" onclick="logout()">ออกจากระบบ</button>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="comp-header">
+      <div class="comp-info">
+        <div class="comp-title" id="comp-msg">กรอกข้อมูล Canvas ของคุณ — Section A ถึง E</div>
+        <div class="comp-sub">บันทึกอัตโนมัติ · กด Submit เมื่อพร้อม</div>
+        <div class="prog-bar-big"><div class="prog-fill-big" id="prog-fill" style="width:0%"></div></div>
+      </div>
+      <div class="comp-pct-big" id="comp-pct">0%</div>
+    </div>
+
+    <!-- SECTION A -->
+    <div class="sec-card">
+      <div class="sec-header"><div class="sec-letter" style="background:var(--blue)">A</div>
+        <div class="sec-header-text"><h3>Situation Analysis — ตอนนี้อยู่ที่ไหน?</h3><p>Sales · GP% · GPA · Transaction เปรียบ 2025 Actual vs Target vs 2026 Actual + จุดแข็ง & ปัญหา Top 5</p></div>
+      </div>
+      <div class="sec-body">
+        <div class="metric-block"><div class="metric-block-title">📈 SALES (ล้านบาท)</div>
+          <div class="metric-3col">
+            <div><div class="m-tag tag-25">2025 Actual</div><input class="m-input" id="a_s25" type="number" placeholder="0.0" step="0.1"><div class="m-unit">ล้านบาท</div></div>
+            <div><div class="m-tag tag-tg">Target 2026</div><input class="m-input" id="a_stg" type="number" placeholder="0.0" step="0.1"><div class="m-unit">ล้านบาท</div></div>
+            <div><div class="m-tag tag-26">2026 Actual</div><input class="m-input" id="a_s26" type="number" placeholder="0.0" step="0.1"><div class="m-unit">ล้านบาท</div></div>
+          </div>
+        </div>
+        <div class="metric-block"><div class="metric-block-title">💰 GP% (เปอร์เซ็นต์)</div>
+          <div class="metric-3col">
+            <div><div class="m-tag tag-25">2025 Actual</div><input class="m-input" id="a_gp25" type="number" placeholder="0.0" step="0.1"><div class="m-unit">%</div></div>
+            <div><div class="m-tag tag-tg">Target 2026</div><input class="m-input" id="a_gptg" type="number" placeholder="0.0" step="0.1"><div class="m-unit">%</div></div>
+            <div><div class="m-tag tag-26">2026 Actual</div><input class="m-input" id="a_gp26" type="number" placeholder="0.0" step="0.1"><div class="m-unit">%</div></div>
+          </div>
+        </div>
+        <div class="metric-block"><div class="metric-block-title">💎 GPA (ล้านบาท)</div>
+          <div class="metric-3col">
+            <div><div class="m-tag tag-25">2025 Actual</div><input class="m-input" id="a_gpa25" type="number" placeholder="0.0" step="0.1"><div class="m-unit">ล้านบาท</div></div>
+            <div><div class="m-tag tag-tg">Target 2026</div><input class="m-input" id="a_gpatg" type="number" placeholder="0.0" step="0.1"><div class="m-unit">ล้านบาท</div></div>
+            <div><div class="m-tag tag-26">2026 Actual</div><input class="m-input" id="a_gpa26" type="number" placeholder="0.0" step="0.1"><div class="m-unit">ล้านบาท</div></div>
+          </div>
+        </div>
+        <div class="metric-block" style="margin-bottom:18px"><div class="metric-block-title">🛒 TRANSACTION (ใบ)</div>
+          <div class="metric-3col">
+            <div><div class="m-tag tag-25">2025 Actual</div><input class="m-input" id="a_t25" type="number" placeholder="0"><div class="m-unit">ใบ</div></div>
+            <div><div class="m-tag tag-tg">Target 2026</div><input class="m-input" id="a_ttg" type="number" placeholder="0"><div class="m-unit">ใบ</div></div>
+            <div><div class="m-tag tag-26">2026 Actual</div><input class="m-input" id="a_t26" type="number" placeholder="0"><div class="m-unit">ใบ</div></div>
+          </div>
+        </div>
+        <div class="sw-grid">
+          <div><div class="sw-head s">✅ จุดแข็ง Top 5</div><div id="s-list"></div></div>
+          <div><div class="sw-head w">⚠️ ปัญหา / จุดอ่อน Top 5</div><div id="w-list"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION B -->
+    <div class="sec-card">
+      <div class="sec-header"><div class="sec-letter" style="background:var(--purple)">B</div>
+        <div class="sec-header-text"><h3>Market 360° — โอกาสและความเสี่ยง</h3><p>Trend ตลาด · คู่แข่งกำลังทำอะไร · โอกาสที่ยังไม่ได้คว้า</p></div>
+      </div>
+      <div class="sec-body">
+        <div class="market-3col">
+          <div class="m-card trend"><div class="m-card-head"><span>📈</span>Market Trend 2027</div><textarea class="big-textarea" id="b_trend" placeholder="เทรนด์ตลาดที่กำลังมา&#10;เช่น Renovation Boom, Smart Home, Coffee Culture..."></textarea></div>
+          <div class="m-card comp"><div class="m-card-head"><span>⚔️</span>คู่แข่งหลักและกลยุทธ์</div><textarea class="big-textarea" id="b_comp" placeholder="คู่แข่งกำลังทำอะไร&#10;เช่น Global House, IKEA, Lazada..."></textarea></div>
+          <div class="m-card opp"><div class="m-card-head"><span>💡</span>โอกาสที่ยังไม่ได้คว้า</div><textarea class="big-textarea" id="b_opp" placeholder="โอกาส Division ปี 2027&#10;เช่น B2B Contractor, Live Commerce, Private Brand..."></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION C -->
+    <div class="sec-card">
+      <div class="sec-header"><div class="sec-letter" style="background:var(--red)">C</div>
+        <div class="sec-header-text"><h3>Sub Category Strategy (AH3)</h3><p>จัดกลุ่ม AH3 ตาม Attack · Defend · Harvest · Explore</p></div>
+      </div>
+      <div class="sec-body">
+        <div class="matrix-2x2">
+          <div class="mx-cell attack"><div class="mx-head"><div class="mx-icon">🚀</div><div class="mx-head-text"><h4>ATTACK — โจมตี</h4><p>อัดงบ อัด SKU ต้องการโต</p></div></div><textarea class="big-textarea" id="c_att" style="border-color:#fecdd3" placeholder="AH3 ที่ต้อง Attack..."></textarea></div>
+          <div class="mx-cell defend"><div class="mx-head"><div class="mx-icon">🛡️</div><div class="mx-head-text"><h4>DEFEND — ป้องกัน</h4><p>แข็งแกร่งแล้ว รักษาฐาน</p></div></div><textarea class="big-textarea" id="c_def" style="border-color:var(--blueMid)" placeholder="AH3 ที่ต้อง Defend..."></textarea></div>
+          <div class="mx-cell harvest"><div class="mx-head"><div class="mx-icon">🌾</div><div class="mx-head-text"><h4>HARVEST — เก็บเกี่ยว</h4><p>กำไรดี ลด Cost เพิ่ม Margin</p></div></div><textarea class="big-textarea" id="c_har" style="border-color:#fed7aa" placeholder="AH3 ที่ต้อง Harvest..."></textarea></div>
+          <div class="mx-cell explore"><div class="mx-head"><div class="mx-icon">🔭</div><div class="mx-head-text"><h4>EXPLORE — ทดลอง</h4><p>Category ใหม่ ลองตลาด</p></div></div><textarea class="big-textarea" id="c_exp" style="border-color:#bbf7d0" placeholder="AH3 ที่ต้อง Explore..."></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION D -->
+    <div class="sec-card">
+      <div class="sec-header"><div class="sec-letter" style="background:var(--or)">D</div>
+        <div class="sec-header-text"><h3>Channel Plan — แผนแต่ละช่องทาง</h3><p>HomePro Offline · MegaHome · HomePro Online · Marketplace · MART</p></div>
+      </div>
+      <div class="sec-body">
+        <div class="ch-5col">
+          <div class="ch-card hp-off"><div class="ch-emoji">🏬</div><div class="ch-name">HomePro Offline</div><div class="ch-f"><span class="ch-lbl">Focus หลัก</span><textarea class="ch-ta" id="d_off_f" placeholder="In-store, Display, Demo..."></textarea></div><div class="ch-f"><span class="ch-lbl">KPI Target</span><input class="ch-inp" id="d_off_k" type="text" placeholder="+15% YoY"></div></div>
+          <div class="ch-card mega"><div class="ch-emoji">🏪</div><div class="ch-name">MegaHome</div><div class="ch-f"><span class="ch-lbl">Focus หลัก</span><textarea class="ch-ta" id="d_meg_f" placeholder="B2B, Contractor..."></textarea></div><div class="ch-f"><span class="ch-lbl">KPI Target</span><input class="ch-inp" id="d_meg_k" type="text" placeholder="+20% YoY"></div></div>
+          <div class="ch-card hp-on"><div class="ch-emoji">💻</div><div class="ch-name">HomePro Online</div><div class="ch-f"><span class="ch-lbl">Focus หลัก</span><textarea class="ch-ta" id="d_on_f" placeholder="Live Commerce, Content..."></textarea></div><div class="ch-f"><span class="ch-lbl">KPI Target</span><input class="ch-inp" id="d_on_k" type="text" placeholder="+30% YoY"></div></div>
+          <div class="ch-card mkt"><div class="ch-emoji">🛍️</div><div class="ch-name">Marketplace</div><div class="ch-f"><span class="ch-lbl">Focus หลัก</span><textarea class="ch-ta" id="d_mkt_f" placeholder="Lazada / Shopee / TikTok..."></textarea></div><div class="ch-f"><span class="ch-lbl">KPI Target</span><input class="ch-inp" id="d_mkt_k" type="text" placeholder="+25% YoY"></div></div>
+          <div class="ch-card mart"><div class="ch-emoji">🏷️</div><div class="ch-name">MART</div><div class="ch-f"><span class="ch-lbl">Focus หลัก</span><textarea class="ch-ta" id="d_mart_f" placeholder="กลยุทธ์ MART 2027..."></textarea></div><div class="ch-f"><span class="ch-lbl">KPI Target</span><input class="ch-inp" id="d_mart_k" type="text" placeholder="+10% YoY"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION E -->
+    <div class="sec-card">
+      <div class="sec-header"><div class="sec-letter" style="background:var(--green)">E</div>
+        <div class="sec-header-text"><h3>KPI Target 2027</h3><p>ตั้งเป้าหมายที่ชัดเจน วัดผลได้จริง</p></div>
+      </div>
+      <div class="sec-body">
+        <div class="kpi-5col">
+          <div class="kpi-card revenue"><div class="kpi-lbl">📈 Revenue</div><input class="kpi-inp" id="e_rev" type="number" placeholder="0.0" step="0.1"><div class="kpi-unit">ล้านบาท</div></div>
+          <div class="kpi-card gp"><div class="kpi-lbl">💰 GP%</div><input class="kpi-inp" id="e_gp" type="number" placeholder="0.0" step="0.1"><div class="kpi-unit">เปอร์เซ็นต์</div></div>
+          <div class="kpi-card gpa"><div class="kpi-lbl">💎 GPA</div><input class="kpi-inp" id="e_gpa" type="number" placeholder="0.0" step="0.1"><div class="kpi-unit">ล้านบาท</div></div>
+          <div class="kpi-card txn"><div class="kpi-lbl">🛒 Transaction</div><input class="kpi-inp" id="e_txn" type="number" placeholder="0"><div class="kpi-unit">ใบ</div></div>
+          <div class="kpi-card ms"><div class="kpi-lbl">🏆 Market Share</div><input class="kpi-inp" id="e_ms" type="number" placeholder="0.0" step="0.1"><div class="kpi-unit">เปอร์เซ็นต์</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="action-bar">
+    <div class="ab-left"><strong id="ab-name">—</strong> · Category Strategy Canvas 2027</div>
+    <div class="ab-right">
+      <button class="btn btn-outline" onclick="saveNow()">💾 บันทึก</button>
+      <button class="btn btn-or" onclick="doSubmit()">✦ Submit Canvas →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SVP CANVAS ══ -->
+<div class="screen" id="screen-svp">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">N</div>
+      <div class="tb-title">SVP Overall Canvas 2027 — Nick</div>
+      <div class="tb-badge or">SVP VIEW</div>
+    </div>
+    <div class="tb-right">
+      <button class="btn-tb btn-tb-or" onclick="saveSVP()">💾 บันทึก SVP Canvas</button>
+      <button class="btn-tb btn-tb-ghost" onclick="logout()">ออกจากระบบ</button>
+    </div>
+  </div>
+  <div class="page-body">
+
+    <!-- OVERALL SUMMARY -->
+    <div class="overall-card">
+      <div class="overall-title">📊 ภาพรวม Kitchen & Home Portfolio 2027</div>
+      <div class="overall-sub">ตัวเลขรวมทุก Division · มุมมอง SVP</div>
+      <div class="overall-kpi">
+        <div class="ok-box"><div class="ok-lbl">📈 Total Revenue 2026</div><input class="ok-inp" id="svp_total_rev" type="number" placeholder="0.0" step="0.1"><div class="ok-unit">ล้านบาท</div></div>
+        <div class="ok-box"><div class="ok-lbl">💰 Portfolio GP%</div><input class="ok-inp" id="svp_total_gp" type="number" placeholder="0.0" step="0.1"><div class="ok-unit">%</div></div>
+        <div class="ok-box"><div class="ok-lbl">💎 Total GPA</div><input class="ok-inp" id="svp_total_gpa" type="number" placeholder="0.0" step="0.1"><div class="ok-unit">ล้านบาท</div></div>
+        <div class="ok-box"><div class="ok-lbl">🛒 Total Transaction</div><input class="ok-inp" id="svp_total_txn" type="number" placeholder="0"><div class="ok-unit">ใบ</div></div>
+      </div>
+      <div class="svp-strategy-grid">
+        <div class="svp-strat-box"><div class="svp-strat-lbl">🎯 Portfolio Strategy ภาพรวม 2027</div><textarea class="svp-strat-ta" id="svp_strategy" placeholder="ทิศทาง K&H Portfolio ปี 2027 ในภาพรวม&#10;เช่น Focus Premium + Online Growth + Private Brand Expansion..."></textarea></div>
+        <div class="svp-strat-box"><div class="svp-strat-lbl">⚠️ ความเสี่ยงหลักที่ต้องระวัง</div><textarea class="svp-strat-ta" id="svp_risk" placeholder="ความเสี่ยง Portfolio ที่ต้องระวัง&#10;เช่น Competition Intensify, Margin Pressure, Online Shift..."></textarea></div>
+        <div class="svp-strat-box"><div class="svp-strat-lbl">💡 Big Bet ของ Nick สำหรับ 2027</div><textarea class="svp-strat-ta" id="svp_bigbet" placeholder="สิ่งที่ Nick จะ push ให้ทีมทำ&#10;เช่น Cross-division Bundling, Unified Online Strategy..."></textarea></div>
+        <div class="svp-strat-box"><div class="svp-strat-lbl">📈 KPI Portfolio Target 2027</div><textarea class="svp-strat-ta" id="svp_kpi27" placeholder="เป้า Portfolio ปี 2027&#10;เช่น Revenue +18%, GP% 28%, Online Share 25%..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- DIVISION SECTIONS -->
+    <div class="sec-label">📋 ประเมินแต่ละ Division — ความสำเร็จและทิศทาง</div>
+    <div id="svp-div-list"></div>
+
+  </div>
+  <div class="action-bar">
+    <div class="ab-left"><strong>Nick — SVP</strong> · Overall Canvas 2027</div>
+    <div class="ab-right">
+      <button class="btn btn-outline" onclick="saveSVP()">💾 บันทึก</button>
+      <button class="btn btn-or" onclick="submitSVP()">✦ Submit SVP Canvas →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NICK MONITOR ══ -->
+<div class="screen" id="screen-nick">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">N</div>
+      <div class="tb-title">Executive Dashboard — Category Strategy Canvas 2027</div>
+      <div class="tb-badge purple">MONITOR</div>
+    </div>
+    <div class="tb-right">
+      <button class="btn-tb btn-tb-or" onclick="exportTxt()">📊 Export Summary</button>
+      <button class="btn-tb btn-tb-ghost" onclick="logout()">ออกจากระบบ</button>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="stats-4">
+      <div class="stat-box blue"><div class="stat-val" id="n-total">6</div><div class="stat-lbl">AVP ทั้งหมด</div></div>
+      <div class="stat-box green"><div class="stat-val" id="n-done">0</div><div class="stat-lbl">Submit แล้ว ✓</div></div>
+      <div class="stat-box or"><div class="stat-val" id="n-wip">0</div><div class="stat-lbl">กำลังทำ</div></div>
+      <div class="stat-box gray"><div class="stat-val" id="n-pend">6</div><div class="stat-lbl">ยังไม่เริ่ม</div></div>
+    </div>
+
+    <!-- SVP SUMMARY if exists -->
+    <div id="svp-summary-wrap"></div>
+
+    <div class="sec-label">📋 สถานะ AVP ทั้งหมด</div>
+    <div class="avp-grid" id="avp-grid"></div>
+    <div class="sec-label" id="detail-label" style="display:none">💡 รายละเอียด Canvas</div>
+    <div id="canvas-list"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ บันทึกแล้ว</div>
+
+<script>
+var TEAM=[
+  {id:'avp_sa',label:'AVP SA',icon:'📊',div:'Small Appliances'},
+  {id:'avp_kc',label:'AVP KC',icon:'🍳',div:'Kitchen & Cabinet'},
+  {id:'avp_ho1',label:'AVP HO1',icon:'🏠',div:'Home 1'},
+  {id:'avp_ho2',label:'AVP HO2',icon:'🛋️',div:'Home 2'},
+  {id:'avp_pro_sa',label:'AVP PRO SA',icon:'🎯',div:'Promotion SA'},
+  {id:'avp_pro_kcho',label:'AVP PRO KC HO',icon:'📣',div:'Promotion KC HO'},
+];
+var FIDS=['a_s25','a_stg','a_s26','a_gp25','a_gptg','a_gp26','a_gpa25','a_gpatg','a_gpa26','a_t25','a_ttg','a_t26','b_trend','b_comp','b_opp','c_att','c_def','c_har','c_exp','d_off_f','d_off_k','d_meg_f','d_meg_k','d_on_f','d_on_k','d_mkt_f','d_mkt_k','d_mart_f','d_mart_k','e_rev','e_gp','e_gpa','e_txn','e_ms'];
+var SF={A:['a_s25','a_stg','a_s26','a_gp25','a_gptg','a_gp26','a_gpa25','a_gpatg','a_gpa26','a_t25','a_ttg','a_t26'],B:['b_trend','b_comp','b_opp'],C:['c_att','c_def','c_har','c_exp'],D:['d_off_f','d_off_k','d_meg_f','d_meg_k','d_on_f','d_on_k','d_mkt_f','d_mkt_k','d_mart_f','d_mart_k'],E:['e_rev','e_gp','e_gpa','e_txn','e_ms']};
+var ME=null, ALL={}, SVP_DATA={};
+
+function buildSW(){
+  var sl=document.getElementById('s-list'),wl=document.getElementById('w-list');
+  sl.innerHTML='';wl.innerHTML='';
+  for(var i=1;i<=5;i++){
+    sl.innerHTML+='<div class="sw-row"><div class="sw-num s">'+i+'</div><input class="sw-input" id="a_s'+i+'" placeholder="จุดแข็งที่ '+i+'..."></div>';
+    wl.innerHTML+='<div class="sw-row"><div class="sw-num w">'+i+'</div><input class="sw-input" id="a_w'+i+'" placeholder="ปัญหาที่ '+i+'..."></div>';
+  }
+}
+
+function pickById(btn){
+  var id = btn.getAttribute('data-id');
+  var DNAMES = {avp_sa:'AVP SA',avp_kc:'AVP KC',avp_ho1:'AVP HO1',avp_ho2:'AVP HO2',avp_pro_sa:'AVP PRO SA',avp_pro_kcho:'AVP PRO KC HO',nick_mon:'Nick',nick_svp:'Nick SVP'};
+  var DICONS = {avp_sa:'📊',avp_kc:'🍳',avp_ho1:'🏠',avp_ho2:'🛋️',avp_pro_sa:'🎯',avp_pro_kcho:'📣',nick_mon:'👑',nick_svp:'📊'};
+  var DDIVS = {avp_sa:'avp_sa',avp_kc:'avp_kc',avp_ho1:'avp_ho1',avp_ho2:'avp_ho2',avp_pro_sa:'avp_pro_sa',avp_pro_kcho:'avp_pro_kcho',nick_mon:'nick_mon',nick_svp:'nick_svp'};
+  var btns = document.querySelectorAll('.role-btn');
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove('selected');
+  btn.classList.add('selected');
+  selectedRole = {id:id, icon:DICONS[id]||'', label:DNAMES[id]||id, div:DDIVS[id]||id};
+  var loginBtn = document.getElementById('btn-login');
+  if(loginBtn){ loginBtn.disabled=false; loginBtn.textContent='เข้าสู่ Canvas — '+DNAMES[id]+' →'; }
+}
+function pick(btn,id,icon,label,div){
+  var rb=document.querySelectorAll('.role-btn'); for(var ri=0;ri<rb.length;ri++) rb[ri].classList.remove('selected');
+  btn.classList.add('selected');
+  window._me={id:id,icon:icon,label:label,div:div};
+  var b=document.getElementById('btn-login');
+  b.disabled=false;
+  b.textContent='เข้าสู่ระบบ — '+label+' →';
+  b.className='btn-login'+(id==='nick_svp'?' or':id==='nick_mon'?' purple':'');
+}
+
+function enter(){
+  if(!window._me)return;
+  ME=window._me;
+  loadAll();
+  if(ME.id==='nick_mon'){showScreen('screen-nick');renderNick();}
+  else if(ME.id==='nick_svp'){showScreen('screen-svp');buildSVPDivs();loadSVP();}
+  else{
+    showScreen('screen-canvas');
+    document.getElementById('tb-name').textContent=ME.label;
+    document.getElementById('ab-name').textContent=ME.label;
+    buildSW();loadMe();addListeners();calcPct();
+  }
+}
+
+function logout(){
+  ME=null;
+  var rb=document.querySelectorAll('.role-btn'); for(var ri=0;ri<rb.length;ri++) rb[ri].classList.remove('selected');
+  var b=document.getElementById('btn-login');
+  b.disabled=true;b.textContent='เลือกตำแหน่งก่อนครับ';b.className='btn-login';
+  showScreen('screen-login');
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0});
+}
+
+function key(uid){return 'sc27_'+uid;}
+
+function collect(){
+  var d={};
+  FIDS.forEach(function(f){var el=document.getElementById(f);if(el)d[f]=el.value;});
+  d._s=[];d._w=[];
+  for(var i=1;i<=5;i++){
+    var s=document.getElementById('a_s'+i),w=document.getElementById('a_w'+i);
+    if(s)d._s.push(s.value||'');
+    if(w)d._w.push(w.value||'');
+  }
+  return d;
+}
+
+function fill(d){
+  if(!d)return;
+  FIDS.forEach(function(f){var el=document.getElementById(f);if(el&&d[f]!==undefined)el.value=d[f];});
+  (d._s||[]).forEach(function(v,i){var el=document.getElementById('a_s'+(i+1));if(el)el.value=v;});
+  (d._w||[]).forEach(function(v,i){var el=document.getElementById('a_w'+(i+1));if(el)el.value=v;});
+}
+
+function loadMe(){try{var r=localStorage.getItem(key(ME.id));if(r)fill(JSON.parse(r));}catch(e){}}
+function loadAll(){TEAM.forEach(function(m){try{var r=localStorage.getItem(key(m.id));if(r)ALL[m.id]=JSON.parse(r);}catch(e){}});try{var r=localStorage.getItem('sc27_svp');if(r)SVP_DATA=JSON.parse(r);}catch(e){}}
+
+function saveNow(){
+  if(!ME)return;
+  var d=collect();d._at=new Date().toISOString();d._st=d._st||'wip';
+  ALL[ME.id]=d;localStorage.setItem(key(ME.id),JSON.stringify(d));showToast();
+}
+
+function doSubmit(){
+  if(!ME)return;
+  var d=collect();
+  if(!d.a_s26&&!(d._s||[]).some(function(s){return s.trim();})){alert('กรุณากรอกข้อมูล Section A ก่อน Submit ครับ');return;}
+  d._at=new Date().toISOString();d._st='done';
+  ALL[ME.id]=d;localStorage.setItem(key(ME.id),JSON.stringify(d));
+  calcPct();showToast();alert('Submit สำเร็จ! Nick จะเห็น Canvas ของคุณใน Dashboard ครับ');
+}
+
+function showToast(){var t=document.getElementById('toast');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2000);}
+
+function calcPct(){
+  var d=collect(),f=0,t=0;
+  FIDS.forEach(function(id){t++;if(d[id]&&String(d[id]).trim())f++;});
+  (d._s||[]).concat(d._w||[]).forEach(function(v){t++;if(v&&v.trim())f++;});
+  var pct=Math.round(f/t*100);
+  document.getElementById('comp-pct').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+  var msg='กรอกข้อมูล Canvas ของคุณ — Section A ถึง E';
+  if(pct>=100)msg='🎉 Canvas ครบสมบูรณ์ — กด Submit ได้เลย!';
+  else if(pct>=70)msg='🔥 เกือบครบแล้ว! ยังเหลืออีกนิดหน่อย';
+  else if(pct>=40)msg='📝 กำลังดี — ทำต่อได้เลยครับ';
+  document.getElementById('comp-msg').textContent=msg;
+  clearTimeout(window._t);window._t=setTimeout(saveNow,1500);
+}
+
+function addListeners(){
+  document.querySelectorAll('#screen-canvas input,#screen-canvas textarea').forEach(function(el){el.addEventListener('input',calcPct);});
+}
+
+/* ── SVP CANVAS ── */
+function buildSVPDivs(){
+  var container=document.getElementById('svp-div-list');
+  container.innerHTML=TEAM.map(function(m,idx){
+    return '<div class="svp-div-card">'+
+      '<div class="svp-div-head" onclick="toggleSVPDiv(this)">'+
+      '<div class="svp-div-icon">'+m.icon+'</div>'+
+      '<div><div class="svp-div-title">'+m.label+' — '+m.div+'</div>'+
+      '<div class="svp-div-sub">ประเมินผลงาน 2026 + ทิศทาง 2027</div></div>'+
+      '<button class="svp-toggle">ขยาย ▾</button>'+
+      '</div>'+
+      '<div class="svp-div-body" id="svp-body-'+m.id+'">'+
+        '<div class="div-metrics-row">'+
+          mkDivMetric(m.id,'sales','📈 Sales','ล้านบาท')+
+          mkDivMetric(m.id,'gp','💰 GP%','%')+
+          mkDivMetric(m.id,'gpa','💎 GPA','ล้านบาท')+
+          mkDivMetric(m.id,'txn','🛒 Transaction','ใบ')+
+        '</div>'+
+        '<div class="rating-row">'+
+          '<div class="rating-lbl">⭐ ประเมินภาพรวม</div>'+
+          '<div class="star-wrap" id="stars-'+m.id+'">'+
+            '<span class="star" onclick="rateStar(\''+m.id+'\',1)">★</span>'+
+            '<span class="star" onclick="rateStar(\''+m.id+'\',2)">★</span>'+
+            '<span class="star" onclick="rateStar(\''+m.id+'\',3)">★</span>'+
+            '<span class="star" onclick="rateStar(\''+m.id+'\',4)">★</span>'+
+            '<span class="star" onclick="rateStar(\''+m.id+'\',5)">★</span>'+
+          '</div>'+
+        '</div>'+
+        '<div class="ch-f" style="margin-bottom:10px"><span class="ch-lbl">💬 Comment จาก SVP</span>'+
+          '<textarea class="rating-ta" id="svp-comment-'+m.id+'" placeholder="ความเห็น Nick ต่อ '+m.label+' — ประเด็นสำคัญ, จุดที่ต้องพัฒนา, สิ่งที่ดีมาก..."></textarea>'+
+        '</div>'+
+        '<div class="ch-f"><span class="ch-lbl">🎯 ทิศทางที่ Nick อยากให้ '+m.label+' โฟกัสปี 2027</span>'+
+          '<textarea class="rating-ta" id="svp-direction-'+m.id+'" placeholder="สิ่งที่อยากให้ทำเพิ่ม / เปลี่ยนแปลง / หยุดทำ..."></textarea>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function mkDivMetric(id,type,lbl,unit){
+  return '<div class="div-metric"><div class="div-metric-lbl">'+lbl+'</div>'+
+    '<div class="div-metric-3">'+
+    '<div><div class="div-m-tag tag-25 m-tag">2025</div><input class="div-m-inp" id="svp-'+id+'-'+type+'-25" type="number" placeholder="0"><div class="div-m-unit">'+unit+'</div></div>'+
+    '<div><div class="div-m-tag tag-tg m-tag">Target</div><input class="div-m-inp" id="svp-'+id+'-'+type+'-tg" type="number" placeholder="0"><div class="div-m-unit">'+unit+'</div></div>'+
+    '<div><div class="div-m-tag tag-26 m-tag">2026</div><input class="div-m-inp" id="svp-'+id+'-'+type+'-26" type="number" placeholder="0"><div class="div-m-unit">'+unit+'</div></div>'+
+    '</div></div>';
+}
+
+function toggleSVPDiv(head){
+  var body=head.nextElementSibling;
+  var btn=head.querySelector('.svp-toggle');
+  body.classList.toggle('open');
+  btn.textContent=body.classList.contains('open')?'ย่อ ▴':'ขยาย ▾';
+}
+
+function rateStar(id,n){
+  SVP_DATA['rating_'+id]=n;
+  var stars=document.getElementById('stars-'+id).querySelectorAll('.star');
+  stars.forEach(function(s,i){s.classList.toggle('on',i<n);});
+}
+
+function collectSVP(){
+  var d={};
+  d.total_rev=document.getElementById('svp_total_rev').value;
+  d.total_gp=document.getElementById('svp_total_gp').value;
+  d.total_gpa=document.getElementById('svp_total_gpa').value;
+  d.total_txn=document.getElementById('svp_total_txn').value;
+  d.strategy=document.getElementById('svp_strategy').value;
+  d.risk=document.getElementById('svp_risk').value;
+  d.bigbet=document.getElementById('svp_bigbet').value;
+  d.kpi27=document.getElementById('svp_kpi27').value;
+  d.divs={};
+  TEAM.forEach(function(m){
+    d.divs[m.id]={
+      sales25:document.getElementById('svp-'+m.id+'-sales-25')?document.getElementById('svp-'+m.id+'-sales-25').value:'',
+      salestg:document.getElementById('svp-'+m.id+'-sales-tg')?document.getElementById('svp-'+m.id+'-sales-tg').value:'',
+      sales26:document.getElementById('svp-'+m.id+'-sales-26')?document.getElementById('svp-'+m.id+'-sales-26').value:'',
+      gp26:document.getElementById('svp-'+m.id+'-gp-26')?document.getElementById('svp-'+m.id+'-gp-26').value:'',
+      gpa26:document.getElementById('svp-'+m.id+'-gpa-26')?document.getElementById('svp-'+m.id+'-gpa-26').value:'',
+      txn26:document.getElementById('svp-'+m.id+'-txn-26')?document.getElementById('svp-'+m.id+'-txn-26').value:'',
+      rating:SVP_DATA['rating_'+m.id]||0,
+      comment:document.getElementById('svp-comment-'+m.id)?document.getElementById('svp-comment-'+m.id).value:'',
+      direction:document.getElementById('svp-direction-'+m.id)?document.getElementById('svp-direction-'+m.id).value:''
+    };
+  });
+  return d;
+}
+
+function fillSVP(d){
+  if(!d)return;
+  var ids=['total_rev','total_gp','total_gpa','total_txn','strategy','risk','bigbet','kpi27'];
+  ids.forEach(function(k){var el=document.getElementById('svp_'+k);if(el&&d[k])el.value=d[k];});
+  if(!d.divs)return;
+  TEAM.forEach(function(m){
+    var dd=d.divs[m.id];if(!dd)return;
+    var map={sales:['25','tg','26'],gp:['25','tg','26'],gpa:['25','tg','26'],txn:['25','tg','26']};
+    Object.keys(map).forEach(function(type){
+      map[type].forEach(function(yr){
+        var el=document.getElementById('svp-'+m.id+'-'+type+'-'+yr);
+        if(el&&dd[type+(yr==='tg'?'tg':yr)])el.value=dd[type+(yr==='tg'?'tg':yr)];
+      });
+    });
+    if(dd.rating){
+      SVP_DATA['rating_'+m.id]=dd.rating;
+      var stars=document.getElementById('stars-'+m.id);
+      if(stars)stars.querySelectorAll('.star').forEach(function(s,i){s.classList.toggle('on',i<dd.rating);});
+    }
+    var c=document.getElementById('svp-comment-'+m.id);if(c&&dd.comment)c.value=dd.comment;
+    var dir=document.getElementById('svp-direction-'+m.id);if(dir&&dd.direction)dir.value=dd.direction;
+  });
+}
+
+function loadSVP(){try{var r=localStorage.getItem('sc27_svp');if(r)fillSVP(JSON.parse(r));}catch(e){}}
+function saveSVP(){var d=collectSVP();d._at=new Date().toISOString();d._st='wip';SVP_DATA=d;localStorage.setItem('sc27_svp',JSON.stringify(d));showToast();}
+function submitSVP(){var d=collectSVP();d._at=new Date().toISOString();d._st='done';SVP_DATA=d;localStorage.setItem('sc27_svp',JSON.stringify(d));showToast();alert('Submit SVP Canvas สำเร็จแล้วครับ!');}
+
+/* ── NICK MONITOR ── */
+function status(uid){var d=ALL[uid];if(!d)return'none';return d._st||'wip';}
+function secFill(uid){
+  var d=ALL[uid];if(!d)return['none','none','none','none','none'];
+  return['A','B','C','D','E'].map(function(s){
+    var fs=SF[s],ok=0;
+    fs.forEach(function(f){if(d[f]&&String(d[f]).trim())ok++;});
+    if(s==='A')(d._s||[]).concat(d._w||[]).forEach(function(v){if(v&&v.trim())ok++;});
+    if(ok===0)return'none';
+    if(ok>=fs.length*0.8)return'done';
+    return'partial';
+  });
+}
+
+function renderNick(){
+  loadAll();
+  var done=TEAM.filter(function(m){return status(m.id)==='done';}).length;
+  var wip=TEAM.filter(function(m){return status(m.id)==='wip';}).length;
+  document.getElementById('n-done').textContent=done;
+  document.getElementById('n-wip').textContent=wip;
+  document.getElementById('n-pend').textContent=6-done-wip;
+
+  // SVP Summary card
+  var sw=document.getElementById('svp-summary-wrap');
+  if(SVP_DATA&&SVP_DATA.total_rev){
+    var stars=function(n){var s='';for(var i=0;i<5;i++)s+=(i<n?'★':'☆');return s;};
+    var divRows=TEAM.map(function(m){
+      var dd=SVP_DATA.divs&&SVP_DATA.divs[m.id]||{};
+      return '<div class="srs"><div class="srs-name">'+m.icon+' '+m.label+'</div>'+
+        '<div class="srs-stars">'+stars(dd.rating||0)+'</div>'+
+        '<div class="srs-comment">'+(dd.comment||'—')+'</div></div>';
+    }).join('');
+    sw.innerHTML='<div class="sec-label">👑 SVP Overall Canvas — Nick</div>'+
+      '<div class="svp-summary-card">'+
+      '<div class="svp-sum-title">📊 K&H Portfolio Overview 2026 <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.5);background:rgba(255,255,255,.1);padding:3px 10px;border-radius:99px">'+(SVP_DATA._st==='done'?'✓ Submit แล้ว':'กำลังทำ')+'</span></div>'+
+      '<div class="svp-sum-sub">ประเมินโดย Nick SVP · อัปเดต: '+(SVP_DATA._at?new Date(SVP_DATA._at).toLocaleDateString('th-TH'):'—')+'</div>'+
+      '<div class="svp-sum-kpi">'+
+        '<div class="ssk"><div class="ssk-lbl">Total Revenue</div><div class="ssk-val">'+SVP_DATA.total_rev+'</div><div class="ssk-unit">ล้านบาท</div></div>'+
+        '<div class="ssk"><div class="ssk-lbl">Portfolio GP%</div><div class="ssk-val">'+SVP_DATA.total_gp+'</div><div class="ssk-unit">%</div></div>'+
+        '<div class="ssk"><div class="ssk-lbl">Total GPA</div><div class="ssk-val">'+SVP_DATA.total_gpa+'</div><div class="ssk-unit">ล้านบาท</div></div>'+
+        '<div class="ssk"><div class="ssk-lbl">Total Transaction</div><div class="ssk-val">'+SVP_DATA.total_txn+'</div><div class="ssk-unit">ใบ</div></div>'+
+      '</div>'+
+      (SVP_DATA.strategy?'<div style="background:rgba(255,255,255,.08);border-radius:9px;padding:12px;margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:5px">🎯 Portfolio Strategy</div><div style="font-size:13px;color:white;line-height:1.6">'+SVP_DATA.strategy+'</div></div>':'')+
+      '<div class="svp-rating-summary">'+divRows+'</div>'+
+      '</div>';
+  } else {
+    sw.innerHTML='';
+  }
+
+  // AVP grid
+  document.getElementById('avp-grid').innerHTML=TEAM.map(function(m){
+    var st=status(m.id),sf=secFill(m.id),pct=st==='done'?100:sf.filter(function(x){return x==='done';}).length/5*100;
+    var fillC=st==='done'?'var(--green)':st==='wip'?'var(--or)':'var(--border)';
+    var chip=st==='done'?'<span class="status-chip chip-done">✓ Submit</span>':st==='wip'?'<span class="status-chip chip-wip">กำลังทำ</span>':'<span class="status-chip chip-none">ยังไม่เริ่ม</span>';
+    var dots=['A','B','C','D','E'].map(function(s,i){return '<div style="flex:1"><div class="sd '+sf[i]+'"></div><div class="sd-label">'+s+'</div></div>';}).join('');
+    // SVP rating for this div
+    var svpRating='';
+    if(SVP_DATA&&SVP_DATA.divs&&SVP_DATA.divs[m.id]){
+      var r=SVP_DATA.divs[m.id].rating||0;
+      var stars='';for(var i=0;i<5;i++)stars+=(i<r?'<span style="color:var(--or)">★</span>':'<span style="color:var(--border)">★</span>');
+      svpRating='<div style="font-size:13px;margin-top:6px">SVP: '+stars+'</div>';
+    }
+    return '<div class="avp-card '+st+'"><div class="avp-top"><div class="avp-ava">'+m.icon+'</div><div><div class="avp-name">'+m.label+'</div><div class="avp-div">'+m.div+'</div></div></div><div class="prog-row"><span>ความคืบหน้า</span><span>'+Math.round(pct)+'%</span></div><div class="prog-bg"><div class="prog-fill" style="width:'+pct+'%;background:'+fillC+'"></div></div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">'+chip+'<div class="sec-dots">'+dots+'</div></div>'+svpRating+'</div>';
+  }).join('');
+
+  // Canvas details
+  var withData=TEAM.filter(function(m){return status(m.id)!=='none';});
+  var lbl=document.getElementById('detail-label'),cl=document.getElementById('canvas-list');
+  if(!withData.length){lbl.style.display='none';cl.innerHTML='<div style="background:white;border-radius:14px;padding:28px;text-align:center;color:var(--gray);border:2px solid var(--border);font-size:15px;font-weight:600">ยังไม่มีสมาชิกกรอกข้อมูล</div>';return;}
+  lbl.style.display='flex';
+  cl.innerHTML=withData.map(function(m){
+    var d=ALL[m.id]||{},st=status(m.id);
+    var chip=st==='done'?'<span class="status-chip chip-done">✓ Submit</span>':'<span class="status-chip chip-wip">กำลังทำ</span>';
+    var svpComment='';
+    if(SVP_DATA&&SVP_DATA.divs&&SVP_DATA.divs[m.id]&&SVP_DATA.divs[m.id].comment){
+      svpComment='<div style="background:var(--orLt);border-radius:9px;padding:12px;margin-bottom:12px;border:1.5px solid var(--orMid)"><div style="font-size:11px;font-weight:800;color:var(--or);margin-bottom:4px">👑 SVP Comment</div><div style="font-size:13px;line-height:1.6">'+SVP_DATA.divs[m.id].comment+'</div></div>';
+    }
+    var kpiMini=[['Sales 2026',d.a_s26,'ล้านบาท'],['GP%',d.a_gp26,'%'],['GPA',d.a_gpa26,'ล้านบาท'],['Transaction',d.a_t26,'ใบ']].map(function(x){return '<div class="km-box"><div class="km-lbl">'+x[0]+'</div><div class="km-val">'+(x[1]||'—')+'</div><div class="km-unit">'+x[2]+'</div></div>';}).join('');
+    var kpi27=[['Revenue',d.e_rev,'ล้าน'],['GP%',d.e_gp,'%'],['GPA',d.e_gpa,'ล้าน'],['Txn',d.e_txn,'ใบ'],['Mkt Share',d.e_ms,'%']].map(function(x){return '<div class="k27"><div class="k27-lbl">'+x[0]+'</div><div class="k27-val">'+(x[1]||'—')+'</div><div style="font-size:9px;color:rgba(255,255,255,.4)">'+x[2]+'</div></div>';}).join('');
+    var sItems=(d._s||[]).filter(function(s){return s.trim();}).map(function(s){return '<li>'+s+'</li>';}).join('')||'<li style="color:var(--gray)">ยังไม่ได้กรอก</li>';
+    var wItems=(d._w||[]).filter(function(w){return w.trim();}).map(function(w){return '<li>'+w+'</li>';}).join('')||'<li style="color:var(--gray)">ยังไม่ได้กรอก</li>';
+    return '<div class="canvas-detail"><div class="cd-head"><span style="font-size:20px">'+m.icon+'</span><div><div style="font-size:15px;font-weight:800">'+m.label+'</div><div style="font-size:11px;color:var(--mid)">'+m.div+'</div></div>'+chip+'<button class="cd-toggle" onclick="toggleCD(this)">ดูรายละเอียด ▾</button></div><div class="cd-body">'+svpComment+'<div class="kpi-mini">'+kpiMini+'</div><div class="sw-mini"><div class="swm s"><div class="swm-title">✅ จุดแข็ง Top 5</div><ul>'+sItems+'</ul></div><div class="swm w"><div class="swm-title">⚠️ ปัญหา Top 5</div><ul>'+wItems+'</ul></div></div>'+(d.b_trend?'<div style="background:var(--blueLt);border-radius:9px;padding:12px;margin-bottom:12px"><div style="font-size:11px;font-weight:800;color:var(--blue);margin-bottom:3px">📈 Market Trend</div><div style="font-size:13px;line-height:1.6">'+d.b_trend+'</div></div>':'')+'<div class="kpi27-row">'+kpi27+'</div></div></div>';
+  }).join('');
+}
+
+function toggleCD(btn){
+  var b=btn.closest('.canvas-detail').querySelector('.cd-body');
+  b.classList.toggle('open');
+  btn.textContent=b.classList.contains('open')?'ซ่อน ▴':'ดูรายละเอียด ▾';
+}
+
+function exportTxt(){
+  loadAll();
+  var txt='BP2027 Category Strategy Canvas — Executive Summary\n';
+  txt+='วันที่: '+new Date().toLocaleDateString('th-TH')+'\n\n';
+  if(SVP_DATA&&SVP_DATA.total_rev){
+    txt+='👑 SVP OVERALL K&H\n';
+    txt+='  Total Revenue 2026: '+SVP_DATA.total_rev+' ล้าน | GP%: '+SVP_DATA.total_gp+'% | GPA: '+SVP_DATA.total_gpa+'\n';
+    txt+='  Strategy: '+(SVP_DATA.strategy||'—')+'\n\n';
+  }
+  TEAM.forEach(function(m){
+    var d=ALL[m.id]||{},st=status(m.id);
+    var svpR=SVP_DATA&&SVP_DATA.divs&&SVP_DATA.divs[m.id];
+    txt+=m.icon+' '+m.label+' ('+m.div+') — '+(st==='done'?'Submit':st==='wip'?'กำลังทำ':'ยังไม่เริ่ม');
+    if(svpR)txt+=' | SVP Rating: '+(svpR.rating||0)+'/5';
+    txt+='\n';
+    if(d.a_s26)txt+='  Sales: '+d.a_s26+' ล้าน | GP%: '+d.a_gp26+'% | GPA: '+d.a_gpa26+'\n';
+    if(svpR&&svpR.comment)txt+='  SVP Comment: '+svpR.comment+'\n';
+    txt+='\n';
+  });
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain;charset=utf-8'}));
+  a.download='BP2027_Strategy_Summary.txt';a.click();
+}
+
+buildSW();
+</script>
+
+<script>
+// ── DEMO DATA AUTO-LOAD ──
+(function(){
+  var DEMO = {
+    "sc27_avp_sa": {"a_s25":"285.5","a_stg":"310.0","a_s26":"298.3","a_gp25":"26.8","a_gptg":"27.5","a_gp26":"27.1","a_gpa25":"76.5","a_gpatg":"85.2","a_gpa26":"80.8","a_t25":"142500","a_ttg":"155000","a_t26":"148200","b_trend":"กระแส Coffee Culture เติบโตต่อเนื่อง · Smart Home / IoT เข้าถึงง่ายขึ้น · ลูกค้าให้ความสำคัญกับ Health & Wellness · Condo Living ต้องการ Compact Appliances","b_comp":"Xiaomi ขยาย SA ลงมาแข่งด้านราคา · Lazada/Shopee มี Private Label SA · Power Buy ทำ Promotion รุนแรง Super Sale","b_opp":"Coffee Category ยังโตได้อีกมาก · B2B Office Supply · Demo Experience ในสาขา · Private Brand SA Margin สูง · Bundle กับ KC","c_att":"Coffee Machine (Espresso/Capsule)\nAir Purifier\nRobot Vacuum\nMini Projector","c_def":"Rice Cooker\nElectric Kettle\nBasic Blender\nMicrowave","c_har":"Iron / Steam\nBasic Fan\nHair Dryer\nElectric Cooker ทั่วไป","c_exp":"EV Car Accessories\nSmart Home Hub\nPortable Power Station\nFitness Tech","d_off_f":"Demo Corner Coffee Machine · In-store Experience · Staff Training Coffee","d_off_k":"+12% YoY","d_meg_f":"B2B Office / Hotel · Bundle กับ Kitchen Set · Showroom","d_meg_k":"+18% YoY","d_on_f":"Live Commerce ทุก Fri-Sat · Content Creator Partnership · SEO Coffee","d_on_k":"+35% YoY","d_mkt_f":"Flash Sale Lazada · TikTok Shop Coffee · Shopee Mall Official","d_mkt_k":"+28% YoY","d_mart_f":"MART Bundle Set · Seasonal Promotion · Gift Set","d_mart_k":"+8% YoY","e_rev":"335.0","e_gp":"28.0","e_gpa":"93.8","e_txn":"162000","e_ms":"22.5","_s":["ทีม SA แข็งแกร่ง มี Expert ทุก Sub-cat","HomePro Brand Trust สูง ลูกค้าเชื่อมั่น","Demo & Experience ในสาขาดีที่สุดในตลาด","Private Brand กำลังสร้าง Margin เพิ่ม","ฐานลูกค้า Loyalty ใหญ่ กลุ่ม Renovation"],"_w":["Online Share ยังน้อย เทียบกับ Offline","Coffee SKU Premium ยังขาด Depth","ราคาสูงกว่า Marketplace 15-20%","Stock ขาดบ่อยช่วง Promotion","ทีม Digital Content ยังไม่พอ"],"_at":"2026-08-25T10:00:00.000Z","_st":"done"},
+    "sc27_avp_kc": {"a_s25":"420.0","a_stg":"455.0","a_s26":"438.5","a_gp25":"24.2","a_gptg":"25.0","a_gp26":"24.6","a_gpa25":"101.6","a_gpatg":"113.8","a_gpa26":"107.9","a_t25":"58000","a_ttg":"63000","a_t26":"60200","b_trend":"Renovation Boom ยังต่อเนื่อง · Built-in Kitchen คือ Must-have บ้านใหม่ · Condo ต้องการ Compact Built-in · Premium Kitchen Design Influencer โต","b_comp":"IKEA เปิดสาขาใหม่ · Index Living Mall ขยาย KC · Shopee Mall Built-in ราคาถูกจากจีน","b_opp":"Design Consultation Service · B2B Developer / Contractor · Smart Kitchen Bundle · Private Brand Cabinet","c_att":"Built-in Oven (70L+)\nDishwasher\nInduction Hob Premium\nSteam Oven","c_def":"Hood Standard\nHob Standard\nKitchen Cabinet Basic","c_har":"Sink / Faucet Basic\nKitchen Accessory\nStorage Cabinet","c_exp":"Smart Kitchen Hub\nWine Cellar\nSteam+Microwave Combo","d_off_f":"Kitchen Studio Experience · Design Consultation · Bundle HOB+HOOD+OVEN","d_off_k":"+10% YoY","d_meg_f":"Developer Package · Showroom Full Kitchen · B2B Pricing","d_meg_k":"+22% YoY","d_on_f":"Before-After Content · Design Inspiration · Kitchen Tour Video","d_on_k":"+40% YoY","d_mkt_f":"Lazada Premium Brand · Shopee Mall KC","d_mkt_k":"+20% YoY","d_mart_f":"Seasonal Kitchen Set · Festival Promotion","d_mart_k":"+5% YoY","e_rev":"490.0","e_gp":"25.5","e_gpa":"124.9","e_txn":"67000","e_ms":"31.0","_s":["Market Leader Built-in Kitchen ไทย","Design Team แข็งแกร่ง","Partnership กับ Developer ชั้นนำ","Kitchen Studio ในสาขา Best-in-class","Private Brand Cabinet Growing"],"_w":["Lead Time สั่งสินค้านาน 4-8 สัปดาห์","ราคา Premium ลูกค้า Mass ไม่ถึง","After-sales Service ยังช้า","Online Content ยังไม่เพียงพอ","SKU จีนราคาถูกเริ่มกดดัน"],"_at":"2026-08-25T09:30:00.000Z","_st":"done"},
+    "sc27_avp_ho1": {"a_s25":"195.0","a_stg":"210.0","a_s26":"202.5","a_gp25":"28.5","a_gptg":"29.0","a_gp26":"28.8","a_gpa25":"55.6","a_gpatg":"60.9","a_gpa26":"58.3","a_t25":"320000","a_ttg":"345000","a_t26":"331000","b_trend":"Marie Kondo Effect ยังอยู่ · Modular Storage โต · Chemical ปลอดภัย Eco ต้องการสูง · WFH ทำให้บ้านต้องเป็นระเบียบมากขึ้น","b_comp":"IKEA Storage Solution แข่งโดยตรง · Shopee/Lazada Storage จีนราคาถูก · 7-11 / Lotus ขาย Daily Chemical","b_opp":"Subscription Chemical · Eco/Green Product Line · Smart Storage Solution · B2B Cleaning Service","c_att":"Modular Storage Premium\nEco Cleaning Chemical\nRobot Mop","c_def":"Plastic Box Storage\nMop & Broom\nBasic Chemical","c_har":"Wire Rack Storage\nBasic Cleaning Tool\nTraditional Chemical","c_exp":"Smart Storage (IoT)\nSubscription Cleaning Kit\nAromatherapy Cleaning","d_off_f":"Storage Zone Redesign · Eco Corner · Bundle Storage Set","d_off_k":"+8% YoY","d_meg_f":"B2B Cleaning / Hotel · Bulk Chemical · Facility Management","d_meg_k":"+15% YoY","d_on_f":"Organization Tips Content · Before-After Storage · Life Hack Video","d_on_k":"+32% YoY","d_mkt_f":"Shopee Flash Sale Chemical · Lazada Storage Bundle","d_mkt_k":"+25% YoY","d_mart_f":"Daily Essential Bundle · Monthly Chemical Set","d_mart_k":"+12% YoY","e_rev":"222.0","e_gp":"29.5","e_gpa":"65.5","e_txn":"358000","e_ms":"18.5","_s":["High Transaction Volume ฐานลูกค้ากว้าง","GP% สูงที่สุดใน K&H Division","Chemical Private Brand Margin ดีมาก","Repeat Purchase สูง","Easy to Cross-sell กับทุก Division"],"_w":["AOV ต่ำ ต้องขายปริมาณมาก","Online ยังแพ้ Marketplace ด้านราคา Chemical","Storage ถูก Copy จากจีนง่าย","Brand Awareness ต่ำกว่า KC/SA","Logistics Cost Chemical สูง"],"_at":"2026-08-25T09:00:00.000Z","_st":"wip"},
+    "sc27_avp_ho2": {"a_s25":"168.0","a_stg":"182.0","a_s26":"174.2","a_gp25":"25.5","a_gptg":"26.0","a_gp26":"25.8","a_gpa25":"42.8","a_gpatg":"47.3","a_gpa26":"44.9","a_t25":"185000","a_ttg":"200000","a_t26":"191500","b_trend":"Premium Cookware โต (Stanley/Le Creuset Effect) · Travel Rebound ทำ Luggage Boom · Sustainability ชาม-จาน ไม่ใช้ Plastic · Work From Kitchen","b_comp":"Index Living Mall Cookware · Shopee Premium Cookware จีน · Samsonite ขยาย Direct","b_opp":"Premium Cookware Bundle กับ HOB · Luggage B2B Corporate · Tableware Set Wedding · Private Brand Cookware","c_att":"Cast Iron / Ceramic Cookware\nPremium Luggage (25"+)\nPortable Tableware Set","c_def":"Non-stick Pan Standard\nBasic Luggage\nMelamine Tableware","c_har":"Basic Laundry Accessory\nPaper Goods\nBasic Kitchen Tool","c_exp":"Smart Cooking Tool\nEco Reusable Tableware\nTravel Accessories Premium","d_off_f":"Cookware Demo · Bundle Cookware+HOB · Luggage Zone","d_off_k":"+10% YoY","d_meg_f":"Corporate Luggage B2B · Gift Set Tableware","d_meg_k":"+20% YoY","d_on_f":"Recipe Content + Cookware · Travel Vlog + Luggage · Gift Guide","d_on_k":"+30% YoY","d_mkt_f":"Shopee Premium Mall · Lazada Cookware Campaign","d_mkt_k":"+22% YoY","d_mart_f":"Travel Season Luggage Set · Gift Season Tableware","d_mart_k":"+15% YoY","e_rev":"195.0","e_gp":"26.5","e_gpa":"51.7","e_txn":"208000","e_ms":"14.0","_s":["Cookware & Luggage Growing Category","Cross-sell กับ KC Cookware+HOB ทำได้ดี","Premium Segment มี Margin สูง","Gift Season ขายดีมาก","Travel Rebound ช่วย Luggage โต"],"_w":["Category กระจาย ยาก Focus","Luggage Online แข่งยาก Samsonite Direct","Cookware จีน Premium Look ราคาถูก","Transaction ต่ำ ลูกค้าซื้อ 1-2 ปี/ครั้ง","ทีมเล็ก ดูหลาย Sub-cat"],"_at":"2026-08-25T08:30:00.000Z","_st":"wip"},
+    "sc27_avp_pro_sa": {"a_s25":"45.0","a_stg":"52.0","a_s26":"48.5","a_gp25":"18.5","a_gptg":"19.0","a_gp26":"18.8","a_gpa25":"8.3","a_gpatg":"9.9","a_gpa26":"9.1","a_t25":"28000","a_ttg":"32000","a_t26":"29800","b_trend":"Live Commerce คือ New Promotion · Flash Sale ทุกวัน เป็น Normal · Influencer Review สำคัญมาก · Bundle Deal แทน Single Product","b_comp":"Power Buy Promotion Event ทุก Weekend · Xiaomi Official Event Direct · Brand Direct Online ตัด Channel","b_opp":"Mega Campaign ร่วมกับ Brand · Private Brand SA Promotion · In-store Event Experience · Bundle SA+KC Cross-div","c_att":"Coffee Machine Campaign\nAir Purifier Promotion\nSmart Home Bundle","c_def":"Fan / Rice Cooker Season Sale\nNew Year Appliance Campaign","c_har":"Basic SA Bundle Deal\nTradeIn Old Appliance","c_exp":"Subscription Bundle SA\nLive Commerce Only SKU","d_off_f":"Weekend Demo Event · Brand Day In-store · Trade-in Campaign","d_off_k":"Event ROI +15%","d_meg_f":"Corporate SA Bundle · B2B Office Appliance Deal","d_meg_k":"+20% YoY","d_on_f":"Live ทุก Fri 8PM · Campaign Page · SEO SA Keyword","d_on_k":"GMV +40%","d_mkt_f":"SA Super Sale · Brand Collab Campaign · TikTok SA Review","d_mkt_k":"GMV +35%","d_mart_f":"SA Gift Bundle · Season Promotion","d_mart_k":"+10%","e_rev":"56.0","e_gp":"19.5","e_gpa":"10.9","e_txn":"34000","e_ms":"8.5","_s":["Promotion Execution Speed เร็ว","Brand Relationship แน่นแฟ้น","Campaign Creativity โดดเด่น","Cross-channel Execution ดี","Data Analytics Campaign ดีขึ้นมาก"],"_w":["GP% ต่ำสุดใน K&H","Promotion War ทำให้ Margin หด","ทีมเล็ก ทำ Multi-campaign พร้อมกันยาก","Brand เริ่ม Direct ตัด Promotion","Planning Lead Time ยาว"],"_at":"2026-08-24T15:00:00.000Z","_st":"done"},
+    "sc27_avp_pro_kcho": {"a_s25":"52.0","a_stg":"60.0","a_s26":"55.8","a_gp25":"17.5","a_gptg":"18.5","a_gp26":"18.0","a_gpa25":"9.1","a_gpatg":"11.1","a_gpa26":"10.0","a_t25":"22000","a_ttg":"26000","a_t26":"23500","b_trend":"Kitchen Renovation Season เม.ย.-ก.ย. ยาวขึ้น · Online KC Research ก่อนซื้อ 90% · Influencer Kitchen Tour สำคัญ · Bundle KC+HO Cross-div โต","b_comp":"IKEA Promotion Event ขนาดใหญ่ · Brand Direct KC Online เพิ่ม · Index KC Campaign บ่อยขึ้น","b_opp":"Kitchen Renovation Package (Bundle KC+HO) · Developer New Project Promotion · Online KC Content Campaign · HO Storage Bundle Season","c_att":"Built-in Bundle Campaign (HOB+HOOD+OVEN)\nRenovation Package KC+HO\nNew Project Developer Deal","c_def":"Cabinet Season Sale\nKitchen Appliance Standard Bundle","c_har":"Basic KC Accessory Deal\nHO Storage Season Bundle","c_exp":"Online KC Showroom Virtual · Subscription KC Service","d_off_f":"Kitchen Renovation Fair · Bundle HOB+HOOD+OVEN · Cabinet Display Refresh","d_off_k":"Event Sales +18%","d_meg_f":"Developer Project Package · B2B KC Bundle · Corporate HO","d_meg_k":"+25% YoY","d_on_f":"Kitchen Inspo Content · Renovation Journey Video · Before-After KC","d_on_k":"GMV +45%","d_mkt_f":"KC Premium Campaign Lazada · Shopee KC Month · TikTok Kitchen Trend","d_mkt_k":"GMV +30%","d_mart_f":"HO+KC Cross Bundle · Festival Kitchen Set","d_mart_k":"+12%","e_rev":"65.0","e_gp":"19.0","e_gpa":"12.4","e_txn":"28000","e_ms":"12.0","_s":["Bundle KC+HO Cross-division ทำได้ดี","Developer Relationship แข็งแกร่ง","Renovation Season Campaign แม่นยำ","Online Content KC ดีขึ้นมาก","HO+KC Bundle Margin ดีกว่า Single"],"_w":["GP% ต่ำ Promotion Cost สูง","KC Lead Time ยาว ทำ Promotion ลำบาก","Online KC ยาก ลูกค้าต้องเห็นของจริง","ทีมเล็ก ดู KC+HO พร้อมกันเหนื่อย","Brand Direct Online ตัด Channel"],"_at":"2026-08-24T14:00:00.000Z","_st":"done"},
+    "sc27_svp": {"total_rev":"1317.8","total_gp":"24.9","total_gpa":"311.0","total_txn":"784200","strategy":"ปี 2027 K&H Portfolio จะ Focus 3 เรื่องหลัก: (1) Online & Live Commerce เป็น Growth Engine หลัก ทุก Division ต้องมี Online Strategy ชัดเจน (2) Premium Segment Expansion - Coffee, Built-in, Premium Cookware คือ Margin Driver (3) Cross-division Bundle - KC+HO+SA Bundle เพื่อเพิ่ม AOV และ Stickiness","risk":"Online Price War กดดัน GP% · Brand Direct ตัด Channel · Stock Management ยาวเพราะ Lead Time · ทีมขาดแคลน Digital Talent","bigbet":"Live Commerce Platform สำหรับ K&H โดยเฉพาะ · Cross-division Bundle ระหว่าง SA+KC+HO · Private Brand Expansion ทั้ง SA/HO1/HO2","kpi27":"Total Revenue +20% (1,580 ล้าน) · Portfolio GP% 26% · Online Share 30% · Private Brand 15% of Sales","_st":"done","_at":"2026-08-25T11:00:00.000Z","divs":{"avp_sa":{"sales26":"298.3","gp26":"27.1","gpa26":"80.8","txn26":"148200","rating":4,"comment":"AVP SA ทำได้ดี Coffee Strategy ชัดเจน Online Growth ดีมาก แต่ต้องเร่ง Stock Management และ Push Premium SKU เพิ่ม","direction":"ปี 2027 Focus Coffee Premium + Robot Vacuum + Online Live Commerce เป็นหลัก"},"avp_kc":{"sales26":"438.5","gp26":"24.6","gpa26":"107.9","txn26":"60200","rating":5,"comment":"KC เป็น Star Division ปีนี้ Developer Partnership แข็งแกร่งมาก Design Team World Class After-sales ต้องเร่งแก้ไข","direction":"รักษา Market Leader + เร่ง Online Content + Smart Kitchen Bundle"},"avp_ho1":{"sales26":"202.5","gp26":"28.8","gpa26":"58.3","txn26":"331000","rating":3,"comment":"GP% ดีที่สุดใน Portfolio แต่ Growth ช้า Online ต้องเร่ง Eco/Green Product Line มีโอกาสมาก","direction":"Eco Chemical Line + Modular Storage Premium + Online Subscription Chemical"},"avp_ho2":{"sales26":"174.2","gp26":"25.8","gpa26":"44.9","txn26":"191500","rating":3,"comment":"Cookware และ Luggage โต แต่ Category กระจายเกินไป ต้อง Focus 2-3 Sub-cat หลัก","direction":"Focus Premium Cookware + Luggage B2B + ลด Long-tail SKU"},"avp_pro_sa":{"sales26":"48.5","gp26":"18.8","gpa26":"9.1","txn26":"29800","rating":4,"comment":"Campaign Execution ดีมาก Creative โดดเด่น แต่ต้อง Protect GP% จาก Promotion War","direction":"Live Commerce First + ลด Pure Discount + Bundle Deal แทน"},"avp_pro_kcho":{"sales26":"55.8","gp26":"18.0","gpa26":"10.0","txn26":"23500","rating":4,"comment":"KC+HO Bundle Strategy ถูกทิศทาง Developer Relationship แน่น Online Content ต้องเร่ง","direction":"Renovation Package Bundle + Developer Program + Online KC Content"}}}
+  };
+
+  // Load demo data to localStorage
+  Object.keys(DEMO).forEach(function(k) {
+    if (!localStorage.getItem(k)) {
+      if (k === 'sc27_svp') {
+        localStorage.setItem(k, JSON.stringify(DEMO[k]));
+      } else {
+        localStorage.setItem(k, JSON.stringify(DEMO[k]));
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

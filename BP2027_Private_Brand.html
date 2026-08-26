@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BP2027 Private Brand — Module 5</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1a4ed8;--or:#f5822a;--navy:#0f172a;--green:#16a34a;--red:#dc2626;--yellow:#d97706;--purple:#7c3aed;--gray:#6b7280;}
+body{font-family:'Prompt',sans-serif;background:#F0F4FF;color:#0f172a;}
+
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0f172a 0%,#1a4ed8 60%,#f5822a 100%);}
+.loginBox{background:#fff;border-radius:24px;padding:40px 32px;width:500px;max-width:95vw;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.3);}
+.loginIcon{font-size:44px;margin-bottom:8px;}
+.loginTitle{font-size:21px;font-weight:900;color:#0f172a;margin-bottom:4px;}
+.loginSub{font-size:12px;color:#6b7280;margin-bottom:28px;}
+.loginLabel{font-size:11px;font-weight:700;color:#6b7280;text-align:left;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
+.avpGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+.avpBtn{padding:12px 6px;border:2px solid #DBEAFE;border-radius:12px;background:#EFF6FF;cursor:pointer;font-family:'Prompt',sans-serif;font-size:10px;font-weight:700;color:#1a4ed8;text-align:center;line-height:1.4;}
+.avpBtn:hover,.avpBtn:active{background:#1a4ed8;color:#fff;border-color:#1a4ed8;}
+.avpIcon{font-size:20px;display:block;margin-bottom:4px;}
+.divider{display:flex;align-items:center;gap:10px;margin:12px 0;}
+.divider hr{flex:1;border:none;border-top:1px solid #e5e7eb;}
+.divider span{font-size:11px;color:#6b7280;}
+.nickGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.nickBtn{padding:12px;border:2px solid #FFEDD5;border-radius:12px;background:#FFF7ED;cursor:pointer;font-family:'Prompt',sans-serif;font-size:10px;font-weight:700;color:#c2410c;text-align:center;line-height:1.4;}
+.nickBtn:hover,.nickBtn:active{background:#f5822a;color:#fff;border-color:#f5822a;}
+
+#app{display:none;}
+.topbar{background:#0f172a;color:#fff;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topLogo{background:#f5822a;color:#fff;font-weight:900;font-size:12px;padding:5px 10px;border-radius:7px;margin-right:10px;}
+.topTitle{font-size:13px;font-weight:700;}
+.roleBadge{padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;}
+.rb-avp{background:#1a4ed8;color:#fff;}
+.rb-nick{background:#f5822a;color:#fff;}
+.logoutBtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:7px;cursor:pointer;font-family:'Prompt',sans-serif;font-size:11px;}
+
+.content{max-width:1400px;margin:0 auto;padding:20px;}
+
+/* HERO */
+.heroRow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+.hBox{background:#fff;border-radius:14px;padding:16px 12px;box-shadow:0 2px 12px rgba(26,78,216,.08);border-top:4px solid #1a4ed8;text-align:center;}
+.hNum{font-size:22px;font-weight:900;}
+.hLbl{font-size:10px;color:#6b7280;font-weight:600;margin-top:3px;}
+.hSub{font-size:9px;font-weight:700;margin-top:4px;}
+
+/* TABLE CARD */
+.tCard{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(26,78,216,.08);margin-bottom:20px;overflow:hidden;}
+.tHead{padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.tTitle{font-size:14px;font-weight:800;}
+.tSub{font-size:11px;color:#6b7280;}
+
+/* INLINE EDIT TABLE */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:1100px;border-radius:12px;overflow:hidden;}
+thead tr{background:#fff;}
+th{padding:10px 10px;text-align:center;font-weight:700;color:#fff;font-size:9px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;border-right:1px solid rgba(255,255,255,.15);}
+th:last-child{border-right:none;}
+td{padding:7px 8px;border-bottom:1px solid #f1f5f9;border-right:1px solid #f8f9fa;vertical-align:middle;text-align:center;font-size:11px;}
+td:last-child{border-right:none;}
+.rowTotal td{background:#1a4ed8!important;color:#fff!important;font-weight:800;font-size:11px;}
+.rowTotal td input,.rowTotal td select{display:none;}
+.brandNum{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:10px;color:#fff;background:#1a4ed8;}
+
+/* INLINE INPUTS */
+.ti{width:100%;padding:5px 6px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'Prompt',sans-serif;font-size:11px;color:#0f172a;text-align:center;background:#fff;transition:border-color .15s;}
+.ti:focus{outline:none;border-color:#1a4ed8;box-shadow:0 0 0 2px rgba(26,78,216,.08);}
+.ti-name{text-align:left;font-weight:600;}
+.ts{width:100%;padding:5px 5px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'Prompt',sans-serif;font-size:10px;color:#0f172a;background:#fff;}
+.ts:focus{outline:none;border-color:#1a4ed8;}
+
+/* GROUP HEADERS — Blue/Orange/White only */
+.th-group{background:#1a4ed8;color:#fff;padding:8px 6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;text-align:center;}
+.th-25{background:#1a4ed8;}
+.th-26t{background:#1a4ed8;}
+.th-26a{background:#1a4ed8;}
+.th-27{background:#1a4ed8;}
+.th-inv{background:#1a4ed8;}
+/* Column widths */
+.col-brand{min-width:110px;}
+.col-sales{min-width:90px;}
+.col-gp{min-width:90px;}
+.col-gpa{min-width:90px;}
+.col-sku{min-width:52px;}
+.col-pct{min-width:48px;}
+.col-inv{min-width:62px;}
+.col-status{min-width:80px;}
+
+/* BADGES */
+.b{padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;white-space:nowrap;}
+.b-green{background:#DCFCE7;color:#16a34a;}
+.b-blue{background:#DBEAFE;color:#1a4ed8;}
+.b-red{background:#FEE2E2;color:#dc2626;}
+.b-yellow{background:#FEF3C7;color:#d97706;}
+.b-gray{background:#F3F4F6;color:#6b7280;}
+
+/* COMPUTED VALUES */
+.cv{font-weight:800;}
+.cv-green{color:#16a34a;}
+.cv-red{color:#dc2626;}
+.cv-yellow{color:#d97706;}
+.cv-blue{color:#1a4ed8;}
+
+/* GP BAR */
+.gpWrap{padding:16px 20px;}
+.gpRow{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.gpLbl{font-size:10px;font-weight:700;width:130px;flex-shrink:0;text-align:right;}
+.gpTrack{flex:1;background:#f1f5f9;border-radius:20px;height:14px;overflow:hidden;}
+.gpFill{height:100%;border-radius:20px;display:flex;align-items:center;padding:0 7px;}
+.gpFill span{font-size:8px;font-weight:700;color:#fff;}
+.gpVal{font-size:10px;font-weight:800;min-width:40px;}
+
+/* NICK GRID */
+.nickDivGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.ndCard{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);border-top:4px solid #1a4ed8;}
+.ndTitle{font-size:12px;font-weight:800;margin-bottom:10px;}
+.ndRow{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;}
+
+/* SAVE BTN */
+.saveBarBtn{background:#1a4ed8;color:#fff;border:none;padding:10px 24px;border-radius:10px;cursor:pointer;font-family:'Prompt',sans-serif;font-size:13px;font-weight:700;box-shadow:0 2px 8px rgba(26,78,216,.25);}
+.saveBarBtn:hover{background:#f5822a;}
+.savedMsg{font-size:11px;color:#16a34a;font-weight:700;display:none;}
+
+@media(max-width:700px){
+  .heroRow{grid-template-columns:1fr 1fr;}
+  .avpGrid{grid-template-columns:1fr 1fr;}
+  .nickDivGrid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="loginBox">
+    <div class="loginIcon">🏷️</div>
+    <div class="loginTitle">BP2027 Private Brand</div>
+    <div class="loginSub">Module 5 · Private Brand Performance · HomePro K&amp;H</div>
+    <div class="loginLabel">เลือก Division ของคุณ</div>
+    <div class="avpGrid">
+      <button class="avpBtn" data-id="avp_sa" onclick="doLogin(this)"><span class="avpIcon">📊</span>AVP SA<br>Small Appliances</button>
+      <button class="avpBtn" data-id="avp_kc" onclick="doLogin(this)"><span class="avpIcon">🍳</span>AVP KC<br>Kitchen &amp; Cabinet</button>
+      <button class="avpBtn" data-id="avp_ho1" onclick="doLogin(this)"><span class="avpIcon">🏠</span>AVP HO1<br>Storage/Cleaning</button>
+      <button class="avpBtn" data-id="avp_ho2" onclick="doLogin(this)"><span class="avpIcon">🛋️</span>AVP HO2<br>Tools/Cookware</button>
+      <button class="avpBtn" data-id="avp_pro_sa" onclick="doLogin(this)"><span class="avpIcon">🎯</span>AVP PRO SA<br>Promotion SA</button>
+      <button class="avpBtn" data-id="avp_pro_kcho" onclick="doLogin(this)"><span class="avpIcon">📣</span>AVP PRO KC HO<br>Promotion KC&amp;HO</button>
+    </div>
+    <div class="divider"><hr><span>Nick — Executive Access</span><hr></div>
+    <div class="nickGrid">
+      <button class="nickBtn" data-id="nick_monitor" onclick="doLogin(this)"><span class="avpIcon">👑</span>Executive Monitor<br>All Divisions</button>
+      <button class="nickBtn" data-id="nick_svp" onclick="doLogin(this)"><span class="avpIcon">📊</span>SVP Dashboard<br>Portfolio View</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;flex:1;min-width:0;">
+      <div class="topLogo">HOMEPRO</div>
+      <div class="topTitle">BP2027 Private Brand — Module 5</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <span id="roleBadge" class="roleBadge rb-avp"></span>
+      <button class="logoutBtn" onclick="doLogout()">ออก</button>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<script>
+var DIVS = {
+  avp_sa:      {name:'AVP SA',    label:'Small Appliances',       icon:'📊', color:'#1a4ed8'},
+  avp_kc:      {name:'AVP KC',    label:'Kitchen & Cabinet',      icon:'🍳', color:'#7c3aed'},
+  avp_ho1:     {name:'AVP HO1',   label:'Storage/Cleaning',       icon:'🏠', color:'#16a34a'},
+  avp_ho2:     {name:'AVP HO2',   label:'Tools/Cookware',         icon:'🛋️', color:'#d97706'},
+  avp_pro_sa:  {name:'PRO SA',    label:'Promotion SA',           icon:'🎯', color:'#dc2626'},
+  avp_pro_kcho:{name:'PRO KC HO', label:'Promotion KC & HO',      icon:'📣', color:'#0891b2'}
+};
+var NICK = {nick_monitor:1, nick_svp:1};
+var MAX_BRANDS = 5;
+var currentUser = null;
+
+function lsKey(div){ return 'pb27_'+div; }
+function loadData(div){
+  try{
+    var d = JSON.parse(localStorage.getItem(lsKey(div)));
+    if(d && d.brands) return d;
+  }catch(e){}
+  return {brands: emptyBrands()};
+}
+function saveData(div, d){ localStorage.setItem(lsKey(div), JSON.stringify(d)); }
+function emptyBrands(){
+  var arr = [];
+  for(var i=0;i<MAX_BRANDS;i++){
+    arr.push({brand:'',sku:0,s25:0,gp25:0,gpa25:0,st26:0,sa26:0,gpt26:0,gpa26:0,gpat26:0,gpaa26:0,st27:0,gpt27:0,gpat27:0,invDays:0,status:'growing'});
+  }
+  return arr;
+}
+function nf(v){ return parseFloat(v)||0; }
+function pct(a,b){ return b>0?((a/b)*100).toFixed(1):'—'; }
+function growth(a,b){ return b>0?(((a-b)/b)*100).toFixed(1):'—'; }
+function fm(v){ if(!v||v===0) return '—'; return Number(v).toLocaleString(); }
+
+// LOGIN
+function doLogin(btn){
+  var role = btn.getAttribute('data-id');
+  currentUser = role;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  var badge = document.getElementById('roleBadge');
+  if(NICK[role]){
+    badge.className='roleBadge rb-nick';
+    badge.textContent = role==='nick_monitor'?'👑 Executive Monitor':'📊 SVP';
+  } else {
+    badge.className='roleBadge rb-avp';
+    badge.textContent = DIVS[role].icon+' '+DIVS[role].name;
+  }
+  render();
+}
+function doLogout(){
+  currentUser=null;
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('app').style.display='none';
+}
+
+// RENDER
+function render(){
+  if(NICK[currentUser]) renderNick();
+  else renderAvp();
+}
+
+// ── AVP VIEW ──
+function renderAvp(){
+  var div = currentUser;
+  var dv = DIVS[div];
+  var d = loadData(div);
+  var brands = d.brands;
+
+  // Compute totals
+  var tot = {s25:0,st26:0,sa26:0,st27:0,gpa25:0,gpaa26:0,gpat27:0,sku:0};
+  for(var i=0;i<brands.length;i++){
+    var b=brands[i];
+    if(!b.brand) continue;
+    tot.s25+=nf(b.s25); tot.st26+=nf(b.st26); tot.sa26+=nf(b.sa26); tot.st27+=nf(b.st27);
+    tot.gpa25+=nf(b.gpa25); tot.gpaa26+=nf(b.gpaa26); tot.gpat27+=nf(b.gpat27);
+    tot.sku+=nf(b.sku);
+  }
+  var totAch = pct(tot.sa26, tot.st26);
+  var totGrw = growth(tot.sa26, tot.s25);
+  var totGrw27 = growth(tot.st27, tot.sa26);
+
+  var h = '';
+  // Hero
+  h += '<div class="heroRow">';
+  h += '<div class="hBox" style="border-top-color:'+dv.color+'"><div class="hNum" style="color:'+dv.color+'">'+tot.sku+'</div><div class="hLbl">SKU รวม</div></div>';
+  h += '<div class="hBox" style="border-top-color:#9ca3af"><div class="hNum" style="font-size:16px;color:#6b7280">'+fm(tot.s25)+'</div><div class="hLbl">ยอดขาย 2025</div></div>';
+  h += '<div class="hBox" style="border-top-color:#f5822a"><div class="hNum" style="font-size:16px;color:#f5822a">'+fm(tot.sa26)+'</div><div class="hLbl">ยอดขาย 2026 Actual</div><div class="hSub" style="color:'+(totAch!=='—'&&nf(totAch)>=100?'#16a34a':'#dc2626')+'">ACH '+totAch+'%</div></div>';
+  h += '<div class="hBox" style="border-top-color:#16a34a"><div class="hNum" style="font-size:16px;color:#16a34a">'+fm(tot.st27)+'</div><div class="hLbl">Target 2027</div><div class="hSub" style="color:#16a34a">+'+totGrw27+'%</div></div>';
+  h += '<div class="hBox" style="border-top-color:#7c3aed"><div class="hNum" style="color:'+(totGrw!=='—'&&nf(totGrw)>=0?'#16a34a':'#dc2626')+'">'+(totGrw!=='—'?(nf(totGrw)>=0?'+':'')+totGrw+'%':totGrw)+'</div><div class="hLbl">%Growth 25→26</div></div>';
+  h += '</div>';
+
+  // Main Table
+  h += '<div class="tCard">';
+  h += '<div class="tHead"><div class="tTitle">🏷️ Private Brand Performance — '+dv.name+'</div>';
+  h += '<div style="display:flex;align-items:center;gap:12px"><span class="savedMsg" id="savedMsg">✅ บันทึกแล้ว</span><button class="saveBarBtn" onclick="saveAvp()">💾 บันทึกข้อมูล</button></div></div>';
+  h += '<div class="tw"><table>';
+
+  // Group headers
+  h += '<thead>';
+  h += '<tr>';
+  h += '<th rowspan="2" style="width:30px">#</th>';
+  h += '<th rowspan="2" style="min-width:120px;text-align:left">Brand</th>';
+  h += '<th colspan="3" class="th-group th-25">2025</th>';
+  h += '<th colspan="5" class="th-group th-26t">2026 Target</th>';
+  h += '<th colspan="5" class="th-group th-26a">2026</th>';
+  h += '<th colspan="5" class="th-group th-27">Target 2027</th>';
+  h += '<th rowspan="2" class="th-group th-inv">Inv.Days</th>';
+  h += '<th rowspan="2" class="th-group th-inv" style="opacity:.5">Stock on Hand</th>';
+  h += '<th rowspan="2" class="th-group th-26a" style="opacity:.7">สถานะ</th>';
+  h += '</tr>';
+  h += '<tr>';
+  // 2025
+  h += '<th class="th-25 col-sales">ยอดขาย</th><th class="th-25 col-gp">GP%</th><th class="th-25 col-gpa">GPA</th>';
+  // 2026 Target
+  h += '<th class="th-26t col-sku">SKU</th><th class="th-26t col-sales">ยอดขาย</th><th class="th-26t col-gp">GP%</th><th class="th-26t col-gpa">GPA</th><th class="th-26t col-pct">%GTH</th>';
+  // 2026 Actual
+  h += '<th class="th-26a col-sales">ยอดขาย</th><th class="th-26a col-gp">GP%</th><th class="th-26a col-gpa">GPA</th><th class="th-26a col-pct">%ACH</th><th class="th-26a col-pct">%GTH</th>';
+  // 2027
+  h += '<th class="th-27 col-sku">SKU</th><th class="th-27 col-sales">ยอดขาย</th><th class="th-27 col-gp">GP%</th><th class="th-27 col-gpa">GPA</th><th class="th-27 col-pct">%GTH</th>';
+  // Action
+  h += '</tr>';
+  h += '</thead><tbody>';
+
+  // Brand rows
+  for(var i=0;i<MAX_BRANDS;i++){
+    var b = brands[i];
+    var ach26t = pct(nf(b.st26), nf(b.st26));
+    var ach26a = pct(nf(b.sa26), nf(b.st26));
+    var grw26 = growth(nf(b.sa26), nf(b.s25));
+    var grw27 = growth(nf(b.st27), nf(b.sa26));
+    var achColor = ach26a!=='—'?(nf(ach26a)>=100?'#16a34a':nf(ach26a)>=80?'#d97706':'#dc2626'):'#9ca3af';
+    var grwColor = grw26!=='—'?(nf(grw26)>=0?'#16a34a':'#dc2626'):'#9ca3af';
+    var grw27Color = grw27!=='—'?(nf(grw27)>=0?'#16a34a':'#dc2626'):'#9ca3af';
+    var rowBg = i%2===0?'background:#fff;':'background:#f8faff;';
+
+    h += '<tr style="'+rowBg+'">';
+    h += '<td><div class="brandNum">'+(i+1)+'</div></td>';
+    h += '<td style="text-align:left"><input class="ti ti-name" id="b'+i+'_brand" value="'+(b.brand||'')+'" placeholder="ชื่อ Brand..." oninput="autoSave()"></td>';
+    // 2025
+    h += '<td><input class="ti" id="b'+i+'_s25" type="number" value="'+(b.s25||'')+'" placeholder="0" oninput="autoSave();calcRow('+i+')"></td>';
+    h += '<td><input class="ti" id="b'+i+'_gp25" type="number" value="'+(b.gp25||'')+'" placeholder="0.0" step="0.1" oninput="autoSave()"></td>';
+    h += '<td><input class="ti" id="b'+i+'_gpa25" type="number" value="'+(b.gpa25||'')+'" placeholder="0" oninput="autoSave()"></td>';
+    // 2026 Target
+    h += '<td><input class="ti" id="b'+i+'_sku26" type="number" value="'+(b.sku26||'')+'" placeholder="0" min="0" oninput="autoSave()"></td>';
+    h += '<td><input class="ti" id="b'+i+'_st26" type="number" value="'+(b.st26||'')+'" placeholder="0" oninput="autoSave();calcRow('+i+')"></td>';
+    h += '<td><input class="ti" id="b'+i+'_gpt26" type="number" value="'+(b.gpt26||'')+'" placeholder="0.0" step="0.1" oninput="autoSave()"></td>';
+    h += '<td><input class="ti" id="b'+i+'_gpat26" type="number" value="'+(b.gpat26||'')+'" placeholder="0" oninput="autoSave()"></td>';
+    h += '<td id="b'+i+'_grw26" class="cv" style="color:#9ca3af">—</td>';
+    // 2026 Actual
+    h += '<td><input class="ti" id="b'+i+'_sa26" type="number" value="'+(b.sa26||'')+'" placeholder="0" oninput="autoSave();calcRow('+i+')"></td>';
+    h += '<td><input class="ti" id="b'+i+'_gpa26" type="number" value="'+(b.gpa26||'')+'" placeholder="0.0" step="0.1" oninput="autoSave()"></td>';
+    h += '<td><input class="ti" id="b'+i+'_gpaa26" type="number" value="'+(b.gpaa26||'')+'" placeholder="0" oninput="autoSave()"></td>';
+    h += '<td id="b'+i+'_ach26a" class="cv" style="color:#9ca3af">—</td>';
+    h += '<td id="b'+i+'_grw26a" class="cv" style="color:#9ca3af">—</td>';
+    // 2027
+    h += '<td><input class="ti" id="b'+i+'_sku27" type="number" value="'+(b.sku27||'')+'" placeholder="0" min="0" oninput="autoSave()"></td>';
+    h += '<td><input class="ti" id="b'+i+'_st27" type="number" value="'+(b.st27||'')+'" placeholder="0" oninput="autoSave();calcRow('+i+')"></td>';
+    h += '<td><input class="ti" id="b'+i+'_gpt27" type="number" value="'+(b.gpt27||'')+'" placeholder="0.0" step="0.1" oninput="autoSave()"></td>';
+    h += '<td><input class="ti" id="b'+i+'_gpat27" type="number" value="'+(b.gpat27||'')+'" placeholder="0" oninput="autoSave()"></td>';
+    h += '<td id="b'+i+'_grw27" class="cv" style="color:#9ca3af">—</td>';
+    // Inv Days + Stock on Hand
+    h += '<td><input class="ti" id="b'+i+'_invDays" type="number" value="'+(b.invDays||'')+'" placeholder="0" oninput="autoSave()"></td>';
+    h += '<td><input class="ti" id="b'+i+'_stockOnHand" type="number" value="'+(b.stockOnHand||'')+'" placeholder="0" oninput="autoSave()"></td>';
+    // Status
+    h += '<td><select class="ts" id="b'+i+'_status" onchange="autoSave()">';
+    var statuses = [{v:'growing',l:'🚀 Growing'},{v:'stable',l:'📊 Stable'},{v:'atrisk',l:'⚠️ At Risk'},{v:'discontinue',l:'🚫 Discontinue'}];
+    for(var si=0;si<statuses.length;si++) h += '<option value="'+statuses[si].v+'"'+(b.status===statuses[si].v?' selected':'')+'>'+statuses[si].l+'</option>';
+    h += '</select></td>';
+    h += '</tr>';
+  }
+
+  // Grand Total Row
+  h += '<tr class="rowTotal">';
+  h += '<td colspan="2" style="text-align:left;padding-left:12px;letter-spacing:.5px">GRAND TOTAL</td>';
+  h += '<td>'+fm(tot.s25)+'</td>';
+  h += '<td>—</td>';
+  h += '<td>'+fm(tot.gpa25)+'</td>';
+  h += '<td>'+fm(tot.st26)+'</td>';
+  h += '<td>—</td>';
+  h += '<td>—</td>';
+  h += '<td>—</td>';
+  h += '<td>'+(totGrw!=='—'?(nf(totGrw)>=0?'+':'')+totGrw+'%':totGrw)+'</td>';
+  h += '<td>'+fm(tot.sa26)+'</td>';
+  h += '<td>—</td>';
+  h += '<td>'+fm(tot.gpaa26)+'</td>';
+  h += '<td id="tot_ach26a">'+totAch+'%</td>';
+  h += '<td>'+(totGrw!=='—'?(nf(totGrw)>=0?'+':'')+totGrw+'%':totGrw)+'</td>';
+  h += '<td>'+fm(tot.st27)+'</td>';
+  h += '<td>—</td>';
+  h += '<td>'+fm(tot.gpat27)+'</td>';
+  h += '<td id="tot_grw27">'+(totGrw27!=='—'?(nf(totGrw27)>=0?'+':'')+totGrw27+'%':totGrw27)+'</td>';
+  h += '</tr>';
+
+  h += '</tbody></table></div></div>';
+
+  // GP% Chart
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px">';
+  h += '<div class="tCard"><div class="tHead"><div class="tTitle">📊 ยอดขาย แยก Brand (ลบ.)</div></div><div class="gpWrap" id="salesChart"></div></div>';
+  h += '<div class="tCard"><div class="tHead"><div class="tTitle">📈 GP% แยก Brand</div></div><div class="gpWrap" id="gpChart"></div></div>';
+  h += '<div class="tCard"><div class="tHead"><div class="tTitle">💰 GPA แยก Brand (ลบ.)</div></div><div class="gpWrap" id="gpaChart"></div></div>';
+  h += '</div>';
+
+  document.getElementById('mainContent').innerHTML = h;
+
+  // Calc all rows
+  for(var i=0;i<MAX_BRANDS;i++) calcRow(i);
+  drawCharts();
+}
+
+function calcRow(i){
+  var s25=nf(document.getElementById('b'+i+'_s25').value);
+  var st26=nf(document.getElementById('b'+i+'_st26').value);
+  var sa26=nf(document.getElementById('b'+i+'_sa26').value);
+  var st27=nf(document.getElementById('b'+i+'_st27').value);
+
+  // %Growth 26T vs 25
+  var grw26_el=document.getElementById('b'+i+'_grw26');
+  if(grw26_el){
+    var g=growth(st26,s25);
+    grw26_el.textContent = g!=='—'?(nf(g)>=0?'+':'')+g+'%':g;
+    grw26_el.style.color = g!=='—'?(nf(g)>=0?'#16a34a':'#dc2626'):'#9ca3af';
+  }
+
+  // %ACH 26A vs 26T
+  var ach26a_el=document.getElementById('b'+i+'_ach26a');
+  if(ach26a_el){
+    var a=pct(sa26,st26);
+    ach26a_el.textContent = a!=='—'?a+'%':a;
+    ach26a_el.style.color = a!=='—'?(nf(a)>=100?'#16a34a':nf(a)>=80?'#d97706':'#dc2626'):'#9ca3af';
+  }
+
+  // %Growth 26A vs 25
+  var grw26a_el=document.getElementById('b'+i+'_grw26a');
+  if(grw26a_el){
+    var g2=growth(sa26,s25);
+    grw26a_el.textContent = g2!=='—'?(nf(g2)>=0?'+':'')+g2+'%':g2;
+    grw26a_el.style.color = g2!=='—'?(nf(g2)>=0?'#16a34a':'#dc2626'):'#9ca3af';
+  }
+
+  // %Growth 27T vs 26A
+  var grw27_el=document.getElementById('b'+i+'_grw27');
+  if(grw27_el){
+    var g3=growth(st27,sa26);
+    grw27_el.textContent = g3!=='—'?(nf(g3)>=0?'+':'')+g3+'%':g3;
+    grw27_el.style.color = g3!=='—'?(nf(g3)>=0?'#16a34a':'#dc2626'):'#9ca3af';
+  }
+}
+
+function drawCharts(){
+  var COLORS = {y25:'rgba(26,78,216,.35)', y26:'#f5822a', y27:'#1a4ed8'};
+  var LABELS = ['2025','2026','Target 2027'];
+  var brands=[], s25arr=[], s26arr=[], s27arr=[], gp25arr=[], gp26arr=[], gp27arr=[];
+  for(var i=0;i<MAX_BRANDS;i++){
+    var bname=document.getElementById('b'+i+'_brand')?document.getElementById('b'+i+'_brand').value.trim():'';
+    if(!bname) continue;
+    brands.push(bname);
+    s25arr.push(nf(document.getElementById('b'+i+'_s25')?document.getElementById('b'+i+'_s25').value:0));
+    s26arr.push(nf(document.getElementById('b'+i+'_sa26')?document.getElementById('b'+i+'_sa26').value:0));
+    s27arr.push(nf(document.getElementById('b'+i+'_st27')?document.getElementById('b'+i+'_st27').value:0));
+    gp25arr.push(nf(document.getElementById('b'+i+'_gp25')?document.getElementById('b'+i+'_gp25').value:0));
+    gp26arr.push(nf(document.getElementById('b'+i+'_gpa26')?document.getElementById('b'+i+'_gpa26').value:0));
+    gp27arr.push(nf(document.getElementById('b'+i+'_gpt27')?document.getElementById('b'+i+'_gpt27').value:0));
+  }
+  var empty='<div style="color:#9ca3af;text-align:center;padding:32px;font-size:12px">กรอกข้อมูล Brand เพื่อแสดงกราฟ</div>';
+  var sc=document.getElementById('salesChart');
+  var gc=document.getElementById('gpChart');
+  if(!brands.length){ if(sc) sc.innerHTML=empty; if(gc) gc.innerHTML=empty; return; }
+
+  // ── Sales Bar Chart ──
+  var maxS=Math.max.apply(null,s25arr.concat(s26arr,s27arr))||1;
+  var sh='<div style="padding:4px 0 0">';
+  // Legend
+  sh+='<div style="display:flex;gap:16px;padding:0 0 12px;flex-wrap:wrap">';
+  sh+='<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280"><div style="width:12px;height:12px;border-radius:3px;background:rgba(26,78,216,.35)"></div>2025</div>';
+  sh+='<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280"><div style="width:12px;height:12px;border-radius:3px;background:#f5822a"></div>2026</div>';
+  sh+='<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280"><div style="width:12px;height:12px;border-radius:3px;background:#1a4ed8"></div>Target 2027</div>';
+  sh+='</div>';
+  for(var i=0;i<brands.length;i++){
+    var p25=(s25arr[i]/maxS*100).toFixed(1);
+    var p26=(s26arr[i]/maxS*100).toFixed(1);
+    var p27=(s27arr[i]/maxS*100).toFixed(1);
+    sh+='<div style="margin-bottom:14px">';
+    sh+='<div style="font-size:11px;font-weight:700;color:#0f172a;margin-bottom:6px">'+brands[i]+'</div>';
+    // 3 bars per brand
+    sh+='<div style="display:flex;flex-direction:column;gap:4px">';
+    sh+='<div style="display:flex;align-items:center;gap:8px">';
+    sh+='<div style="font-size:9px;color:#6b7280;width:70px;text-align:right;flex-shrink:0">2025</div>';
+    sh+='<div style="flex:1;background:#f1f5f9;border-radius:6px;height:18px;overflow:hidden">';
+    sh+='<div style="height:100%;width:'+p25+'%;background:rgba(26,78,216,.3);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">';
+    if(s25arr[i]) sh+='<span style="font-size:9px;font-weight:700;color:#1a4ed8">'+s25arr[i].toLocaleString()+'</span>';
+    sh+='</div></div></div>';
+    sh+='<div style="display:flex;align-items:center;gap:8px">';
+    sh+='<div style="font-size:9px;color:#6b7280;width:70px;text-align:right;flex-shrink:0">2026</div>';
+    sh+='<div style="flex:1;background:#f1f5f9;border-radius:6px;height:18px;overflow:hidden">';
+    sh+='<div style="height:100%;width:'+p26+'%;background:#f5822a;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">';
+    if(s26arr[i]) sh+='<span style="font-size:9px;font-weight:700;color:#fff">'+s26arr[i].toLocaleString()+'</span>';
+    sh+='</div></div></div>';
+    sh+='<div style="display:flex;align-items:center;gap:8px">';
+    sh+='<div style="font-size:9px;color:#6b7280;width:70px;text-align:right;flex-shrink:0">2027</div>';
+    sh+='<div style="flex:1;background:#f1f5f9;border-radius:6px;height:18px;overflow:hidden">';
+    sh+='<div style="height:100%;width:'+p27+'%;background:#1a4ed8;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">';
+    if(s27arr[i]) sh+='<span style="font-size:9px;font-weight:700;color:#fff">'+s27arr[i].toLocaleString()+'</span>';
+    sh+='</div></div></div>';
+    sh+='</div></div>';
+  }
+  sh+='</div>';
+  if(sc) sc.innerHTML=sh;
+
+  // ── GP% Bar Chart ──
+  var maxG=Math.max.apply(null,gp25arr.concat(gp26arr,gp27arr))||50;
+  var gh='<div style="padding:4px 0 0">';
+  gh+='<div style="display:flex;gap:16px;padding:0 0 12px;flex-wrap:wrap">';
+  gh+='<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280"><div style="width:12px;height:12px;border-radius:3px;background:rgba(26,78,216,.35)"></div>2025</div>';
+  gh+='<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280"><div style="width:12px;height:12px;border-radius:3px;background:#f5822a"></div>2026</div>';
+  gh+='<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280"><div style="width:12px;height:12px;border-radius:3px;background:#1a4ed8"></div>Target 2027</div>';
+  gh+='</div>';
+  for(var i=0;i<brands.length;i++){
+    var pg25=(gp25arr[i]/maxG*100).toFixed(1);
+    var pg26=(gp26arr[i]/maxG*100).toFixed(1);
+    var pg27=(gp27arr[i]/maxG*100).toFixed(1);
+    gh+='<div style="margin-bottom:14px">';
+    gh+='<div style="font-size:11px;font-weight:700;color:#0f172a;margin-bottom:6px">'+brands[i]+'</div>';
+    gh+='<div style="display:flex;flex-direction:column;gap:4px">';
+    gh+='<div style="display:flex;align-items:center;gap:8px">';
+    gh+='<div style="font-size:9px;color:#6b7280;width:70px;text-align:right;flex-shrink:0">2025</div>';
+    gh+='<div style="flex:1;background:#f1f5f9;border-radius:6px;height:18px;overflow:hidden">';
+    gh+='<div style="height:100%;width:'+pg25+'%;background:rgba(26,78,216,.3);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">';
+    if(gp25arr[i]) gh+='<span style="font-size:9px;font-weight:700;color:#1a4ed8">'+gp25arr[i]+'%</span>';
+    gh+='</div></div></div>';
+    gh+='<div style="display:flex;align-items:center;gap:8px">';
+    gh+='<div style="font-size:9px;color:#6b7280;width:70px;text-align:right;flex-shrink:0">2026</div>';
+    gh+='<div style="flex:1;background:#f1f5f9;border-radius:6px;height:18px;overflow:hidden">';
+    gh+='<div style="height:100%;width:'+pg26+'%;background:#f5822a;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">';
+    if(gp26arr[i]) gh+='<span style="font-size:9px;font-weight:700;color:#fff">'+gp26arr[i]+'%</span>';
+    gh+='</div></div></div>';
+    gh+='<div style="display:flex;align-items:center;gap:8px">';
+    gh+='<div style="font-size:9px;color:#6b7280;width:70px;text-align:right;flex-shrink:0">2027</div>';
+    gh+='<div style="flex:1;background:#f1f5f9;border-radius:6px;height:18px;overflow:hidden">';
+    gh+='<div style="height:100%;width:'+pg27+'%;background:#1a4ed8;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">';
+    if(gp27arr[i]) gh+='<span style="font-size:9px;font-weight:700;color:#fff">'+gp27arr[i]+'%</span>';
+    gh+='</div></div></div>';
+    gh+='</div></div>';
+  }
+  gh+='</div>';
+  if(gc) gc.innerHTML=gh;
+
+  // ── GPA Bar Chart ──
+  var gpa25arr=[], gpa26arr=[], gpat27arr=[];
+  for(var i=0;i<MAX_BRANDS;i++){
+    var bname2=document.getElementById('b'+i+'_brand')?document.getElementById('b'+i+'_brand').value.trim():'';
+    if(!bname2) continue;
+    gpa25arr.push(nf(document.getElementById('b'+i+'_gpa25')?document.getElementById('b'+i+'_gpa25').value:0));
+    gpa26arr.push(nf(document.getElementById('b'+i+'_gpaa26')?document.getElementById('b'+i+'_gpaa26').value:0));
+    gpat27arr.push(nf(document.getElementById('b'+i+'_gpat27')?document.getElementById('b'+i+'_gpat27').value:0));
+  }
+  var maxGpa=Math.max.apply(null,gpa25arr.concat(gpa26arr,gpat27arr))||1;
+  var gpah='<div style="padding:4px 0 0">';
+  gpah+='<div style="display:flex;gap:16px;padding:0 0 12px;flex-wrap:wrap">';
+  gpah+='<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280"><div style="width:12px;height:12px;border-radius:3px;background:rgba(26,78,216,.35)"></div>2025</div>';
+  gpah+='<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280"><div style="width:12px;height:12px;border-radius:3px;background:#f5822a"></div>2026</div>';
+  gpah+='<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280"><div style="width:12px;height:12px;border-radius:3px;background:#1a4ed8"></div>2027</div>';
+  gpah+='</div>';
+  for(var i=0;i<brands.length;i++){
+    var pg25a=(gpa25arr[i]/maxGpa*100).toFixed(1);
+    var pg26a=(gpa26arr[i]/maxGpa*100).toFixed(1);
+    var pg27a=(gpat27arr[i]/maxGpa*100).toFixed(1);
+    gpah+='<div style="margin-bottom:14px">';
+    gpah+='<div style="font-size:11px;font-weight:700;color:#0f172a;margin-bottom:6px">'+brands[i]+'</div>';
+    gpah+='<div style="display:flex;flex-direction:column;gap:4px">';
+    gpah+='<div style="display:flex;align-items:center;gap:8px"><div style="font-size:9px;color:#6b7280;width:70px;text-align:right;flex-shrink:0">2025</div><div style="flex:1;background:#f1f5f9;border-radius:6px;height:18px;overflow:hidden"><div style="height:100%;width:'+pg25a+'%;background:rgba(26,78,216,.3);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">'+(gpa25arr[i]?'<span style="font-size:9px;font-weight:700;color:#1a4ed8">'+Number(gpa25arr[i]).toLocaleString()+'</span>':'')+'</div></div></div>';
+    gpah+='<div style="display:flex;align-items:center;gap:8px"><div style="font-size:9px;color:#6b7280;width:70px;text-align:right;flex-shrink:0">2026</div><div style="flex:1;background:#f1f5f9;border-radius:6px;height:18px;overflow:hidden"><div style="height:100%;width:'+pg26a+'%;background:#f5822a;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">'+(gpa26arr[i]?'<span style="font-size:9px;font-weight:700;color:#fff">'+Number(gpa26arr[i]).toLocaleString()+'</span>':'')+'</div></div></div>';
+    gpah+='<div style="display:flex;align-items:center;gap:8px"><div style="font-size:9px;color:#6b7280;width:70px;text-align:right;flex-shrink:0">2027</div><div style="flex:1;background:#f1f5f9;border-radius:6px;height:18px;overflow:hidden"><div style="height:100%;width:'+pg27a+'%;background:#1a4ed8;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">'+(gpat27arr[i]?'<span style="font-size:9px;font-weight:700;color:#fff">'+Number(gpat27arr[i]).toLocaleString()+'</span>':'')+'</div></div></div>';
+    gpah+='</div></div>';
+  }
+  gpah+='</div>';
+  var gpac=document.getElementById('gpaChart');
+  if(gpac) gpac.innerHTML=gpah;
+}
+
+var autoSaveTimer=null;
+function autoSave(){
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer=setTimeout(function(){
+    saveAvp(true);
+    drawCharts();
+  },1500);
+}
+
+function saveAvp(silent){
+  var d={brands:[]};
+  for(var i=0;i<MAX_BRANDS;i++){
+    var g=function(id){var el=document.getElementById(id);return el?el.value:'';};
+    d.brands.push({
+      brand:g('b'+i+'_brand'),sku26:nf(g('b'+i+'_sku26')),sku27:nf(g('b'+i+'_sku27')),
+      s25:nf(g('b'+i+'_s25')),gp25:nf(g('b'+i+'_gp25')),gpa25:nf(g('b'+i+'_gpa25')),
+      st26:nf(g('b'+i+'_st26')),gpt26:nf(g('b'+i+'_gpt26')),gpat26:nf(g('b'+i+'_gpat26')),
+      sa26:nf(g('b'+i+'_sa26')),gpa26:nf(g('b'+i+'_gpa26')),gpaa26:nf(g('b'+i+'_gpaa26')),
+      st27:nf(g('b'+i+'_st27')),gpt27:nf(g('b'+i+'_gpt27')),gpat27:nf(g('b'+i+'_gpat27')),
+      invDays:nf(g('b'+i+'_invDays')),status:g('b'+i+'_status'),
+      stockOnHand:nf(g('b'+i+'_stockOnHand'))
+    });
+  }
+  saveData(currentUser,d);
+  if(!silent){
+    var msg=document.getElementById('savedMsg');
+    if(msg){msg.style.display='block';setTimeout(function(){msg.style.display='none';},2000);}
+  }
+}
+
+// ── NICK VIEW ──
+function renderNick(){
+  var dkeys=Object.keys(DIVS);
+  var h='';
+
+  // Overall hero
+  var gTot={s25:0,sa26:0,st26:0,st27:0};
+  for(var di=0;di<dkeys.length;di++){
+    var bd=loadData(dkeys[di]).brands;
+    for(var bi=0;bi<bd.length;bi++){
+      if(!bd[bi].brand) continue;
+      gTot.s25+=nf(bd[bi].s25); gTot.sa26+=nf(bd[bi].sa26); gTot.st26+=nf(bd[bi].st26); gTot.st27+=nf(bd[bi].st27);
+    }
+  }
+  var gAch=pct(gTot.sa26,gTot.st26); var gGrw=growth(gTot.sa26,gTot.s25); var gGrw27=growth(gTot.st27,gTot.sa26);
+  h+='<div class="heroRow">';
+  h+='<div class="hBox" style="border-top-color:#9ca3af"><div class="hNum" style="font-size:16px;color:#6b7280">'+fm(gTot.s25)+'</div><div class="hLbl">PB ยอดขาย 2025 รวม</div></div>';
+  h+='<div class="hBox" style="border-top-color:#f5822a"><div class="hNum" style="font-size:16px;color:#f5822a">'+fm(gTot.sa26)+'</div><div class="hLbl">PB ยอดขาย 2026 Actual</div></div>';
+  h+='<div class="hBox" style="border-top-color:#1a4ed8"><div class="hNum" style="color:'+(gAch!=='—'&&nf(gAch)>=100?'#16a34a':'#dc2626')+'">'+gAch+'%</div><div class="hLbl">%ACH 2026</div></div>';
+  h+='<div class="hBox" style="border-top-color:#16a34a"><div class="hNum" style="font-size:16px;color:#16a34a">'+fm(gTot.st27)+'</div><div class="hLbl">Target 2027 รวม</div></div>';
+  h+='<div class="hBox" style="border-top-color:#7c3aed"><div class="hNum" style="color:'+(gGrw27!=='—'&&nf(gGrw27)>=0?'#16a34a':'#dc2626')+'">'+(gGrw27!=='—'?(nf(gGrw27)>=0?'+':'')+gGrw27+'%':gGrw27)+'</div><div class="hLbl">%Growth Target 2027</div></div>';
+  h+='</div>';
+
+  // Per Division Cards
+  h+='<div class="nickDivGrid">';
+  for(var di=0;di<dkeys.length;di++){
+    var dk=dkeys[di]; var dv=DIVS[dk];
+    var bd=loadData(dk).brands;
+    var ds25=0,dsa26=0,dst27=0,dBrands=0;
+    for(var bi=0;bi<bd.length;bi++){
+      if(!bd[bi].brand) continue;
+      dBrands++; ds25+=nf(bd[bi].s25); dsa26+=nf(bd[bi].sa26); dst27+=nf(bd[bi].st27);
+    }
+    var dGrw=growth(dsa26,ds25); var dGrw27=growth(dst27,dsa26);
+    h+='<div class="ndCard" style="border-top-color:'+dv.color+'">';
+    h+='<div class="ndTitle" style="color:'+dv.color+'">'+dv.icon+' '+dv.name+'</div>';
+    h+='<div class="ndRow"><span style="color:#6b7280">PB Brand</span><span style="font-weight:700">'+dBrands+' brand</span></div>';
+    h+='<div class="ndRow"><span style="color:#6b7280">ยอด 2026</span><span style="font-weight:800;color:#f5822a">'+fm(dsa26)+'</span></div>';
+    h+='<div class="ndRow"><span style="color:#6b7280">%Growth 25→26</span><span style="font-weight:700;color:'+(dGrw!=='—'&&nf(dGrw)>=0?'#16a34a':'#dc2626')+'">'+(dGrw!=='—'?(nf(dGrw)>=0?'+':'')+dGrw+'%':dGrw)+'</span></div>';
+    h+='<div class="ndRow"><span style="color:#6b7280">Target 2027</span><span style="font-weight:800;color:#16a34a">'+fm(dst27)+'</span></div>';
+    h+='<div class="ndRow"><span style="color:#6b7280">%Growth 27</span><span style="font-weight:700;color:'+(dGrw27!=='—'&&nf(dGrw27)>=0?'#16a34a':'#dc2626')+'">'+(dGrw27!=='—'?(nf(dGrw27)>=0?'+':'')+dGrw27+'%':dGrw27)+'</span></div>';
+    h+='</div>';
+  }
+  h+='</div>';
+
+  // All Brands Table
+  h+='<div class="tCard"><div class="tHead"><div class="tTitle">🏷️ Private Brand ทุก Division — ภาพรวม</div></div>';
+  h+='<div class="tw"><table style="min-width:900px"><thead><tr>';
+  h+='<th>Division</th><th style="text-align:left">Brand</th><th>SKU</th>';
+  h+='<th>ยอด 2025</th><th>ยอด 2026 Target</th><th>ยอด 2026 Actual</th><th>%ACH</th><th>%Growth 25→26</th>';
+  h+='<th>GP% 2026</th><th>GPA 2026</th><th>Target 2027</th><th>%Growth 27</th><th>Inv.Days</th><th>สถานะ</th><th>Action</th><th>Q</th><th>ยอดเป้า</th>';
+  h+='</tr></thead><tbody>';
+
+  var rowIdx=0;
+  for(var di=0;di<dkeys.length;di++){
+    var dk=dkeys[di]; var dv2=DIVS[dk];
+    var bd=loadData(dk).brands;
+    var hasData=false;
+    for(var bi=0;bi<bd.length;bi++){
+      var b=bd[bi]; if(!b.brand) continue; hasData=true;
+      var ach=pct(nf(b.sa26),nf(b.st26)); var grw=growth(nf(b.sa26),nf(b.s25)); var grw27=growth(nf(b.st27),nf(b.sa26));
+      var stMap={growing:'b-green',stable:'b-blue',atrisk:'b-red',discontinue:'b-gray'};
+      var stLbl={growing:'🚀 Growing',stable:'📊 Stable',atrisk:'⚠️ At Risk',discontinue:'🚫 Disc.'};
+      var invColor=nf(b.invDays)>90?'#dc2626':nf(b.invDays)>60?'#d97706':'#16a34a';
+      h+='<tr style="'+(rowIdx%2?'background:#fafbff;':'')+'">';
+      h+='<td><span style="font-size:9px;font-weight:700;color:'+dv2.color+'">'+dv2.name+'</span></td>';
+      h+='<td style="font-weight:700;text-align:left">'+b.brand+'</td>';
+      h+='<td>'+fm(b.sku)+'</td>';
+      h+='<td>'+fm(b.s25)+'</td>';
+      h+='<td style="color:#6b7280">'+fm(b.st26)+'</td>';
+      h+='<td style="font-weight:700">'+fm(b.sa26)+'</td>';
+      h+='<td style="font-weight:800;color:'+(ach!=='—'?(nf(ach)>=100?'#16a34a':nf(ach)>=80?'#d97706':'#dc2626'):'#9ca3af')+'">'+ach+'%</td>';
+      h+='<td style="font-weight:800;color:'+(grw!=='—'?(nf(grw)>=0?'#16a34a':'#dc2626'):'#9ca3af')+'">'+(grw!=='—'?(nf(grw)>=0?'+':'')+grw+'%':grw)+'</td>';
+      h+='<td style="font-weight:700;color:#f5822a">'+(b.gpa26||'—')+'%</td>';
+      h+='<td>'+fm(b.gpaa26)+'</td>';
+      h+='<td style="font-weight:800;color:#16a34a">'+fm(b.st27)+'</td>';
+      h+='<td style="font-weight:800;color:'+(grw27!=='—'?(nf(grw27)>=0?'#16a34a':'#dc2626'):'#9ca3af')+'">'+(grw27!=='—'?(nf(grw27)>=0?'+':'')+grw27+'%':grw27)+'</td>';
+      h+='<td style="font-weight:700;color:'+invColor+'">'+(b.invDays||'—')+(b.invDays?' วัน':'')+'</td>';
+      h+='<td style="font-size:10px">'+(b.stockOnHand?''+Number(b.stockOnHand).toLocaleString():'—')+'</td>';
+      h+='<td><span class="b '+(stMap[b.status]||'b-gray')+'">'+(stLbl[b.status]||'—')+'</span></td>';
+
+      h+='</tr>';
+      rowIdx++;
+    }
+    if(!hasData){
+      h+='<tr style="'+(rowIdx%2?'background:#fafbff;':'')+'"><td><span style="font-size:9px;font-weight:700;color:'+dv2.color+'">'+dv2.name+'</span></td><td colspan="16" style="color:#9ca3af;font-size:10px;text-align:left">ยังไม่มีข้อมูล</td></tr>';
+      rowIdx++;
+    }
+  }
+  h+='</tbody></table></div></div>';
+  document.getElementById('mainContent').innerHTML=h;
+}
+</script>
+</body>
+</html>

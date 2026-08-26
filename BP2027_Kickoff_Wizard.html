@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BP2027 Kickoff Wizard — HomePro</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a4ed8;--blue2:#2563eb;--blueLt:#EFF6FF;--blueMid:#DBEAFE;
+  --or:#f5822a;--or2:#fb923c;--orLt:#FFF7ED;--orMid:#FFEDD5;
+  --navy:#0f172a;--dark:#1e293b;--mid:#475569;--gray:#94a3b8;
+  --grayLt:#f8fafc;--border:#e2e8f0;--white:#ffffff;
+  --green:#16a34a;--greenLt:#f0fdf4;--red:#dc2626;--redLt:#fef2f2;
+  --purple:#7c3aed;--radius:14px;--shadow:0 2px 16px rgba(0,0,0,0.08);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Prompt',sans-serif;background:#f1f5f9;color:var(--dark);min-height:100vh}
+.screen{display:none}.screen.active{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── LOGIN ── */
+#screen-login{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#1d4ed8 100%);align-items:center;justify-content:center;padding:40px 16px}
+.login-card{background:var(--white);border-radius:24px;width:100%;max-width:460px;box-shadow:0 32px 80px rgba(0,0,0,0.35);overflow:hidden}
+.login-hero{background:linear-gradient(135deg,var(--blue),var(--or));padding:32px;text-align:center}
+.login-hero .badge{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:white;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:14px}
+.login-hero h1{font-size:24px;font-weight:900;color:white;line-height:1.3;margin-bottom:6px}
+.login-hero p{font-size:13px;color:rgba(255,255,255,0.75)}
+.login-body{padding:28px}
+.login-lbl{font-size:11px;font-weight:800;color:var(--gray);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.role-grid{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+.role-btn{width:100%;padding:13px 16px;border-radius:12px;border:2px solid var(--border);background:var(--white);font-family:'Prompt',sans-serif;font-size:13px;font-weight:600;color:var(--dark);cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:12px;text-align:left}
+.role-btn:hover{border-color:var(--blue);background:var(--blueLt);color:var(--blue)}
+.role-btn.selected{border-color:var(--blue);background:var(--blue);color:white}
+.role-icon{width:36px;height:36px;border-radius:9px;background:var(--grayLt);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.role-btn.selected .role-icon{background:rgba(255,255,255,0.2)}
+.role-sub{font-size:11px;font-weight:400;opacity:.75;margin-top:1px}
+.btn-login{width:100%;padding:15px;border-radius:12px;border:none;background:var(--blue);color:white;font-family:'Prompt',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .18s}
+.btn-login:disabled{background:var(--border);color:var(--gray);cursor:not-allowed}
+.btn-login:not(:disabled):hover{background:var(--blue2);transform:translateY(-1px)}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.tb-left{display:flex;align-items:center;gap:10px}
+.tb-logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--or));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:white}
+.tb-title{font-size:13px;font-weight:700;color:white}
+.tb-step{font-size:11px;font-weight:700;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);padding:3px 12px;border-radius:99px}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-user{font-size:12px;color:rgba(255,255,255,.5)}
+.tb-user strong{color:var(--or)}
+.btn-tb{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Prompt',sans-serif;transition:all .18s}
+.btn-tb-ghost{background:transparent;color:rgba(255,255,255,.6);border:1.5px solid rgba(255,255,255,.2)}
+.btn-tb-ghost:hover{border-color:var(--or);color:var(--or)}
+
+/* ── PROGRESS BAR ── */
+.wizard-progress{background:var(--white);border-bottom:1.5px solid var(--border);padding:14px 24px}
+.wp-steps{display:flex;gap:4px;margin-bottom:8px}
+.wp-step{flex:1;height:5px;border-radius:99px;background:var(--border);transition:all .3s}
+.wp-step.done{background:var(--green)}
+.wp-step.active{background:var(--blue)}
+.wp-step.or{background:var(--or)}
+.wp-meta{display:flex;justify-content:space-between;align-items:center}
+.wp-label{font-size:13px;font-weight:700;color:var(--dark)}
+.wp-pct{font-size:13px;font-weight:800;color:var(--blue)}
+
+/* ── WIZARD BODY ── */
+.wizard-body{flex:1;padding:24px;max-width:860px;margin:0 auto;width:100%}
+
+/* STEP CARD */
+.step-card{background:var(--white);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;border:1.5px solid var(--border);margin-bottom:16px}
+.step-hero{padding:24px 28px 20px;border-bottom:2px solid var(--border)}
+.step-num{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px}
+.step-badge{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:white;flex-shrink:0}
+.step-of{font-size:12px;font-weight:700;color:var(--gray);letter-spacing:1px;text-transform:uppercase}
+.step-hero h2{font-size:22px;font-weight:900;color:var(--dark);margin-bottom:6px;line-height:1.3}
+.step-hero p{font-size:14px;color:var(--mid);line-height:1.6}
+
+/* CHAT STYLE */
+.chat-wrap{padding:24px 28px}
+.chat-messages{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;min-height:60px}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.bot{flex-direction:row}
+.msg.user{flex-direction:row-reverse}
+.msg-avatar{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.bot .msg-avatar{background:linear-gradient(135deg,var(--blue),var(--or))}
+.user .msg-avatar{background:var(--grayLt)}
+.msg-bubble{max-width:80%;padding:12px 16px;border-radius:14px;font-size:14px;line-height:1.7}
+.bot .msg-bubble{background:var(--blueLt);color:var(--dark);border-bottom-left-radius:4px}
+.user .msg-bubble{background:var(--blue);color:white;border-bottom-right-radius:4px;font-weight:500}
+.chat-sub{font-size:12px;color:var(--gray);margin-bottom:12px}
+.chat-input-wrap{display:flex;gap:10px;align-items:flex-end}
+.chat-ta{flex:1;border:2px solid var(--border);border-radius:12px;font-family:'Prompt',sans-serif;font-size:14px;color:var(--dark);padding:12px 16px;background:var(--white);resize:none;min-height:52px;max-height:140px;line-height:1.6;transition:border .18s}
+.chat-ta:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,78,216,.08)}
+.btn-send{padding:12px 20px;border-radius:10px;background:var(--blue);color:white;border:none;font-family:'Prompt',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;height:52px}
+.btn-send:hover{background:var(--blue2)}
+.btn-send:disabled{background:var(--border);color:var(--gray);cursor:not-allowed}
+
+/* QUICK REPLIES */
+.quick-replies{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.qr-btn{padding:8px 16px;border-radius:99px;border:2px solid var(--blue);background:var(--blueLt);color:var(--blue);font-family:'Prompt',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s}
+.qr-btn:hover{background:var(--blue);color:white}
+
+/* FORM STYLE */
+.form-wrap{padding:24px 28px}
+.field-group{margin-bottom:20px}
+.field-label{font-size:13px;font-weight:800;color:var(--dark);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.field-sub{font-size:12px;color:var(--mid);margin-bottom:8px;font-weight:400}
+.f-input{width:100%;border:2px solid var(--border);border-radius:10px;font-family:'Prompt',sans-serif;font-size:15px;color:var(--dark);padding:11px 14px;background:var(--white);transition:border .18s}
+.f-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,78,216,.08)}
+.f-input.big{font-size:24px;font-weight:900;text-align:right}
+.f-ta{width:100%;border:2px solid var(--border);border-radius:10px;font-family:'Prompt',sans-serif;font-size:14px;color:var(--dark);padding:11px 14px;background:var(--white);resize:vertical;min-height:90px;line-height:1.7;transition:border .18s}
+.f-ta:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,78,216,.08)}
+.metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.metric-box{background:var(--grayLt);border-radius:10px;padding:12px;border:1.5px solid var(--border)}
+.metric-lbl{font-size:10px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.m-tag{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;margin-bottom:6px}
+.tag-25{background:var(--blueMid);color:var(--blue)}.tag-tg{background:var(--orMid);color:#c2410c}.tag-26{background:#dcfce7;color:var(--green)}
+.num-input{width:100%;border:2px solid var(--border);border-radius:8px;font-family:'Prompt',sans-serif;font-size:20px;font-weight:900;color:var(--dark);padding:8px 10px;background:var(--white);text-align:right;transition:border .18s}
+.num-input:focus{outline:none;border-color:var(--blue)}
+.unit-label{font-size:11px;color:var(--gray);margin-top:3px;text-align:right}
+.priority-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.priority-card{border:2px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .18s;background:var(--white)}
+.priority-card:hover{border-color:var(--blue);background:var(--blueLt)}
+.priority-card.selected{border-color:var(--blue);background:var(--blue);color:white}
+.priority-card.selected .pc-sub{color:rgba(255,255,255,.7)}
+.pc-icon{font-size:24px;margin-bottom:6px}
+.pc-title{font-size:14px;font-weight:800}
+.pc-sub{font-size:12px;color:var(--mid);margin-top:2px}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi-box{background:var(--grayLt);border-radius:10px;padding:14px;text-align:center;border:1.5px solid var(--border)}
+.kpi-lbl{font-size:11px;font-weight:800;color:var(--mid);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.kpi-inp{width:100%;border:2px solid var(--border);border-radius:8px;font-family:'Prompt',sans-serif;font-size:22px;font-weight:900;color:var(--dark);padding:8px;text-align:center;background:var(--white);transition:border .18s}
+.kpi-inp:focus{outline:none;border-color:var(--blue)}
+.kpi-unit{font-size:11px;color:var(--gray);margin-top:4px}
+.action-3{display:flex;flex-direction:column;gap:8px}
+.action-item{display:flex;gap:10px;align-items:center}
+.action-num{width:28px;height:28px;border-radius:8px;background:var(--blue);color:white;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.action-inp{flex:1;border:2px solid var(--border);border-radius:8px;font-family:'Prompt',sans-serif;font-size:14px;color:var(--dark);padding:9px 12px;background:var(--white);transition:border .18s}
+.action-inp:focus{outline:none;border-color:var(--or)}
+
+/* NAV BUTTONS */
+.wizard-nav{background:var(--white);border-top:2px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;bottom:0;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.nav-left{font-size:13px;color:var(--mid)}
+.nav-left strong{color:var(--dark);font-weight:800}
+.nav-right{display:flex;gap:10px}
+.btn{padding:11px 22px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'Prompt',sans-serif;transition:all .18s;display:inline-flex;align-items:center;gap:7px}
+.btn-prev{background:transparent;color:var(--mid);border:2px solid var(--border)}
+.btn-prev:hover{border-color:var(--blue);color:var(--blue)}
+.btn-next{background:var(--blue);color:white}
+.btn-next:hover{background:var(--blue2);transform:translateY(-1px)}
+.btn-or{background:var(--or);color:white}
+.btn-or:hover{background:var(--or2);transform:translateY(-1px)}
+
+/* ── OUTPUT SCREEN ── */
+#screen-output{background:#f1f5f9}
+.output-body{padding:24px;max-width:1000px;margin:0 auto}
+.output-tabs{display:flex;gap:8px;margin-bottom:20px}
+.tab-btn{padding:10px 22px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid var(--border);background:var(--white);color:var(--mid);font-family:'Prompt',sans-serif;transition:all .18s}
+.tab-btn.active{background:var(--blue);border-color:var(--blue);color:white}
+.tab-content{display:none}.tab-content.active{display:block}
+
+/* BUSINESS PLAN */
+.bp-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;border:1.5px solid var(--border)}
+.bp-header{background:linear-gradient(135deg,var(--navy),#1e3a8a);padding:28px 32px;color:white}
+.bp-title{font-size:22px;font-weight:900;margin-bottom:4px}
+.bp-sub{font-size:13px;color:rgba(255,255,255,.6)}
+.bp-body{padding:28px 32px}
+.bp-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1.5px solid var(--border)}
+.bp-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.bp-sec-title{font-size:14px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.bp-text{font-size:14px;color:var(--dark);line-height:1.8;white-space:pre-wrap}
+.bp-loading{text-align:center;padding:48px;color:var(--mid)}
+.bp-loading .spin{font-size:36px;animation:spin 1s linear infinite;display:block;margin-bottom:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SLIDE SUMMARY */
+.slide-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.slide-card{background:var(--white);border-radius:var(--radius);border:2px solid var(--border);overflow:hidden;box-shadow:var(--shadow)}
+.slide-header{padding:14px 18px;font-size:13px;font-weight:800;color:white;display:flex;align-items:center;gap:8px}
+.slide-body{padding:16px 18px}
+.slide-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.slide-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.slide-text{font-size:13px;color:var(--dark);line-height:1.6}
+.slide-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.skpi{background:var(--navy);border-radius:8px;padding:10px;text-align:center}
+.skpi-lbl{font-size:10px;color:rgba(255,255,255,.5);font-weight:700;text-transform:uppercase;margin-bottom:3px}
+.skpi-val{font-size:18px;font-weight:900;color:var(--or)}
+.skpi-unit{font-size:10px;color:rgba(255,255,255,.35)}
+.slide-full{grid-column:1/-1}
+.slide-loading{text-align:center;padding:48px;color:var(--mid);grid-column:1/-1}
+
+.export-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.btn-export{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Prompt',sans-serif;display:flex;align-items:center;gap:7px}
+.btn-export-blue{background:var(--blueLt);color:var(--blue);border:2px solid var(--blueMid)}
+.btn-export-or{background:var(--orLt);color:var(--or);border:2px solid var(--orMid)}
+.btn-export-navy{background:var(--navy);color:white}
+
+.toast{position:fixed;bottom:80px;right:20px;background:var(--navy);color:white;font-size:13px;font-weight:700;padding:11px 18px;border-radius:10px;display:none;z-index:9999;border-left:4px solid var(--green)}
+.toast.show{display:flex;align-items:center;gap:7px}
+
+@media(max-width:700px){
+  .metric-row,.kpi-row,.priority-grid,.slide-grid{grid-template-columns:1fr}
+  .slide-full{grid-column:1}
+  .wizard-body,.output-body{padding:14px}
+  .step-hero{padding:18px 18px 16px}
+  .chat-wrap,.form-wrap{padding:18px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div class="screen active" id="screen-login">
+  <div class="login-card">
+    <div class="login-hero">
+      <div class="badge">BP2027 · HomePro K&H</div>
+      <h1>Kickoff Wizard 🚀<br>Business Plan 2027</h1>
+      <p>8 ขั้นตอน · AI ช่วยสรุป · ไม่ต้องเริ่มจาก Blank Page</p>
+    </div>
+    <div class="login-body">
+      <div class="login-lbl">เลือก Division ของคุณ</div>
+      <div class="role-grid">
+        <button class="role-btn" data-id="avp_sa" onclick="pickById(this)">
+          <div class="role-icon">📊</div><div><div>AVP SA</div><div class="role-sub">Small Appliances · Small Lover</div></div>
+        </button>
+        <button class="role-btn" data-id="avp_kc" onclick="pickById(this)">
+          <div class="role-icon">🍳</div><div><div>AVP KC</div><div class="role-sub">Kitchen &amp; Cabinet Built-in</div></div>
+        </button>
+        <button class="role-btn" data-id="avp_ho1" onclick="pickById(this)">
+          <div class="role-icon">🏠</div><div><div>AVP HO1</div><div class="role-sub">Storage · Cleaning · Daily Use</div></div>
+        </button>
+        <button class="role-btn" data-id="avp_ho2" onclick="pickById(this)">
+          <div class="role-icon">🛋️</div><div><div>AVP HO2</div><div class="role-sub">Kitchen Tools · Laundry · Travel</div></div>
+        </button>
+        <button class="role-btn" data-id="avp_pro_sa" onclick="pickById(this)">
+          <div class="role-icon">🎯</div><div><div>AVP PRO SA</div><div class="role-sub">Promotion Small Appliances</div></div>
+        </button>
+        <button class="role-btn" data-id="avp_pro_kcho" onclick="pickById(this)">
+          <div class="role-icon">📣</div><div><div>AVP PRO KC HO</div><div class="role-sub">Promotion KC &amp; HO</div></div>
+        </button>
+      </div>
+      <button class="btn-login" id="btn-login" disabled onclick="startWizard()">เลือก Division ก่อนครับ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WIZARD ══ -->
+<div class="screen" id="screen-wizard">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">W</div>
+      <div class="tb-title">BP2027 Kickoff Wizard</div>
+      <div class="tb-step" id="tb-step">Step 1 / 8</div>
+    </div>
+    <div class="tb-right">
+      <span class="tb-user">เข้าใช้เป็น: <strong id="tb-name">—</strong></span>
+      <button class="btn-tb btn-tb-ghost" onclick="logout()">ออกจากระบบ</button>
+    </div>
+  </div>
+
+  <div class="wizard-progress">
+    <div class="wp-steps" id="wp-steps"></div>
+    <div class="wp-meta">
+      <div class="wp-label" id="wp-label">—</div>
+      <div class="wp-pct" id="wp-pct">0%</div>
+    </div>
+  </div>
+
+  <div class="wizard-body" id="wizard-body"></div>
+
+  <div class="wizard-nav">
+    <div class="nav-left"><strong id="nav-division">—</strong> · BP2027 Kickoff Wizard</div>
+    <div class="nav-right">
+      <button class="btn btn-prev" id="btn-prev" onclick="prevStep()">← ก่อนหน้า</button>
+      <button class="btn btn-next" id="btn-next" onclick="nextStep()">ถัดไป →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ OUTPUT ══ -->
+<div class="screen" id="screen-output">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">✓</div>
+      <div class="tb-title">Business Plan 2027 — เสร็จสมบูรณ์!</div>
+    </div>
+    <div class="tb-right">
+      <button class="btn-tb btn-tb-ghost" onclick="backToWizard()">← แก้ไข</button>
+      <button class="btn-tb btn-tb-ghost" onclick="logout()">ออกจากระบบ</button>
+    </div>
+  </div>
+  <div class="output-body">
+    <div class="output-tabs">
+      <button class="tab-btn active" onclick="switchTab('bp')">📄 Business Plan</button>
+      <button class="tab-btn" onclick="switchTab('slide')">🖼️ Strategy Slide</button>
+    </div>
+    <div class="export-row">
+      <button class="btn-export btn-export-blue" onclick="exportTxt()">📥 Export TXT</button>
+      <button class="btn-export btn-export-or" onclick="window.print()">🖨️ Print / PDF</button>
+      <button class="btn-export btn-export-navy" onclick="regenerate()">🔄 Regenerate AI</button>
+    </div>
+    <div class="tab-content active" id="tab-bp">
+      <div class="bp-loading" id="bp-loading"><span class="spin">⚙️</span>AI กำลังสร้าง Business Plan...</div>
+      <div class="bp-card" id="bp-card" style="display:none"></div>
+    </div>
+    <div class="tab-content" id="tab-slide">
+      <div class="slide-loading" id="slide-loading"><span class="spin">⚙️</span>AI กำลังสร้าง Strategy Slide...</div>
+      <div class="slide-grid" id="slide-grid" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ บันทึกแล้ว</div>
+
+<script>
+var ME = null;
+var STEP = 1;
+var TOTAL = 8;
+var ANSWERS = {};
+
+var STEPS = [
+  {n:1, title:'Division Overview', sub:'แนะนำ Division และสินค้าที่ดูแล', style:'chat',
+   questions:[
+     {q:'สวัสดีครับ! 👋 เพื่อช่วยวาง Business Plan 2027 ให้ดีที่สุด\n\nเริ่มต้นเลยครับ — **Division ของคุณดูแลสินค้าหลักอะไรบ้าง?** และตอนนี้มีสินค้ากี่ Sub-category ที่ดูแลอยู่?', key:'div_overview'},
+     {q:'เยี่ยมมากครับ! 💪\n\n**ทีมของคุณมีกี่คน?** และแต่ละคนรับผิดชอบอะไรบ้างในภาพรวม?', key:'team_size'},
+     {q:'ขอบคุณครับ\n\nถ้าให้**อธิบาย Division ของคุณในประโยคเดียว** ว่าเราคือใคร ทำอะไร และเก่งอะไรที่สุด — จะพูดว่าอย่างไรครับ?', key:'div_identity'}
+   ]},
+  {n:2, title:'ตัวเลข 2026 Actual', sub:'ผลการดำเนินงานจริงปี 2026', style:'form'},
+  {n:3, title:'Win & Loss 2026', sub:'สิ่งที่ทำได้ดีและบทเรียนที่ได้', style:'chat',
+   questions:[
+     {q:'ทบทวนปี 2026 กันหน่อยครับ 🔍\n\n**ความสำเร็จที่ภูมิใจที่สุดในปีนี้คืออะไร?** อาจเป็น Campaign, Product, หรือสิ่งที่ทำได้เกินคาดก็ได้ครับ', key:'win_2026'},
+     {q:'ดีมากครับ! 🎉\n\nแล้ว**สิ่งที่ไม่เป็นอย่างที่คาดหวังในปีนี้คืออะไร?** และได้บทเรียนอะไรจากตรงนั้นบ้างครับ?', key:'loss_2026'},
+     {q:'ขอบคุณที่แชร์ครับ 🙏\n\n**ถ้าย้อนเวลาได้ จะทำอะไรต่างออกไปในปี 2026?** มีอะไรที่อยากเปลี่ยนแปลงไหมครับ?', key:'lesson_2026'}
+   ]},
+  {n:4, title:'Market & Customer', sub:'ตลาดและลูกค้าของ Division', style:'chat',
+   questions:[
+     {q:'มาคุยเรื่องตลาดกันครับ 🌏\n\n**ลูกค้าหลักของ Division คุณเป็นใคร?** Segment ไหน? มี Profile อย่างไร? อะไรคือ Trigger ที่ทำให้เขามาซื้อที่ HomePro?', key:'customer'},
+     {q:'น่าสนใจมากครับ\n\n**Trend ตลาดที่ Division คุณต้องจับตาดูในปี 2027 คืออะไร?** ทั้ง Trend ที่เป็นโอกาสและ Trend ที่อาจกระทบเราครับ', key:'market_trend'},
+     {q:'**ลูกค้าของคุณกำลังเปลี่ยนแปลงอย่างไร?** พฤติกรรมการซื้อ ช่องทาง หรือสิ่งที่ต้องการจากเราเปลี่ยนไปอย่างไรบ้างในช่วง 1-2 ปีที่ผ่านมาครับ?', key:'customer_change'}
+   ]},
+  {n:5, title:'Competitor Landscape', sub:'คู่แข่งและตำแหน่งของเราในตลาด', style:'chat',
+   questions:[
+     {q:'มาดูคู่แข่งกันครับ ⚔️\n\n**คู่แข่งหลักของ Division คุณคือใคร?** ทั้ง Direct Competitor (ขายสินค้าเดียวกัน) และ Indirect Competitor (แย่งลูกค้าเรา) ครับ', key:'competitor'},
+     {q:'**คู่แข่งของคุณเก่งอะไร?** และ**เราชนะพวกเขาตรงไหน?**\n\nอยากให้วิเคราะห์ตรงๆ ครับ ทั้งจุดแข็งของเขาและจุดที่เราได้เปรียบ', key:'vs_competitor'},
+     {q:'**มีคู่แข่งหน้าใหม่หรือ Threat ที่กำลังเข้ามาในตลาดไหมครับ?**\n\nไม่ว่าจะเป็น Brand ใหม่ Platform ใหม่ หรือ Business Model ใหม่ที่น่ากังวล', key:'new_threat'}
+   ]},
+  {n:6, title:'Opportunity & Threat', sub:'โอกาสและความเสี่ยงปี 2027', style:'chat',
+   questions:[
+     {q:'มาหาโอกาสกันครับ 💡\n\n**โอกาสสำคัญที่สุดสำหรับ Division ในปี 2027 คืออะไร?**\n\nอาจเป็น Category ใหม่, Channel ใหม่, Customer Segment ใหม่, หรือ Partnership ใหม่ก็ได้ครับ', key:'opportunity'},
+     {q:'**ความเสี่ยงหลักที่ต้องระวังในปี 2027 คืออะไร?**\n\nทั้งปัจจัยภายนอก (ตลาด, คู่แข่ง, เศรษฐกิจ) และปัจจัยภายใน (ทีม, Stock, Process) ครับ', key:'threat'},
+     {q:'**ถ้าเลือกได้ 1 โอกาสที่อยากโฟกัสมากที่สุดในปี 2027 คืออะไร?** และทำไมถึงเลือกอันนี้ครับ?', key:'big_opportunity'}
+   ]},
+  {n:7, title:'Strategy & Priority', sub:'กลยุทธ์และสิ่งที่จะโฟกัส', style:'mixed'},
+  {n:8, title:'Commit to 2027', sub:'KPI Target และ Action แรก', style:'form'},
+];
+
+var DIV_NAMES = {avp_sa:'AVP SA',avp_kc:'AVP KC',avp_ho1:'AVP HO1',avp_ho2:'AVP HO2',avp_pro_sa:'AVP PRO SA',avp_pro_kcho:'AVP PRO KC HO'};
+var DIV_ICONS = {avp_sa:'📊',avp_kc:'🍳',avp_ho1:'🏠',avp_ho2:'🛋️',avp_pro_sa:'🎯',avp_pro_kcho:'📣'};
+
+// Current chat state
+var chatIdx = 0;
+var chatAnswers = [];
+
+function pickById(btn){
+  var id = btn.getAttribute('data-id');
+  var icon = DIV_ICONS[id] || '';
+  var label = DIV_NAMES[id] || id;
+  var btns = document.querySelectorAll('.role-btn');
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove('selected');
+  btn.classList.add('selected');
+  window._me = {id:id, icon:icon, label:label};
+  var b = document.getElementById('btn-login');
+  b.disabled = false;
+  b.textContent = 'เริ่ม Wizard — ' + label + ' \u2192';
+}
+function pick(btn, id, icon, label, sub){
+  pickById(btn);
+}
+
+function startWizard(){
+  if(!window._me) return;
+  ME = window._me;
+  STEP = 1; ANSWERS = {};
+  loadSaved();
+  showScreen('screen-wizard');
+  document.getElementById('tb-name').textContent = ME.label;
+  document.getElementById('nav-division').textContent = ME.label;
+  renderStep();
+}
+
+function logout(){
+  ME = null;
+  document.querySelectorAll('.role-btn').forEach(function(b){b.classList.remove('selected');});
+  var b = document.getElementById('btn-login');
+  b.disabled = true; b.textContent = 'เลือก Division ก่อนครับ'; b.className = 'btn-login';
+  showScreen('screen-login');
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0});
+}
+
+function updateProgress(){
+  var steps = document.getElementById('wp-steps');
+  var html = '';
+  for(var i=1;i<=TOTAL;i++){
+    var cls = i < STEP ? 'done' : i === STEP ? 'active' : '';
+    html += '<div class="wp-step '+cls+'"></div>';
+  }
+  steps.innerHTML = html;
+  var pct = Math.round((STEP-1)/TOTAL*100);
+  document.getElementById('wp-pct').textContent = pct + '%';
+  document.getElementById('wp-label').textContent = 'Step ' + STEP + ': ' + STEPS[STEP-1].title;
+  document.getElementById('tb-step').textContent = 'Step ' + STEP + ' / ' + TOTAL;
+  document.getElementById('btn-prev').style.display = STEP > 1 ? 'flex' : 'none';
+  document.getElementById('btn-next').textContent = STEP === TOTAL ? '✦ สร้าง Business Plan →' : 'ถัดไป →';
+  document.getElementById('btn-next').className = STEP === TOTAL ? 'btn btn-or' : 'btn btn-next';
+}
+
+function renderStep(){
+  updateProgress();
+  var s = STEPS[STEP-1];
+  var body = document.getElementById('wizard-body');
+  if(s.style === 'chat') renderChat(s, body);
+  else if(s.style === 'form') renderForm(s, body);
+  else if(s.style === 'mixed') renderMixed(s, body);
+}
+
+/* ── CHAT RENDER ── */
+function renderChat(s, body){
+  chatIdx = 0; chatAnswers = ANSWERS['chat_'+s.n] || [];
+  body.innerHTML =
+    '<div class="step-card">' +
+      '<div class="step-hero">' +
+        '<div class="step-num"><div class="step-badge" style="background:var(--blue)">'+s.n+'</div><span class="step-of">Step '+s.n+' of '+TOTAL+'</span></div>' +
+        '<h2>'+s.title+'</h2>' +
+        '<p>'+s.sub+' · พูดคุยเป็นธรรมชาติได้เลยครับ ไม่มีถูกผิด</p>' +
+      '</div>' +
+      '<div class="chat-wrap">' +
+        '<div class="chat-messages" id="chat-msgs"></div>' +
+        '<div class="chat-sub" id="chat-sub"></div>' +
+        '<div class="chat-input-wrap">' +
+          '<textarea class="chat-ta" id="chat-input" placeholder="พิมพ์คำตอบของคุณที่นี่..." onkeydown="chatKeydown(event)" rows="2"></textarea>' +
+          '<button class="btn-send" id="btn-send" onclick="sendChat()">ส่ง →</button>' +
+        '</div>' +
+        '<div class="quick-replies" id="quick-replies"></div>' +
+      '</div>' +
+    '</div>';
+  renderChatHistory(s);
+}
+
+function renderChatHistory(s){
+  var msgs = document.getElementById('chat-msgs');
+  msgs.innerHTML = '';
+  // Show bot question for current index
+  var idx = Math.min(chatIdx, s.questions.length - 1);
+  // Show all answered pairs
+  for(var i=0;i<chatAnswers.length;i++){
+    addBubble('bot', s.questions[i] ? s.questions[i].q.replace(/\*\*/g,'') : '');
+    addBubble('user', chatAnswers[i]);
+  }
+  // Show current question if not all answered
+  if(chatAnswers.length < s.questions.length){
+    chatIdx = chatAnswers.length;
+    addBubble('bot', s.questions[chatIdx].q.replace(/\*\*/g,''));
+    showQuickReplies(chatIdx, s);
+  } else {
+    chatIdx = s.questions.length;
+    document.getElementById('chat-sub').textContent = '✅ ตอบครบทุกคำถามแล้ว กด "ถัดไป" ได้เลยครับ';
+    document.getElementById('btn-send').disabled = true;
+    document.getElementById('chat-input').placeholder = 'ตอบครบแล้วครับ';
+  }
+}
+
+function addBubble(type, text){
+  var msgs = document.getElementById('chat-msgs');
+  var avatar = type === 'bot' ? '🤖' : (ME ? ME.icon : '👤');
+  var div = document.createElement('div');
+  div.className = 'msg ' + type;
+  div.innerHTML = '<div class="msg-avatar">'+avatar+'</div><div class="msg-bubble">'+text.replace(/\n/g,'<br>')+'</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showQuickReplies(idx, s){
+  var qr = document.getElementById('quick-replies');
+  var replies = [];
+  if(idx === 0) replies = ['มีสินค้า 3-5 Sub-cat หลัก','มีสินค้า 6-10 Sub-cat','มีสินค้ามากกว่า 10 Sub-cat'];
+  else if(idx === 1) replies = ['ทีมเล็ก 3-5 คน','ทีมกลาง 6-10 คน','ทีมใหญ่ 10+ คน'];
+  else replies = [];
+  if(!qr) return;
+  qr.innerHTML = replies.map(function(r){
+    return '<button class="qr-btn" onclick="useQuickReply(\''+r+'\')">'+r+'</button>';
+  }).join('');
+}
+
+function useQuickReply(text){
+  document.getElementById('chat-input').value = text;
+  sendChat();
+}
+
+function chatKeydown(e){
+  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendChat(); }
+}
+
+function sendChat(){
+  var input = document.getElementById('chat-input');
+  var val = input.value.trim();
+  if(!val) return;
+  var s = STEPS[STEP-1];
+  if(chatIdx >= s.questions.length) return;
+
+  chatAnswers.push(val);
+  ANSWERS['chat_'+s.n] = chatAnswers;
+  if(!ANSWERS['chat_keys_'+s.n]) ANSWERS['chat_keys_'+s.n] = [];
+  ANSWERS['chat_keys_'+s.n].push({key: s.questions[chatIdx-1] ? s.questions[chatIdx-1].key : 'q'+chatIdx, val: val});
+
+  // Save key-value
+  if(s.questions[chatIdx-1]) ANSWERS[s.questions[chatIdx-1].key] = val;
+  input.value = '';
+  document.getElementById('quick-replies').innerHTML = '';
+
+  addBubble('user', val);
+  chatIdx++;
+
+  if(chatIdx < s.questions.length){
+    setTimeout(function(){
+      addBubble('bot', s.questions[chatIdx].q.replace(/\*\*/g,''));
+      showQuickReplies(chatIdx, s);
+      // Store current question key
+      if(s.questions[chatIdx]) ANSWERS['_cur_q'] = s.questions[chatIdx].key;
+    }, 400);
+  } else {
+    setTimeout(function(){
+      addBubble('bot', '✅ ขอบคุณครับ! ตอบครบทุกคำถามแล้ว\nกด "ถัดไป" เพื่อไป Step ต่อไปได้เลยครับ 👉');
+      document.getElementById('chat-sub').textContent = '✅ ตอบครบแล้ว กด "ถัดไป" ได้เลยครับ';
+      document.getElementById('btn-send').disabled = true;
+      document.getElementById('chat-input').placeholder = 'ตอบครบแล้วครับ';
+      saveProgress();
+    }, 400);
+  }
+}
+
+/* ── FORM RENDER ── */
+function renderForm(s, body){
+  var html = '<div class="step-card"><div class="step-hero"><div class="step-num"><div class="step-badge" style="background:var(--or)">'+s.n+'</div><span class="step-of">Step '+s.n+' of '+TOTAL+'</span></div><h2>'+s.title+'</h2><p>'+s.sub+'</p></div><div class="form-wrap">';
+
+  if(s.n === 2){
+    // NUMERIC FORM - 2026 Actual
+    html += mkMetricBlock('📈 Sales (ล้านบาท)', 'sales', 'ล้านบาท');
+    html += mkMetricBlock('💰 GP% (เปอร์เซ็นต์)', 'gp', '%');
+    html += mkMetricBlock('💎 GPA (ล้านบาท)', 'gpa', 'ล้านบาท');
+    html += mkMetricBlock('🛒 Transaction (ใบ)', 'txn', 'ใบ');
+    html += '<div class="field-group"><div class="field-label">📊 %ACH vs Target 2026</div><div class="field-sub">ยอดจริงคิดเป็นกี่ % ของ Target</div><input class="f-input big" id="f_ach" type="number" placeholder="95.5" step="0.1" value="'+(ANSWERS['ach']||'')+'"><div style="text-align:right;font-size:12px;color:var(--gray);margin-top:3px">%</div></div>';
+    html += '<div class="field-group"><div class="field-label">📈 LFL Growth (Like-for-Like)</div><div class="field-sub">Growth เทียบสาขา Comparable</div><input class="f-input big" id="f_lfl" type="number" placeholder="3.5" step="0.1" value="'+(ANSWERS['lfl']||'')+'"><div style="text-align:right;font-size:12px;color:var(--gray);margin-top:3px">%</div></div>';
+  }
+  else if(s.n === 8){
+    // KPI + ACTIONS
+    html += '<div class="field-group"><div class="field-label" style="font-size:15px">🎯 KPI Target 2027</div></div>';
+    html += '<div class="kpi-row" style="margin-bottom:20px">';
+    var kpis = [['Revenue','kpi_rev','ล้านบาท'],['GP%','kpi_gp','%'],['GPA','kpi_gpa','ล้านบาท'],['Transaction','kpi_txn','ใบ'],['Market Share','kpi_ms','%'],['Online Share','kpi_online','%']];
+    kpis.forEach(function(k){
+      html += '<div class="kpi-box"><div class="kpi-lbl">'+k[0]+'</div><input class="kpi-inp" id="f_'+k[1]+'" type="number" placeholder="0" value="'+(ANSWERS[k[1]]||'')+'"><div class="kpi-unit">'+k[2]+'</div></div>';
+    });
+    html += '</div>';
+    html += '<div class="field-group"><div class="field-label" style="font-size:15px">🚀 Action 3 อันดับแรก ที่จะทำใน Q1 2027</div><div class="field-sub">สิ่งที่จะเริ่มทำก่อนเลย ภายใน 90 วันแรก</div><div class="action-3">';
+    for(var i=1;i<=3;i++){
+      html += '<div class="action-item"><div class="action-num">'+i+'</div><input class="action-inp" id="f_action'+i+'" placeholder="Action ที่ '+i+'..." value="'+(ANSWERS['action'+i]||'')+'"></div>';
+    }
+    html += '</div></div>';
+    html += '<div class="field-group"><div class="field-label" style="font-size:15px">🙏 ขอ Support อะไรจาก Nick/SVP</div><div class="field-sub">งบ, ทีม, Policy, หรืออะไรก็ได้ที่ต้องการ</div><textarea class="f-ta" id="f_support" placeholder="สิ่งที่ต้องการให้ Nick ช่วยสนับสนุน...">'+(ANSWERS['support']||'')+'</textarea></div>';
+  }
+
+  html += '</div></div>';
+  body.innerHTML = html;
+}
+
+function mkMetricBlock(title, key, unit){
+  var a25 = ANSWERS[key+'_25']||'', atg = ANSWERS[key+'_tg']||'', a26 = ANSWERS[key+'_26']||'';
+  return '<div class="field-group"><div class="field-label">'+title+'</div><div class="metric-row">' +
+    '<div class="metric-box"><div class="m-tag tag-25">2025 Actual</div><input class="num-input" id="f_'+key+'_25" type="number" placeholder="0" step="0.1" value="'+a25+'"><div class="unit-label">'+unit+'</div></div>' +
+    '<div class="metric-box"><div class="m-tag tag-tg">Target 2026</div><input class="num-input" id="f_'+key+'_tg" type="number" placeholder="0" step="0.1" value="'+atg+'"><div class="unit-label">'+unit+'</div></div>' +
+    '<div class="metric-box"><div class="m-tag tag-26">2026 Actual</div><input class="num-input" id="f_'+key+'_26" type="number" placeholder="0" step="0.1" value="'+a26+'"><div class="unit-label">'+unit+'</div></div>' +
+  '</div></div>';
+}
+
+/* ── MIXED RENDER (Step 7) ── */
+function renderMixed(s, body){
+  body.innerHTML =
+    '<div class="step-card">' +
+      '<div class="step-hero">' +
+        '<div class="step-num"><div class="step-badge" style="background:var(--purple)">7</div><span class="step-of">Step 7 of 8</span></div>' +
+        '<h2>Strategy & Priority — จะทำอะไรในปี 2027?</h2>' +
+        '<p>เลือก Strategic Direction + กรอกรายละเอียด</p>' +
+      '</div>' +
+      '<div class="form-wrap">' +
+        '<div class="field-group">' +
+          '<div class="field-label" style="font-size:15px">🎯 Strategic Direction หลักของ Division ในปี 2027</div>' +
+          '<div class="field-sub">เลือกได้มากกว่า 1 ครับ</div>' +
+          '<div class="priority-grid" id="priority-grid">' +
+            mkPriorityCard('grow', '🚀', 'Aggressive Growth', 'อัดงบ อัด SKU โจมตีตลาดใหม่') +
+            mkPriorityCard('premium', '💎', 'Premium Elevation', 'ยกระดับ Brand & GP%') +
+            mkPriorityCard('online', '💻', 'Online First', 'Digital & E-commerce เป็น Engine หลัก') +
+            mkPriorityCard('efficiency', '⚡', 'Efficiency & Margin', 'ลด Cost เพิ่ม Productivity') +
+            mkPriorityCard('defend', '🛡️', 'Defend & Sustain', 'รักษาฐาน ป้องกันคู่แข่ง') +
+            mkPriorityCard('innovation', '🔬', 'Innovation & New Biz', 'ทดลอง Category/Business ใหม่') +
+          '</div>' +
+        '</div>' +
+        '<div class="field-group">' +
+          '<div class="field-label">✍️ อธิบาย Strategy ของคุณให้ละเอียดขึ้น</div>' +
+          '<div class="field-sub">ทำไมถึงเลือกทิศทางนี้? จะทำอย่างไรให้สำเร็จ?</div>' +
+          '<textarea class="f-ta" id="f_strategy_detail" placeholder="อธิบาย Strategy ของคุณครับ..." style="min-height:110px">'+(ANSWERS['strategy_detail']||'')+'</textarea>' +
+        '</div>' +
+        '<div class="field-group">' +
+          '<div class="field-label">⚔️ Sub Category (AH3) ที่จะ Attack ใน 2027</div>' +
+          '<textarea class="f-ta" id="f_attack" placeholder="Sub Category ที่จะโจมตี / ลงทุน / Push..." style="min-height:80px">'+(ANSWERS['attack']||'')+'</textarea>' +
+        '</div>' +
+        '<div class="field-group">' +
+          '<div class="field-label">🛡️ Sub Category (AH3) ที่จะ Defend</div>' +
+          '<textarea class="f-ta" id="f_defend" placeholder="Sub Category ที่ต้องรักษาฐานไว้..." style="min-height:80px">'+(ANSWERS['defend']||'')+'</textarea>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  // Restore selected priorities
+  var saved = ANSWERS['priorities'] || [];
+  saved.forEach(function(p){
+    var card = document.querySelector('[data-priority="'+p+'"]');
+    if(card) card.classList.add('selected');
+  });
+}
+
+function mkPriorityCard(id, icon, title, sub){
+  return '<div class="priority-card" data-priority="'+id+'" onclick="togglePriority(this)"><div class="pc-icon">'+icon+'</div><div class="pc-title">'+title+'</div><div class="pc-sub">'+sub+'</div></div>';
+}
+
+function togglePriority(card){
+  card.classList.toggle('selected');
+  var selected = [];
+  document.querySelectorAll('.priority-card.selected').forEach(function(c){selected.push(c.dataset.priority);});
+  ANSWERS['priorities'] = selected;
+}
+
+/* ── NAVIGATION ── */
+function collectFormData(){
+  var s = STEPS[STEP-1];
+  if(s.n === 2){
+    ['sales','gp','gpa','txn'].forEach(function(k){
+      ['25','tg','26'].forEach(function(yr){
+        var el = document.getElementById('f_'+k+'_'+yr);
+        if(el) ANSWERS[k+'_'+yr] = el.value;
+      });
+    });
+    var ach = document.getElementById('f_ach'); if(ach) ANSWERS['ach'] = ach.value;
+    var lfl = document.getElementById('f_lfl'); if(lfl) ANSWERS['lfl'] = lfl.value;
+  }
+  else if(s.n === 7){
+    var sd = document.getElementById('f_strategy_detail'); if(sd) ANSWERS['strategy_detail'] = sd.value;
+    var att = document.getElementById('f_attack'); if(att) ANSWERS['attack'] = att.value;
+    var def = document.getElementById('f_defend'); if(def) ANSWERS['defend'] = def.value;
+  }
+  else if(s.n === 8){
+    ['kpi_rev','kpi_gp','kpi_gpa','kpi_txn','kpi_ms','kpi_online'].forEach(function(k){
+      var el = document.getElementById('f_'+k); if(el) ANSWERS[k] = el.value;
+    });
+    for(var i=1;i<=3;i++){var el=document.getElementById('f_action'+i);if(el)ANSWERS['action'+i]=el.value;}
+    var sup = document.getElementById('f_support'); if(sup) ANSWERS['support'] = sup.value;
+  }
+}
+
+function nextStep(){
+  collectFormData();
+  saveProgress();
+  if(STEP === TOTAL){
+    showOutput();
+    return;
+  }
+  STEP++;
+  renderStep();
+  window.scrollTo({top:0});
+}
+
+function prevStep(){
+  collectFormData();
+  STEP--;
+  renderStep();
+  window.scrollTo({top:0});
+}
+
+function backToWizard(){
+  showScreen('screen-wizard');
+  renderStep();
+}
+
+function saveProgress(){
+  try{localStorage.setItem('wizard2027_'+ME.id, JSON.stringify(ANSWERS));}catch(e){}
+}
+
+function loadSaved(){
+  try{var r=localStorage.getItem('wizard2027_'+ME.id);if(r)ANSWERS=JSON.parse(r);}catch(e){}
+}
+
+/* ── OUTPUT ── */
+function showOutput(){
+  showScreen('screen-output');
+  generateBP();
+  generateSlide();
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});
+  document.querySelector('[onclick="switchTab(\''+t+'\')"]').classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+}
+
+function buildPrompt(type){
+  var A = ANSWERS;
+  var divName = ME ? ME.label : 'Division';
+  var prompt = 'คุณเป็น Business Planning Expert สำหรับ HomePro K&H Division\n\n';
+  prompt += 'Division: ' + divName + '\n\n';
+  prompt += '=== ข้อมูลที่ AVP กรอก ===\n\n';
+  prompt += '--- Division Overview ---\n';
+  if(A.div_overview) prompt += 'สินค้าหลัก: ' + A.div_overview + '\n';
+  if(A.team_size) prompt += 'ทีม: ' + A.team_size + '\n';
+  if(A.div_identity) prompt += 'Identity: ' + A.div_identity + '\n\n';
+  prompt += '--- ตัวเลข 2026 ---\n';
+  if(A.sales_26) prompt += 'Sales 2026: ' + A.sales_26 + ' ล้านบาท (Target: ' + (A.sales_tg||'?') + ', 2025: ' + (A.sales_25||'?') + ')\n';
+  if(A.gp_26) prompt += 'GP%: ' + A.gp_26 + '% (Target: ' + (A.gp_tg||'?') + ')\n';
+  if(A.gpa_26) prompt += 'GPA: ' + A.gpa_26 + ' ล้านบาท\n';
+  if(A.txn_26) prompt += 'Transaction: ' + A.txn_26 + ' ใบ\n';
+  if(A.ach) prompt += '%ACH: ' + A.ach + '%\n';
+  if(A.lfl) prompt += 'LFL: ' + A.lfl + '%\n\n';
+  prompt += '--- Win & Loss 2026 ---\n';
+  if(A.win_2026) prompt += 'ความสำเร็จ: ' + A.win_2026 + '\n';
+  if(A.loss_2026) prompt += 'สิ่งที่ไม่เป็นอย่างคาด: ' + A.loss_2026 + '\n';
+  if(A.lesson_2026) prompt += 'บทเรียน: ' + A.lesson_2026 + '\n\n';
+  prompt += '--- Market & Customer ---\n';
+  if(A.customer) prompt += 'ลูกค้า: ' + A.customer + '\n';
+  if(A.market_trend) prompt += 'Trend: ' + A.market_trend + '\n';
+  if(A.customer_change) prompt += 'การเปลี่ยนแปลงลูกค้า: ' + A.customer_change + '\n\n';
+  prompt += '--- Competitor ---\n';
+  if(A.competitor) prompt += 'คู่แข่ง: ' + A.competitor + '\n';
+  if(A.vs_competitor) prompt += 'เราชนะ/แพ้: ' + A.vs_competitor + '\n';
+  if(A.new_threat) prompt += 'Threat ใหม่: ' + A.new_threat + '\n\n';
+  prompt += '--- Opportunity & Threat ---\n';
+  if(A.opportunity) prompt += 'โอกาส: ' + A.opportunity + '\n';
+  if(A.threat) prompt += 'ความเสี่ยง: ' + A.threat + '\n';
+  if(A.big_opportunity) prompt += 'Big Opportunity: ' + A.big_opportunity + '\n\n';
+  prompt += '--- Strategy ---\n';
+  if(A.priorities && A.priorities.length) prompt += 'Direction: ' + A.priorities.join(', ') + '\n';
+  if(A.strategy_detail) prompt += 'รายละเอียด Strategy: ' + A.strategy_detail + '\n';
+  if(A.attack) prompt += 'Attack: ' + A.attack + '\n';
+  if(A.defend) prompt += 'Defend: ' + A.defend + '\n\n';
+  prompt += '--- KPI Target 2027 ---\n';
+  if(A.kpi_rev) prompt += 'Revenue Target: ' + A.kpi_rev + ' ล้านบาท\n';
+  if(A.kpi_gp) prompt += 'GP% Target: ' + A.kpi_gp + '%\n';
+  if(A.kpi_gpa) prompt += 'GPA Target: ' + A.kpi_gpa + ' ล้านบาท\n';
+  if(A.kpi_txn) prompt += 'Transaction Target: ' + A.kpi_txn + ' ใบ\n';
+  if(A.kpi_ms) prompt += 'Market Share Target: ' + A.kpi_ms + '%\n';
+  if(A.kpi_online) prompt += 'Online Share Target: ' + A.kpi_online + '%\n\n';
+  prompt += '--- Action Plan ---\n';
+  if(A.action1) prompt += '1. ' + A.action1 + '\n';
+  if(A.action2) prompt += '2. ' + A.action2 + '\n';
+  if(A.action3) prompt += '3. ' + A.action3 + '\n';
+  if(A.support) prompt += 'ขอ Support: ' + A.support + '\n\n';
+
+  if(type === 'bp'){
+    prompt += '=== งาน ===\n';
+    prompt += 'สร้าง Business Plan 2027 ที่สมบูรณ์เป็นภาษาไทย โดยมีโครงสร้างดังนี้:\n\n';
+    prompt += '1. EXECUTIVE SUMMARY (3-4 ประโยค สรุปภาพรวม)\n';
+    prompt += '2. SITUATION ANALYSIS 2026 (ตัวเลขและวิเคราะห์ผล)\n';
+    prompt += '3. MARKET INSIGHT (Trend, ลูกค้า, คู่แข่ง)\n';
+    prompt += '4. STRATEGIC DIRECTION 2027 (ทิศทางและเหตุผล)\n';
+    prompt += '5. KEY INITIATIVES (สิ่งที่จะทำ 3-5 เรื่องสำคัญ)\n';
+    prompt += '6. KPI TARGET 2027 (ตัวเลขเป้าหมาย)\n';
+    prompt += '7. QUICK WINS Q1 2027 (Action แรกที่จะทำ)\n\n';
+    prompt += 'เขียนให้กระชับ ชัดเจน มีพลัง เหมาะนำเสนอต่อ SVP ครับ';
+  } else {
+    prompt += '=== งาน ===\n';
+    prompt += 'สร้าง Strategy Slide Summary 2027 โดยตอบกลับเป็น JSON เท่านั้น ห้ามมี text อื่น รูปแบบดังนี้:\n';
+    prompt += '{"situation":"วิเคราะห์ Situation 2026 2-3 bullet","opportunity":"โอกาส 2-3 bullet","strategy":"Strategy Direction 2-3 bullet","initiative":"Key Initiative 3 อย่าง","kpi_rev":"ตัวเลข Revenue Target","kpi_gp":"ตัวเลข GP%","kpi_gpa":"ตัวเลข GPA","bigbet":"Big Bet 1 ประโยค","risk":"ความเสี่ยงหลัก 1-2 bullet"}\n';
+    prompt += 'ทุก field เป็น string ใช้ | คั่น bullet ครับ';
+  }
+  return prompt;
+}
+
+async function generateBP(){
+  document.getElementById('bp-loading').style.display = 'block';
+  document.getElementById('bp-card').style.display = 'none';
+  try{
+    var res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1500,
+        messages:[{role:'user',content:buildPrompt('bp')}]
+      })
+    });
+    var data = await res.json();
+    var text = data.content && data.content[0] ? data.content[0].text : '';
+    renderBP(text);
+  } catch(e){
+    renderBP('ไม่สามารถเชื่อมต่อ AI ได้ในขณะนี้ กรุณาลองใหม่ครับ');
+  }
+}
+
+function renderBP(text){
+  document.getElementById('bp-loading').style.display = 'none';
+  var card = document.getElementById('bp-card');
+  card.style.display = 'block';
+  var divName = ME ? ME.label : 'Division';
+  var sections = text.split(/\n(?=\d\.|\d\))/);
+  var html = '<div class="bp-header"><div class="bp-title">📋 Business Plan 2027 — '+divName+'</div><div class="bp-sub">สร้างโดย AI · '+new Date().toLocaleDateString('th-TH')+'</div></div><div class="bp-body">';
+  var colors = [var_blue='#1a4ed8','#7c3aed','#16a34a','#f5822a','#dc2626','#0891b2','#0f172a'];
+  if(sections.length > 1){
+    sections.forEach(function(sec,i){
+      var lines = sec.trim().split('\n');
+      var title = lines[0];
+      var body = lines.slice(1).join('\n');
+      html += '<div class="bp-section"><div class="bp-sec-title" style="color:'+(colors[i]||'#1a4ed8')+'">'+title+'</div><div class="bp-text">'+body+'</div></div>';
+    });
+  } else {
+    html += '<div class="bp-section"><div class="bp-text">'+text.replace(/\n/g,'<br>')+'</div></div>';
+  }
+  html += '</div>';
+  card.innerHTML = html;
+  window._bp_text = text;
+}
+
+async function generateSlide(){
+  document.getElementById('slide-loading').style.display = 'block';
+  document.getElementById('slide-grid').style.display = 'none';
+  try{
+    var res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:800,
+        messages:[{role:'user',content:buildPrompt('slide')}]
+      })
+    });
+    var data = await res.json();
+    var raw = data.content && data.content[0] ? data.content[0].text : '{}';
+    var clean = raw.replace(/```json|```/g,'').trim();
+    var j = JSON.parse(clean);
+    renderSlide(j);
+  } catch(e){
+    document.getElementById('slide-loading').innerHTML = '<div style="color:var(--red)">ไม่สามารถสร้าง Slide ได้ กรุณากด Regenerate ครับ</div>';
+  }
+}
+
+function renderSlide(j){
+  document.getElementById('slide-loading').style.display = 'none';
+  var grid = document.getElementById('slide-grid');
+  grid.style.display = 'grid';
+  var divName = ME ? ME.label : 'Division';
+  var A = ANSWERS;
+
+  function bullets(str,color){
+    if(!str) return '<div style="color:var(--gray);font-size:13px">—</div>';
+    return str.split('|').map(function(b){
+      return '<div class="slide-item"><div class="slide-dot" style="background:'+color+'"></div><div class="slide-text">'+b.trim()+'</div></div>';
+    }).join('');
+  }
+
+  grid.innerHTML =
+    // Title Card
+    '<div class="slide-card slide-full"><div class="slide-header" style="background:linear-gradient(135deg,var(--navy),#1e3a8a)">📊 '+divName+' · Business Plan 2027</div>' +
+    '<div class="slide-body"><div style="font-size:22px;font-weight:900;color:var(--dark);margin-bottom:8px">'+(j.bigbet||'—')+'</div>' +
+    '<div class="slide-kpi-grid">' +
+      '<div class="skpi"><div class="skpi-lbl">Revenue</div><div class="skpi-val">'+(j.kpi_rev||A.kpi_rev||'—')+'</div><div class="skpi-unit">ล้านบาท</div></div>' +
+      '<div class="skpi"><div class="skpi-lbl">GP%</div><div class="skpi-val">'+(j.kpi_gp||A.kpi_gp||'—')+'</div><div class="skpi-unit">%</div></div>' +
+      '<div class="skpi"><div class="skpi-lbl">GPA</div><div class="skpi-val">'+(j.kpi_gpa||A.kpi_gpa||'—')+'</div><div class="skpi-unit">ล้านบาท</div></div>' +
+    '</div></div></div>' +
+    // Situation
+    '<div class="slide-card"><div class="slide-header" style="background:var(--blue)">📈 Situation 2026</div><div class="slide-body">'+bullets(j.situation,'var(--blue)')+'</div></div>' +
+    // Opportunity
+    '<div class="slide-card"><div class="slide-header" style="background:var(--green)">💡 Opportunity</div><div class="slide-body">'+bullets(j.opportunity,'var(--green)')+'</div></div>' +
+    // Strategy
+    '<div class="slide-card"><div class="slide-header" style="background:var(--purple)">🎯 Strategic Direction</div><div class="slide-body">'+bullets(j.strategy,'var(--purple)')+'</div></div>' +
+    // Key Initiatives
+    '<div class="slide-card"><div class="slide-header" style="background:var(--or)">🚀 Key Initiatives 2027</div><div class="slide-body">'+bullets(j.initiative,'var(--or)')+'</div></div>' +
+    // Risk
+    '<div class="slide-card slide-full"><div class="slide-header" style="background:var(--red)">⚠️ Key Risk & Mitigation</div><div class="slide-body">'+bullets(j.risk,'var(--red)')+'</div></div>';
+
+  window._slide_data = j;
+}
+
+function regenerate(){
+  generateBP();
+  generateSlide();
+}
+
+function exportTxt(){
+  var txt = 'BP2027 Business Plan — ' + (ME?ME.label:'') + '\n';
+  txt += new Date().toLocaleDateString('th-TH') + '\n\n';
+  txt += window._bp_text || 'ยังไม่ได้ Generate';
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([txt],{type:'text/plain;charset=utf-8'}));
+  a.download = 'BP2027_'+(ME?ME.label:'')+'.txt';
+  a.click();
+}
+</script>
+</body>
+</html>

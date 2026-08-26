@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BP2027 Action Plan Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1a4ed8;--blue2:#2563eb;--blueLt:#EFF6FF;--blueMid:#DBEAFE;
+  --or:#f5822a;--orLt:#FFF7ED;--orMid:#FFEDD5;
+  --navy:#0f172a;--green:#16a34a;--greenLt:#DCFCE7;
+  --red:#dc2626;--redLt:#FEE2E2;--yellow:#d97706;--yellowLt:#FEF3C7;
+  --gray:#6b7280;--grayLt:#F3F4F6;--purple:#7c3aed;
+}
+body{font-family:'Prompt',sans-serif;background:#F8FAFF;color:#0f172a;min-height:100vh;}
+
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0f172a 0%,#1a4ed8 60%,#f5822a 100%);}
+.loginBox{background:#fff;border-radius:24px;padding:40px 32px;width:480px;max-width:95vw;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,0.3);}
+.loginIcon{font-size:40px;margin-bottom:8px;}
+.loginTitle{font-size:20px;font-weight:800;color:#0f172a;margin-bottom:4px;}
+.loginSub{font-size:12px;color:#6b7280;margin-bottom:28px;}
+.loginLabel{font-size:11px;font-weight:700;color:#6b7280;text-align:left;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
+.avpGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+.avpBtn{padding:12px 6px;border:2px solid #DBEAFE;border-radius:12px;background:#EFF6FF;cursor:pointer;font-family:'Prompt',sans-serif;font-size:10px;font-weight:700;color:#1a4ed8;transition:all .2s;text-align:center;line-height:1.4;}
+.avpBtn:hover,.avpBtn:active{background:#1a4ed8;color:#fff;border-color:#1a4ed8;}
+.avpIcon{font-size:20px;display:block;margin-bottom:4px;}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0;}
+.divider hr{flex:1;border:none;border-top:1px solid #e5e7eb;}
+.divider span{font-size:11px;color:#6b7280;}
+.nickGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.nickBtn{padding:12px;border:2px solid #FFEDD5;border-radius:12px;background:#FFF7ED;cursor:pointer;font-family:'Prompt',sans-serif;font-size:10px;font-weight:700;color:#c2410c;transition:all .2s;text-align:center;line-height:1.4;}
+.nickBtn:hover,.nickBtn:active{background:#f5822a;color:#fff;border-color:#f5822a;}
+
+#app{display:none;}
+.topbar{background:#0f172a;color:#fff;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topLogo{background:#f5822a;color:#fff;font-weight:900;font-size:12px;padding:5px 10px;border-radius:7px;margin-right:10px;}
+.topTitle{font-size:14px;font-weight:700;}
+.roleBadge{background:#1a4ed8;color:#fff;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;}
+.roleBadgeNick{background:#f5822a;}
+.logoutBtn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:5px 12px;border-radius:7px;cursor:pointer;font-family:'Prompt',sans-serif;font-size:11px;}
+
+.tabBar{background:#fff;border-bottom:2px solid #DBEAFE;padding:0 20px;display:flex;gap:2px;overflow-x:auto;}
+.tabBtn{padding:12px 16px;border:none;background:none;cursor:pointer;font-family:'Prompt',sans-serif;font-size:12px;font-weight:600;color:#6b7280;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s;}
+.tabBtn.active{color:#1a4ed8;border-bottom-color:#1a4ed8;}
+
+.content{padding:20px;max-width:1400px;margin:0 auto;}
+
+.statsRow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+.statCard{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.statCard.blue{border-left:4px solid #1a4ed8;}
+.statCard.green{border-left:4px solid #16a34a;}
+.statCard.orange{border-left:4px solid #f5822a;}
+.statCard.red{border-left:4px solid #dc2626;}
+.statCard.purple{border-left:4px solid #7c3aed;}
+.statLabel{font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.statNum{font-size:26px;font-weight:900;color:#0f172a;}
+.statSub{font-size:10px;color:#6b7280;margin-top:2px;}
+
+.sectionCard{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:20px;overflow:hidden;}
+.sectionHead{padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.sectionTitle{font-size:15px;font-weight:800;color:#0f172a;}
+.addBtn{background:#1a4ed8;color:#fff;border:none;padding:9px 18px;border-radius:9px;cursor:pointer;font-family:'Prompt',sans-serif;font-size:12px;font-weight:700;}
+.addBtn:hover{background:#2563eb;}
+
+.filterRow{display:flex;gap:8px;flex-wrap:wrap;padding:12px 20px;background:#F3F4F6;border-bottom:1px solid #e5e7eb;}
+.filterSel{padding:7px 10px;border:1px solid #d1d5db;border-radius:7px;font-family:'Prompt',sans-serif;font-size:11px;background:#fff;color:#0f172a;}
+.searchBox{padding:7px 10px;border:1px solid #d1d5db;border-radius:7px;font-family:'Prompt',sans-serif;font-size:11px;width:160px;}
+
+.tableWrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:11px;}
+thead tr{background:#EFF6FF;}
+th{padding:10px 14px;text-align:left;font-weight:700;color:#1a4ed8;font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+td{padding:10px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
+tr.rowOv td{background:#fff5f5;}
+tr:hover td{background:#fafbff;}
+
+.pbadge{padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.ph{background:#FEE2E2;color:#dc2626;}
+.pm{background:#FEF3C7;color:#d97706;}
+.pl{background:#DCFCE7;color:#16a34a;}
+
+.sbadge{padding:3px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.sns{background:#F3F4F6;color:#6b7280;}
+.sip{background:#DBEAFE;color:#1a4ed8;}
+.sdone{background:#DCFCE7;color:#16a34a;}
+.sov{background:#FEE2E2;color:#dc2626;}
+
+.pbar{width:70px;background:#e5e7eb;border-radius:20px;height:5px;overflow:hidden;}
+.pfill{height:100%;border-radius:20px;}
+
+.iconBtn{width:26px;height:26px;border:none;border-radius:5px;cursor:pointer;font-size:12px;}
+.eBtn{background:#EFF6FF;color:#1a4ed8;}
+.dBtn{background:#FEE2E2;color:#dc2626;}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:18px;width:640px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,0.3);}
+.modalHead{padding:20px 24px 14px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;}
+.modalTitle{font-size:16px;font-weight:800;color:#0f172a;}
+.closeBtn{width:30px;height:30px;border:none;background:#F3F4F6;border-radius:7px;cursor:pointer;font-size:16px;}
+.modalBody{padding:20px 24px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ffull{grid-column:1/-1;}
+.flabel{font-size:11px;font-weight:700;color:#0f172a;margin-bottom:5px;display:block;}
+.finput,.fselect,.ftextarea{width:100%;padding:9px 11px;border:1px solid #d1d5db;border-radius:9px;font-family:'Prompt',sans-serif;font-size:12px;color:#0f172a;}
+.finput:focus,.fselect:focus,.ftextarea:focus{outline:none;border-color:#1a4ed8;}
+.ftextarea{resize:vertical;min-height:65px;}
+.modalFoot{padding:14px 24px 20px;display:flex;gap:10px;justify-content:flex-end;}
+.saveBtn{background:#1a4ed8;color:#fff;border:none;padding:10px 24px;border-radius:9px;cursor:pointer;font-family:'Prompt',sans-serif;font-size:13px;font-weight:700;}
+.cancelBtn{background:#F3F4F6;color:#6b7280;border:none;padding:10px 18px;border-radius:9px;cursor:pointer;font-family:'Prompt',sans-serif;font-size:13px;font-weight:600;}
+
+.divGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.divCard{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border-top:4px solid #1a4ed8;}
+.divCardTitle{font-size:12px;font-weight:800;color:#0f172a;margin-bottom:10px;}
+.divRow{display:flex;justify-content:space-between;margin-bottom:5px;font-size:11px;}
+.divPbar{background:#e5e7eb;border-radius:20px;height:7px;margin-top:8px;overflow:hidden;}
+.divPfill{height:100%;border-radius:20px;}
+.ovPill{background:#FEE2E2;color:#dc2626;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;}
+
+.ganttWrap{padding:0 20px 20px;}
+.ganttLegend{display:flex;gap:14px;padding:10px 20px 0;flex-wrap:wrap;}
+.lItem{display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280;}
+.lDot{width:12px;height:12px;border-radius:3px;}
+
+@media(max-width:700px){
+  .statsRow{grid-template-columns:1fr 1fr;}
+  .divGrid{grid-template-columns:1fr 1fr;}
+  .avpGrid{grid-template-columns:1fr 1fr;}
+  .fgrid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="loginBox">
+    <div class="loginIcon">📋</div>
+    <div class="loginTitle">BP2027 — Action Plan Tracker</div>
+    <div class="loginSub">Module 3 · Business Plan 2027 · HomePro Kitchen &amp; Home</div>
+    <div class="loginLabel">เลือก Division ของคุณ</div>
+    <div class="avpGrid">
+      <button class="avpBtn" onclick="doLogin('avp_sa')"><span class="avpIcon">📊</span>AVP SA<br>Small Appliances</button>
+      <button class="avpBtn" onclick="doLogin('avp_kc')"><span class="avpIcon">🍳</span>AVP KC<br>Kitchen &amp; Cabinet</button>
+      <button class="avpBtn" onclick="doLogin('avp_ho1')"><span class="avpIcon">🏠</span>AVP HO1<br>Storage/Cleaning</button>
+      <button class="avpBtn" onclick="doLogin('avp_ho2')"><span class="avpIcon">🛋️</span>AVP HO2<br>Tools/Cookware</button>
+      <button class="avpBtn" onclick="doLogin('avp_pro_sa')"><span class="avpIcon">🎯</span>AVP PRO SA<br>Promotion SA</button>
+      <button class="avpBtn" onclick="doLogin('avp_pro_kcho')"><span class="avpIcon">📣</span>AVP PRO KC HO<br>Promotion KC&amp;HO</button>
+    </div>
+    <div class="divider"><hr><span>Nick — Executive Access</span><hr></div>
+    <div class="nickGrid">
+      <button class="nickBtn" onclick="doLogin('nick_monitor')"><span class="avpIcon">👑</span>Executive Monitor<br>All Divisions View</button>
+      <button class="nickBtn" onclick="doLogin('nick_svp')"><span class="avpIcon">📊</span>SVP Dashboard<br>Portfolio Overview</button>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;">
+      <div class="topLogo">HOMEPRO</div>
+      <div class="topTitle">BP2027 Action Plan Tracker</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="roleBadge" class="roleBadge"></span>
+      <button class="logoutBtn" onclick="doLogout()">ออก</button>
+    </div>
+  </div>
+  <div class="tabBar" id="tabBar"></div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div class="overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modalHead">
+      <div class="modalTitle" id="modalTitle">เพิ่ม Action Item</div>
+      <button class="closeBtn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modalBody">
+      <div class="fgrid">
+        <div class="ffull"><label class="flabel">ชื่องาน / Task Name *</label><input class="finput" id="f_name" placeholder="ระบุชื่องาน..."></div>
+        <div><label class="flabel">Category *</label>
+          <select class="fselect" id="f_cat">
+            <option value="">-- เลือก --</option>
+            <option>Sales</option><option>Marketing</option><option>Product</option>
+            <option>Operations</option><option>Online</option><option>Promotion</option>
+            <option>Supplier</option><option>Customer Experience</option><option>Training</option><option>Other</option>
+          </select>
+        </div>
+        <div><label class="flabel">ผู้รับผิดชอบ *</label><input class="finput" id="f_owner" placeholder="ชื่อผู้รับผิดชอบ"></div>
+        <div><label class="flabel">วันเริ่มต้น *</label><input class="finput" type="date" id="f_start"></div>
+        <div><label class="flabel">วันสิ้นสุด *</label><input class="finput" type="date" id="f_end"></div>
+        <div><label class="flabel">Priority</label>
+          <select class="fselect" id="f_priority">
+            <option value="high">🔴 High</option>
+            <option value="med" selected>🟡 Medium</option>
+            <option value="low">🟢 Low</option>
+          </select>
+        </div>
+        <div><label class="flabel">Status</label>
+          <select class="fselect" id="f_status">
+            <option value="ns">⚫ Not Started</option>
+            <option value="ip">🔵 In Progress</option>
+            <option value="done">🟢 Done</option>
+            <option value="ov">🔴 Overdue</option>
+          </select>
+        </div>
+        <div><label class="flabel">% Complete (0-100)</label><input class="finput" type="number" id="f_pct" min="0" max="100" value="0"></div>
+        <div><label class="flabel">Forecast ยอดขาย (ล้านบาท)</label><input class="finput" type="number" id="f_forecast" min="0" step="0.1" placeholder="เช่น 12.5"></div>
+        <div class="ffull"><label class="flabel">หมายเหตุ / Notes</label><textarea class="ftextarea" id="f_notes" placeholder="รายละเอียดเพิ่มเติม..."></textarea></div>
+      </div>
+    </div>
+    <div class="modalFoot">
+      <button class="cancelBtn" onclick="closeModal()">ยกเลิก</button>
+      <button class="saveBtn" onclick="saveAction()">💾 บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var DIVS = {
+  avp_sa:      {name:'AVP SA',     label:'Small Appliances',       icon:'📊', color:'#1a4ed8'},
+  avp_kc:      {name:'AVP KC',     label:'Kitchen & Cabinet',      icon:'🍳', color:'#7c3aed'},
+  avp_ho1:     {name:'AVP HO1',    label:'Storage/Cleaning',       icon:'🏠', color:'#16a34a'},
+  avp_ho2:     {name:'AVP HO2',    label:'Tools/Cookware/Laundry', icon:'🛋️', color:'#d97706'},
+  avp_pro_sa:  {name:'PRO SA',     label:'Promotion SA',           icon:'🎯', color:'#dc2626'},
+  avp_pro_kcho:{name:'PRO KC HO',  label:'Promotion KC & HO',      icon:'📣', color:'#0891b2'}
+};
+var NICK_ROLES = {nick_monitor:1, nick_svp:1};
+var MONTHS_TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+var YEAR = 2027;
+var currentUser = null;
+var editingId = null;
+var editingDiv = null;
+
+function gk(div){ return 'apt27_' + div; }
+function loadA(div){ try{ return JSON.parse(localStorage.getItem(gk(div)))||[]; }catch(e){return[];} }
+function saveA(div,arr){ localStorage.setItem(gk(div),JSON.stringify(arr)); }
+function allActions(){
+  var all = [];
+  var keys = Object.keys(DIVS);
+  for(var i=0;i<keys.length;i++){
+    var d = keys[i];
+    var arr = loadA(d);
+    for(var j=0;j<arr.length;j++){
+      var a = {};
+      for(var k in arr[j]) a[k]=arr[j][k];
+      a._div = d;
+      all.push(a);
+    }
+  }
+  return all;
+}
+function getQ(ds){
+  var m = new Date(ds).getMonth()+1;
+  return m<=3?'Q1':m<=6?'Q2':m<=9?'Q3':'Q4';
+}
+function fmtDate(ds){
+  if(!ds) return '-';
+  var dt = new Date(ds);
+  return dt.getDate()+'/'+(dt.getMonth()+1)+'/'+dt.getFullYear();
+}
+function genId(){ return 'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
+function chkOv(a){
+  if(a.status==='done') return a;
+  var today = new Date(); today.setHours(0,0,0,0);
+  if(a.endDate && new Date(a.endDate) < today) a.status='ov';
+  return a;
+}
+
+// ===== LOGIN =====
+function doLogin(role){
+  currentUser = role;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  var badge = document.getElementById('roleBadge');
+  if(NICK_ROLES[role]){
+    badge.className='roleBadge roleBadgeNick';
+    badge.textContent = role==='nick_monitor'?'👑 Executive Monitor':'📊 SVP Dashboard';
+  } else {
+    badge.className='roleBadge';
+    badge.textContent = DIVS[role].icon+' '+DIVS[role].name;
+  }
+  buildTabs();
+}
+function doLogout(){
+  currentUser=null;
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('app').style.display='none';
+}
+
+// ===== TABS =====
+function buildTabs(){
+  var bar = document.getElementById('tabBar');
+  var tabs;
+  if(NICK_ROLES[currentUser]){
+    tabs = [{id:'dash',lbl:'📊 Dashboard'},{id:'allact',lbl:'📋 All Actions'},{id:'gantt',lbl:'📅 Gantt Timeline'}];
+  } else {
+    tabs = [{id:'myact',lbl:'📋 Action List'},{id:'gantt',lbl:'📅 Gantt Timeline'},{id:'summ',lbl:'📊 Summary'}];
+  }
+  var html = '';
+  for(var i=0;i<tabs.length;i++){
+    html += '<button class="tabBtn'+(i===0?' active':'')+'" id="tab_'+tabs[i].id+'" onclick="switchTab(\''+tabs[i].id+'\')">'+tabs[i].lbl+'</button>';
+  }
+  bar.innerHTML = html;
+  switchTab(tabs[0].id);
+}
+function switchTab(id){
+  var btns = document.querySelectorAll('.tabBtn');
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove('active');
+  var b = document.getElementById('tab_'+id);
+  if(b) b.classList.add('active');
+  renderTab(id);
+}
+function renderTab(id){
+  var c = document.getElementById('mainContent');
+  if(id==='myact') c.innerHTML = buildMyActions();
+  else if(id==='gantt') c.innerHTML = buildGantt();
+  else if(id==='summ') c.innerHTML = buildSummary();
+  else if(id==='dash') c.innerHTML = buildDash();
+  else if(id==='allact') c.innerHTML = buildAllActions();
+}
+
+// ===== STATS =====
+function calcStats(arr){
+  var total=arr.length, done=0, ip=0, ov=0, fc=0, pctSum=0;
+  for(var i=0;i<arr.length;i++){
+    if(arr[i].status==='done') done++;
+    else if(arr[i].status==='ip') ip++;
+    else if(arr[i].status==='ov') ov++;
+    fc += parseFloat(arr[i].forecast)||0;
+    pctSum += parseInt(arr[i].pct)||0;
+  }
+  return {total:total,done:done,ip:ip,ov:ov,forecast:fc,avgPct:total?Math.round(pctSum/total):0};
+}
+function statsHtml(s){
+  var h = '<div class="statsRow">';
+  h += '<div class="statCard blue"><div class="statLabel">Total Actions</div><div class="statNum">'+s.total+'</div><div class="statSub">งานทั้งหมด</div></div>';
+  h += '<div class="statCard green"><div class="statLabel">Done</div><div class="statNum" style="color:#16a34a">'+s.done+'</div><div class="statSub">เสร็จสิ้น</div></div>';
+  h += '<div class="statCard orange"><div class="statLabel">In Progress</div><div class="statNum" style="color:#f5822a">'+s.ip+'</div><div class="statSub">กำลังดำเนินการ</div></div>';
+  h += '<div class="statCard red"><div class="statLabel">Overdue</div><div class="statNum" style="color:#dc2626">'+s.ov+'</div><div class="statSub">เกินกำหนด</div></div>';
+  h += '<div class="statCard purple"><div class="statLabel">Forecast</div><div class="statNum" style="color:#7c3aed">'+s.forecast.toFixed(1)+'M</div><div class="statSub">ล้านบาท</div></div>';
+  h += '</div>';
+  return h;
+}
+
+// ===== STATUS / PRIORITY HTML =====
+function sBadge(s){
+  var cls={ns:'sns',ip:'sip',done:'sdone',ov:'sov'};
+  var lbl={ns:'Not Started',ip:'In Progress',done:'Done ✓',ov:'Overdue ⚠'};
+  return '<span class="sbadge '+(cls[s]||'sns')+'">'+(lbl[s]||s)+'</span>';
+}
+function pBadge(p){
+  var cls={high:'ph',med:'pm',low:'pl'};
+  var lbl={high:'🔴 High',med:'🟡 Med',low:'🟢 Low'};
+  return '<span class="pbadge '+(cls[p]||'pm')+'">'+(lbl[p]||p)+'</span>';
+}
+function barColor(s){
+  if(s==='ip') return '#2563eb';
+  if(s==='done') return '#16a34a';
+  if(s==='ov') return '#dc2626';
+  return '#9ca3af';
+}
+
+// ===== FILTER ROW =====
+function filterRow(pfx, showDiv){
+  var h = '<div class="filterRow">';
+  h += '<input class="searchBox" id="'+pfx+'_s" placeholder="🔍 ค้นหา..." oninput="applyFilter(\''+pfx+'\')">';
+  h += '<select class="filterSel" id="'+pfx+'_c" onchange="applyFilter(\''+pfx+'\')">';
+  h += '<option value="">ทุก Category</option>';
+  var cats=['Sales','Marketing','Product','Operations','Online','Promotion','Supplier','Customer Experience','Training','Other'];
+  for(var i=0;i<cats.length;i++) h += '<option>'+cats[i]+'</option>';
+  h += '</select>';
+  h += '<select class="filterSel" id="'+pfx+'_q" onchange="applyFilter(\''+pfx+'\')">';
+  h += '<option value="">ทุก Quarter</option><option>Q1</option><option>Q2</option><option>Q3</option><option>Q4</option>';
+  h += '</select>';
+  h += '<select class="filterSel" id="'+pfx+'_st" onchange="applyFilter(\''+pfx+'\')">';
+  h += '<option value="">ทุก Status</option><option value="ns">Not Started</option><option value="ip">In Progress</option><option value="done">Done</option><option value="ov">Overdue</option>';
+  h += '</select>';
+  h += '<select class="filterSel" id="'+pfx+'_p" onchange="applyFilter(\''+pfx+'\')">';
+  h += '<option value="">ทุก Priority</option><option value="high">High</option><option value="med">Medium</option><option value="low">Low</option>';
+  h += '</select>';
+  if(showDiv){
+    h += '<select class="filterSel" id="'+pfx+'_d" onchange="applyFilter(\''+pfx+'\')">';
+    h += '<option value="">ทุก Division</option>';
+    var dkeys=Object.keys(DIVS);
+    for(var j=0;j<dkeys.length;j++) h+='<option value="'+dkeys[j]+'">'+DIVS[dkeys[j]].name+'</option>';
+    h += '</select>';
+  }
+  h += '</div>';
+  return h;
+}
+function applyFilter(pfx){
+  var s = (document.getElementById(pfx+'_s')||{}).value||'';
+  var fc = (document.getElementById(pfx+'_c')||{}).value||'';
+  var fq = (document.getElementById(pfx+'_q')||{}).value||'';
+  var fst = (document.getElementById(pfx+'_st')||{}).value||'';
+  var fp = (document.getElementById(pfx+'_p')||{}).value||'';
+  var fd = (document.getElementById(pfx+'_d')||{}).value||'';
+  var isNick = !!NICK_ROLES[currentUser];
+  var arr = isNick ? allActions() : loadA(currentUser);
+  for(var i=0;i<arr.length;i++) chkOv(arr[i]);
+  arr = arr.filter(function(a){
+    if(s && (a.name||'').toLowerCase().indexOf(s.toLowerCase())<0 && (a.owner||'').toLowerCase().indexOf(s.toLowerCase())<0) return false;
+    if(fc && a.category!==fc) return false;
+    if(fq && a.startDate && getQ(a.startDate)!==fq) return false;
+    if(fst && a.status!==fst) return false;
+    if(fp && a.priority!==fp) return false;
+    if(fd && a._div!==fd) return false;
+    return true;
+  });
+  var tbody = document.getElementById('mainTbody');
+  if(tbody) tbody.innerHTML = rowsHtml(arr, isNick);
+  if(pfx==='gantt'){
+    var gc = document.getElementById('ganttRows');
+    if(gc) gc.innerHTML = ganttRowsHtml(arr);
+  }
+}
+
+// ===== TABLE ROWS =====
+function rowsHtml(arr, showDiv){
+  if(!arr.length) return '<tr><td colspan="13" style="text-align:center;padding:36px;color:#9ca3af">ยังไม่มี Action Items</td></tr>';
+  var h='';
+  for(var i=0;i<arr.length;i++){
+    var a=arr[i];
+    var isOv = a.status==='ov';
+    var pct = parseInt(a.pct)||0;
+    var bc = barColor(a.status);
+    var divTd = showDiv ? '<td><span style="font-size:9px;font-weight:700;color:#1a4ed8">'+(DIVS[a._div]?DIVS[a._div].icon+' '+DIVS[a._div].name:'')+'</span></td>' : '';
+    var canEdit = !showDiv || !NICK_ROLES[currentUser];
+    var editTd = canEdit ? '<button class="iconBtn eBtn" onclick="openEdit(\''+a.id+'\',\''+(a._div||currentUser)+'\')">✏️</button><button class="iconBtn dBtn" onclick="delAction(\''+a.id+'\',\''+(a._div||currentUser)+'\')">🗑️</button>' : '';
+    h += '<tr'+(isOv?' class="rowOv"':'')+'>';
+    h += '<td style="color:#9ca3af;font-weight:700">'+(i+1)+'</td>';
+    h += '<td style="font-weight:600;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+a.name+'</td>';
+    h += divTd;
+    h += '<td><span style="background:#f1f5f9;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700">'+a.category+'</span></td>';
+    h += '<td style="font-size:10px">'+a.owner+'</td>';
+    h += '<td style="font-size:9px;white-space:nowrap">'+fmtDate(a.startDate)+' →<br>'+fmtDate(a.endDate)+'</td>';
+    h += '<td><span style="font-size:10px;font-weight:700;color:#1a4ed8">'+getQ(a.startDate)+'</span></td>';
+    h += '<td>'+pBadge(a.priority)+'</td>';
+    h += '<td>'+sBadge(a.status)+'</td>';
+    h += '<td><div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+bc+'"></div></div><div style="font-size:9px;text-align:center;font-weight:700;margin-top:2px">'+pct+'%</div></td>';
+    h += '<td style="font-weight:800;color:#16a34a">฿'+(parseFloat(a.forecast)||0).toFixed(1)+'M</td>';
+    h += '<td><div style="display:flex;gap:4px">'+editTd+'</div></td>';
+    h += '</tr>';
+  }
+  return h;
+}
+
+// ===== MY ACTIONS =====
+function buildMyActions(){
+  var arr = loadA(currentUser);
+  for(var i=0;i<arr.length;i++) chkOv(arr[i]);
+  saveA(currentUser, arr);
+  var s = calcStats(arr);
+  var h = statsHtml(s);
+  h += '<div class="sectionCard">';
+  h += '<div class="sectionHead"><div class="sectionTitle">📋 Action Items — '+DIVS[currentUser].name+'</div><button class="addBtn" onclick="openAdd()">＋ เพิ่ม Action</button></div>';
+  h += filterRow('my', false);
+  h += '<div class="tableWrap"><table>';
+  h += '<thead><tr><th>#</th><th>ชื่องาน</th><th>Category</th><th>ผู้รับผิดชอบ</th><th>ระยะเวลา</th><th>Q</th><th>Priority</th><th>Status</th><th>%</th><th>Forecast</th><th>จัดการ</th></tr></thead>';
+  h += '<tbody id="mainTbody">'+rowsHtml(arr,false)+'</tbody>';
+  h += '</table></div></div>';
+  return h;
+}
+
+// ===== ALL ACTIONS (Nick) =====
+function buildAllActions(){
+  var arr = allActions();
+  for(var i=0;i<arr.length;i++) chkOv(arr[i]);
+  var s = calcStats(arr);
+  var h = statsHtml(s);
+  h += '<div class="sectionCard">';
+  h += '<div class="sectionHead"><div class="sectionTitle">📋 All Actions — ทุก Division</div></div>';
+  h += filterRow('all', true);
+  h += '<div class="tableWrap"><table>';
+  h += '<thead><tr><th>#</th><th>ชื่องาน</th><th>Division</th><th>Category</th><th>ผู้รับผิดชอบ</th><th>ระยะเวลา</th><th>Q</th><th>Priority</th><th>Status</th><th>%</th><th>Forecast</th><th></th></tr></thead>';
+  h += '<tbody id="mainTbody">'+rowsHtml(arr,true)+'</tbody>';
+  h += '</table></div></div>';
+  return h;
+}
+
+// ===== SUMMARY (AVP) =====
+function buildSummary(){
+  var arr = loadA(currentUser);
+  for(var i=0;i<arr.length;i++) chkOv(arr[i]);
+  var s = calcStats(arr);
+  var h = statsHtml(s);
+  var byQ = {Q1:[],Q2:[],Q3:[],Q4:[]};
+  for(var i=0;i<arr.length;i++){
+    var q = arr[i].startDate?getQ(arr[i].startDate):'Q1';
+    if(byQ[q]) byQ[q].push(arr[i]);
+  }
+  h += '<div class="sectionCard"><div class="sectionHead"><div class="sectionTitle">📊 สรุปตาม Quarter — '+DIVS[currentUser].name+'</div></div>';
+  h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:18px">';
+  var qs=['Q1','Q2','Q3','Q4'];
+  for(var qi=0;qi<qs.length;qi++){
+    var q=qs[qi]; var qa=byQ[q];
+    var qfc=0; for(var j=0;j<qa.length;j++) qfc+=parseFloat(qa[j].forecast)||0;
+    h += '<div style="background:#EFF6FF;border-radius:12px;padding:16px;text-align:center">';
+    h += '<div style="font-size:20px;font-weight:900;color:#1a4ed8">'+q+'</div>';
+    h += '<div style="font-size:28px;font-weight:900;margin:8px 0">'+qa.length+'</div>';
+    h += '<div style="font-size:10px;color:#6b7280">actions</div>';
+    h += '<div style="font-size:14px;font-weight:700;color:#16a34a;margin-top:8px">฿'+qfc.toFixed(1)+'M</div>';
+    h += '<div style="font-size:10px;color:#6b7280">forecast</div></div>';
+  }
+  h += '</div></div>';
+  return h;
+}
+
+// ===== NICK DASHBOARD =====
+function buildDash(){
+  var all = allActions();
+  for(var i=0;i<all.length;i++) chkOv(all[i]);
+  var s = calcStats(all);
+  var h = statsHtml(s);
+  h += '<div class="divGrid">';
+  var dkeys = Object.keys(DIVS);
+  for(var i=0;i<dkeys.length;i++){
+    var dk=dkeys[i]; var dv=DIVS[dk];
+    var arr=loadA(dk); for(var j=0;j<arr.length;j++) chkOv(arr[j]);
+    var ds=calcStats(arr);
+    var donePct=ds.total?Math.round(ds.done/ds.total*100):0;
+    h += '<div class="divCard" style="border-top-color:'+dv.color+'">';
+    h += '<div class="divCardTitle">'+dv.icon+' '+dv.name+' <span style="font-size:10px;font-weight:400;color:#6b7280">'+dv.label+'</span></div>';
+    h += '<div class="divRow"><span style="color:#6b7280">Actions</span><span style="font-weight:700">'+ds.total+'</span></div>';
+    h += '<div class="divRow"><span style="color:#6b7280">Done</span><span style="font-weight:700;color:#16a34a">'+ds.done+'</span></div>';
+    h += '<div class="divRow"><span style="color:#6b7280">In Progress</span><span style="font-weight:700;color:#1a4ed8">'+ds.ip+'</span></div>';
+    if(ds.ov>0) h += '<div class="divRow"><span style="color:#6b7280">Overdue</span><span class="ovPill">⚠️ '+ds.ov+'</span></div>';
+    h += '<div class="divRow"><span style="color:#6b7280">Forecast</span><span style="font-weight:700;color:#7c3aed">฿'+ds.forecast.toFixed(1)+'M</span></div>';
+    h += '<div class="divPbar"><div class="divPfill" style="width:'+donePct+'%;background:'+dv.color+'"></div></div>';
+    h += '<div style="font-size:9px;color:#6b7280;text-align:right;margin-top:3px">'+donePct+'% complete</div>';
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+// ===== GANTT =====
+function ganttRowsHtml(arr){
+  if(!arr.length) return '<div style="text-align:center;padding:48px;color:#9ca3af">ยังไม่มี Action Items</div>';
+  var yStart = new Date(YEAR,0,1).getTime();
+  var yEnd = new Date(YEAR,11,31,23,59,59).getTime();
+  var dur = yEnd - yStart;
+  function pct(ts){ return Math.max(0,Math.min(100,(ts-yStart)/dur*100)); }
+  var h='';
+  for(var i=0;i<arr.length;i++){
+    var a=arr[i];
+    var isOv=a.status==='ov';
+    var sTs=new Date(a.startDate).getTime();
+    var eTs=new Date(a.endDate).getTime();
+    var lPct=pct(sTs);
+    var wPct=Math.max(0.8,pct(eTs)-lPct);
+    var bc=barColor(a.status);
+    var dpct=parseInt(a.pct)||0;
+    var divLbl='';
+    if(a._div && DIVS[a._div]) divLbl='<span style="font-size:8px;background:#e0e7ff;color:#3730a3;padding:1px 5px;border-radius:3px;margin-left:4px">'+DIVS[a._div].name+'</span>';
+    h += '<div style="display:flex;align-items:center;min-height:46px;border-bottom:1px solid #f1f5f9;'+(isOv?'background:#fff5f5;':'')+(i%2?'background:'+(isOv?'#fff5f5':'#fafbff')+';':'')+'">';
+    h += '<div style="width:220px;min-width:220px;padding:7px 10px;border-right:1px solid #e5e7eb;overflow:hidden">';
+    h += '<div style="font-size:10px;font-weight:700;color:'+(isOv?'#dc2626':'#0f172a')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+a.name+divLbl+'</div>';
+    h += '<div style="font-size:8px;color:#6b7280;margin-top:2px">'+a.category+' · '+a.owner+'</div>';
+    h += '</div>';
+    h += '<div style="flex:1;position:relative;height:46px">';
+    // month gridlines
+    for(var m=1;m<12;m++){
+      var gx=(m/12*100).toFixed(2);
+      h += '<div style="position:absolute;top:0;bottom:0;left:'+gx+'%;width:1px;background:#f1f5f9;z-index:0"></div>';
+    }
+    // today line
+    var todayPct=pct(new Date().getTime());
+    if(todayPct>=0&&todayPct<=100) h+='<div style="position:absolute;top:0;bottom:0;left:'+todayPct.toFixed(2)+'%;width:2px;background:rgba(245,130,42,0.5);z-index:1"></div>';
+    // bar
+    h += '<div style="position:absolute;top:50%;transform:translateY(-50%);left:'+lPct.toFixed(2)+'%;width:'+wPct.toFixed(2)+'%;height:18px;border-radius:20px;background:'+bc+';opacity:0.88;display:flex;align-items:center;padding:0 6px;z-index:2;overflow:hidden">';
+    if(wPct>4) h+='<span style="font-size:8px;font-weight:700;color:#fff;white-space:nowrap">'+dpct+'%</span>';
+    h+='</div></div></div>';
+  }
+  return h;
+}
+
+function buildGantt(){
+  var isNick=!!NICK_ROLES[currentUser];
+  var arr = isNick ? allActions() : loadA(currentUser);
+  for(var i=0;i<arr.length;i++) chkOv(arr[i]);
+  var h='<div class="sectionCard">';
+  h+='<div class="sectionHead"><div class="sectionTitle">📅 Gantt Timeline — ปี 2027</div>';
+  if(!isNick) h+='<button class="addBtn" onclick="openAdd()">＋ เพิ่ม Action</button>';
+  h+='</div>';
+  h+='<div class="ganttLegend">';
+  h+='<div class="lItem"><div class="lDot" style="background:#2563eb"></div>In Progress</div>';
+  h+='<div class="lItem"><div class="lDot" style="background:#16a34a"></div>Done</div>';
+  h+='<div class="lItem"><div class="lDot" style="background:#dc2626"></div>Overdue</div>';
+  h+='<div class="lItem"><div class="lDot" style="background:#9ca3af"></div>Not Started</div>';
+  h+='<div class="lItem"><div class="lDot" style="background:rgba(245,130,42,0.5)"></div>วันนี้</div>';
+  h+='</div>';
+  // filter
+  h+='<div class="filterRow">';
+  h+='<select class="filterSel" id="gantt_c" onchange="applyGanttFilter()">';
+  h+='<option value="">ทุก Category</option>';
+  var cats=['Sales','Marketing','Product','Operations','Online','Promotion','Supplier','Customer Experience','Training','Other'];
+  for(var i=0;i<cats.length;i++) h+='<option>'+cats[i]+'</option>';
+  h+='</select>';
+  h+='<select class="filterSel" id="gantt_st" onchange="applyGanttFilter()">';
+  h+='<option value="">ทุก Status</option><option value="ns">Not Started</option><option value="ip">In Progress</option><option value="done">Done</option><option value="ov">Overdue</option>';
+  h+='</select>';
+  if(isNick){
+    h+='<select class="filterSel" id="gantt_d" onchange="applyGanttFilter()">';
+    h+='<option value="">ทุก Division</option>';
+    var dks=Object.keys(DIVS);
+    for(var j=0;j<dks.length;j++) h+='<option value="'+dks[j]+'">'+DIVS[dks[j]].name+'</option>';
+    h+='</select>';
+  }
+  h+='</div>';
+  // gantt container
+  h+='<div style="overflow-x:auto;padding:0 20px 20px">';
+  // month header
+  h+='<div style="display:flex;border-bottom:2px solid #DBEAFE;background:#EFF6FF;border-radius:6px 6px 0 0;min-width:700px">';
+  h+='<div style="width:220px;min-width:220px;padding:9px 10px;font-size:10px;font-weight:700;color:#1a4ed8;border-right:1px solid #dbeafe">งาน / Task</div>';
+  h+='<div style="flex:1;display:flex">';
+  for(var m=0;m<12;m++) h+='<div style="flex:1;padding:9px 4px;text-align:center;font-size:9px;font-weight:700;color:#1a4ed8;border-right:1px solid #dbeafe">'+MONTHS_TH[m]+'</div>';
+  h+='</div></div>';
+  h+='<div id="ganttRows" style="min-width:700px">'+ganttRowsHtml(arr)+'</div>';
+  h+='</div></div>';
+  return h;
+}
+
+function applyGanttFilter(){
+  var isNick=!!NICK_ROLES[currentUser];
+  var fc=(document.getElementById('gantt_c')||{}).value||'';
+  var fst=(document.getElementById('gantt_st')||{}).value||'';
+  var fd=(document.getElementById('gantt_d')||{}).value||'';
+  var arr = isNick ? allActions() : loadA(currentUser);
+  for(var i=0;i<arr.length;i++) chkOv(arr[i]);
+  arr=arr.filter(function(a){
+    if(fc&&a.category!==fc) return false;
+    if(fst&&a.status!==fst) return false;
+    if(fd&&a._div!==fd) return false;
+    return true;
+  });
+  var el=document.getElementById('ganttRows');
+  if(el) el.innerHTML=ganttRowsHtml(arr);
+}
+
+// ===== MODAL =====
+function openAdd(){
+  editingId=null; editingDiv=null;
+  document.getElementById('modalTitle').textContent='เพิ่ม Action Item';
+  document.getElementById('f_name').value='';
+  document.getElementById('f_cat').value='';
+  document.getElementById('f_owner').value='';
+  document.getElementById('f_start').value='';
+  document.getElementById('f_end').value='';
+  document.getElementById('f_priority').value='med';
+  document.getElementById('f_status').value='ns';
+  document.getElementById('f_pct').value='0';
+  document.getElementById('f_forecast').value='';
+  document.getElementById('f_notes').value='';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function openEdit(id, div){
+  var arr=loadA(div);
+  var a=null;
+  for(var i=0;i<arr.length;i++) if(arr[i].id===id){a=arr[i];break;}
+  if(!a) return;
+  editingId=id; editingDiv=div;
+  document.getElementById('modalTitle').textContent='แก้ไข Action Item';
+  document.getElementById('f_name').value=a.name||'';
+  document.getElementById('f_cat').value=a.category||'';
+  document.getElementById('f_owner').value=a.owner||'';
+  document.getElementById('f_start').value=a.startDate||'';
+  document.getElementById('f_end').value=a.endDate||'';
+  document.getElementById('f_priority').value=a.priority||'med';
+  document.getElementById('f_status').value=a.status||'ns';
+  document.getElementById('f_pct').value=a.pct||0;
+  document.getElementById('f_forecast').value=a.forecast||'';
+  document.getElementById('f_notes').value=a.notes||'';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  editingId=null; editingDiv=null;
+}
+function saveAction(){
+  var name=document.getElementById('f_name').value.trim();
+  var cat=document.getElementById('f_cat').value;
+  var owner=document.getElementById('f_owner').value.trim();
+  var start=document.getElementById('f_start').value;
+  var end=document.getElementById('f_end').value;
+  if(!name||!cat||!owner||!start||!end){alert('กรุณากรอก: ชื่องาน, Category, ผู้รับผิดชอบ, วันเริ่มต้น, วันสิ้นสุด');return;}
+  var div=editingDiv||currentUser;
+  var arr=loadA(div);
+  var action={
+    id:editingId||genId(),
+    name:name, category:cat, owner:owner,
+    startDate:start, endDate:end,
+    priority:document.getElementById('f_priority').value,
+    status:document.getElementById('f_status').value,
+    pct:parseInt(document.getElementById('f_pct').value)||0,
+    forecast:parseFloat(document.getElementById('f_forecast').value)||0,
+    notes:document.getElementById('f_notes').value.trim(),
+    updatedAt:Date.now()
+  };
+  if(editingId){
+    var found=false;
+    for(var i=0;i<arr.length;i++) if(arr[i].id===editingId){arr[i]=action;found=true;break;}
+    if(!found) arr.push(action);
+  } else {
+    arr.push(action);
+  }
+  saveA(div,arr);
+  closeModal();
+  var ab=document.querySelector('.tabBtn.active');
+  if(ab) renderTab(ab.id.replace('tab_',''));
+}
+function delAction(id, div){
+  if(!confirm('ลบ Action นี้?')) return;
+  var arr=loadA(div).filter(function(a){return a.id!==id;});
+  saveA(div,arr);
+  var ab=document.querySelector('.tabBtn.active');
+  if(ab) renderTab(ab.id.replace('tab_',''));
+}
+
+// ===== DEMO DATA =====
+function initDemo(){
+  function d(name,cat,owner,s,e,pri,stat,pct,fc,notes){
+    return {id:genId(),name:name,category:cat,owner:owner,startDate:s,endDate:e,priority:pri,status:stat,pct:pct,forecast:fc,notes:notes||''};
+  }
+  var demo={
+    avp_sa:[
+      d('เปิดตัว Air Fryer Series X','Marketing','สมชาย ว.','2027-01-15','2027-03-31','high','ip',45,28.5,'Launch event + digital'),
+      d('Negotiate range extension Supplier A','Supplier','นิตยา ร.','2027-01-05','2027-02-28','high','done',100,15,''),
+      d('Bundle Promotion Q2 SA','Promotion','ประภาส น.','2027-04-01','2027-06-30','med','ns',0,22,''),
+      d('Online Channel Activation SA','Online','กัญญา ส.','2027-02-01','2027-05-31','med','ip',30,18,'Shopee + Lazada')
+    ],
+    avp_kc:[
+      d('Kitchen Cabinet Display Revamp','Product','วิชัย ก.','2027-01-10','2027-04-30','high','ip',60,35,''),
+      d('Built-in Oven Supplier Deal','Supplier','มาลัย ล.','2027-02-01','2027-03-15','high','ov',20,12,'Delayed'),
+      d('Showroom Experience Q3','Customer Experience','สุภาพ ท.','2027-07-01','2027-09-30','med','ns',0,20,'')
+    ],
+    avp_ho1:[
+      d('Storage Solution Campaign','Marketing','รัตนา ข.','2027-01-20','2027-04-30','med','ip',50,10,''),
+      d('Cleaning Product Range Review','Product','ธนา จ.','2027-03-01','2027-05-31','low','ns',0,8,'')
+    ],
+    avp_ho2:[
+      d('Cookware Premium Launch','Sales','อภิชาต พ.','2027-02-15','2027-05-15','high','ip',40,25,''),
+      d('Laundry Solutions Q4','Product','ศิริพร ม.','2027-09-01','2027-12-31','med','ns',0,15,'')
+    ],
+    avp_pro_sa:[
+      d('SA Promotion Calendar 2027','Promotion','ชลิตา บ.','2027-01-01','2027-03-31','high','done',100,40,'Q1 confirmed'),
+      d('Mid-Year Sale SA','Promotion','ชลิตา บ.','2027-06-01','2027-07-15','high','ns',0,55,'')
+    ],
+    avp_pro_kcho:[
+      d('KC Year-End Mega Sale','Promotion','พิมพ์ ร.','2027-10-01','2027-12-31','high','ns',0,70,''),
+      d('HO Online Exclusive Deal Q2','Online','ณรงค์ ส.','2027-04-01','2027-06-30','med','ns',0,20,'')
+    ]
+  };
+  var keys=Object.keys(demo);
+  for(var i=0;i<keys.length;i++){
+    if(!loadA(keys[i]).length) saveA(keys[i],demo[keys[i]]);
+  }
+}
+initDemo();
+</script>
+</body>
+</html>

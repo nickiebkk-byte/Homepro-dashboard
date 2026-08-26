@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BP2027 Executive Dashboard — Module 4</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1a4ed8;--blue2:#2563eb;--blueLt:#EFF6FF;--blueMid:#DBEAFE;
+  --or:#f5822a;--orLt:#FFF7ED;--orMid:#FFEDD5;
+  --navy:#0f172a;--green:#16a34a;--greenLt:#DCFCE7;
+  --red:#dc2626;--redLt:#FEE2E2;--yellow:#d97706;--yellowLt:#FEF3C7;
+  --gray:#6b7280;--grayLt:#F3F4F6;--purple:#7c3aed;--purpleLt:#F5F3FF;
+}
+body{font-family:'Prompt',sans-serif;background:#F0F4FF;color:#0f172a;min-height:100vh;}
+
+/* LOGIN */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0f172a 0%,#1a4ed8 55%,#f5822a 100%);}
+.loginBox{background:#fff;border-radius:24px;padding:40px 32px;width:500px;max-width:95vw;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,0.3);}
+.loginIcon{font-size:48px;margin-bottom:8px;}
+.loginTitle{font-size:22px;font-weight:900;color:#0f172a;margin-bottom:4px;}
+.loginSub{font-size:12px;color:#6b7280;margin-bottom:28px;}
+.loginLabel{font-size:11px;font-weight:700;color:#6b7280;text-align:left;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
+.avpGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+.avpBtn{padding:12px 6px;border:2px solid #DBEAFE;border-radius:12px;background:#EFF6FF;cursor:pointer;font-family:'Prompt',sans-serif;font-size:10px;font-weight:700;color:#1a4ed8;text-align:center;line-height:1.4;}
+.avpBtn:hover,.avpBtn:active{background:#1a4ed8;color:#fff;border-color:#1a4ed8;}
+.avpIcon{font-size:20px;display:block;margin-bottom:4px;}
+.divider{display:flex;align-items:center;gap:10px;margin:12px 0;}
+.divider hr{flex:1;border:none;border-top:1px solid #e5e7eb;}
+.divider span{font-size:11px;color:#6b7280;}
+.nickGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.nickBtn{padding:12px;border:2px solid #FFEDD5;border-radius:12px;background:#FFF7ED;cursor:pointer;font-family:'Prompt',sans-serif;font-size:10px;font-weight:700;color:#c2410c;text-align:center;line-height:1.4;}
+.nickBtn:hover,.nickBtn:active{background:#f5822a;color:#fff;border-color:#f5822a;}
+
+/* APP */
+#app{display:none;}
+.topbar{background:#0f172a;color:#fff;padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topLogo{background:#f5822a;color:#fff;font-weight:900;font-size:12px;padding:5px 10px;border-radius:7px;margin-right:10px;white-space:nowrap;}
+.topTitle{font-size:14px;font-weight:700;white-space:nowrap;}
+.roleBadge{padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;}
+.rb-nick{background:#f5822a;color:#fff;}
+.rb-avp{background:#1a4ed8;color:#fff;}
+.logoutBtn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:5px 12px;border-radius:7px;cursor:pointer;font-family:'Prompt',sans-serif;font-size:11px;}
+
+/* TABS */
+.tabBar{background:#fff;border-bottom:2px solid #DBEAFE;padding:0 20px;display:flex;gap:2px;overflow-x:auto;}
+.tabBtn{padding:13px 16px;border:none;background:none;cursor:pointer;font-family:'Prompt',sans-serif;font-size:12px;font-weight:600;color:#6b7280;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;}
+.tabBtn.active{color:#1a4ed8;border-bottom-color:#1a4ed8;}
+
+/* CONTENT */
+.content{padding:20px;max-width:1400px;margin:0 auto;}
+
+/* HERO STATS */
+.heroStats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+.hStat{background:#fff;border-radius:14px;padding:18px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);position:relative;overflow:hidden;}
+.hStat::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
+.hs-blue::before{background:#1a4ed8;}
+.hs-green::before{background:#16a34a;}
+.hs-orange::before{background:#f5822a;}
+.hs-red::before{background:#dc2626;}
+.hs-purple::before{background:#7c3aed;}
+.hStatLabel{font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.hStatNum{font-size:28px;font-weight:900;color:#0f172a;}
+.hStatSub{font-size:10px;color:#6b7280;margin-top:3px;}
+.hStatTrend{position:absolute;top:16px;right:16px;font-size:18px;}
+
+/* SECTION CARD */
+.sCard{background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:20px;overflow:hidden;}
+.sHead{padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.sTitle{font-size:15px;font-weight:800;color:#0f172a;}
+.sBody{padding:20px;}
+
+/* DIV PROGRESS CARDS */
+.divGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.divCard{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border-top:4px solid #1a4ed8;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.divCard:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.12);}
+.divCardTitle{font-size:12px;font-weight:800;margin-bottom:10px;}
+.divRow{display:flex;justify-content:space-between;margin-bottom:5px;font-size:11px;}
+.divPbar{background:#e5e7eb;border-radius:20px;height:7px;margin-top:8px;overflow:hidden;}
+.divPfill{height:100%;border-radius:20px;}
+.ovPill{background:#FEE2E2;color:#dc2626;padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;}
+
+/* CHARTS */
+.chartRow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.chartCard{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+.chartTitle{font-size:13px;font-weight:800;color:#0f172a;margin-bottom:16px;}
+.barChart{display:flex;flex-direction:column;gap:10px;}
+.barRow{display:flex;align-items:center;gap:10px;}
+.barLabel{font-size:10px;font-weight:700;color:#0f172a;width:80px;flex-shrink:0;text-align:right;}
+.barTrack{flex:1;background:#f1f5f9;border-radius:20px;height:16px;overflow:hidden;position:relative;}
+.barFill{height:100%;border-radius:20px;display:flex;align-items:center;padding-left:8px;transition:width .6s;}
+.barFill span{font-size:9px;font-weight:700;color:#fff;white-space:nowrap;}
+.barVal{font-size:10px;font-weight:700;color:#0f172a;width:45px;flex-shrink:0;}
+
+/* DONUT */
+.donutWrap{display:flex;align-items:center;gap:20px;}
+.donutSvg{flex-shrink:0;}
+.donutLegend{display:flex;flex-direction:column;gap:8px;}
+.dLegItem{display:flex;align-items:center;gap:8px;font-size:11px;}
+.dLegDot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* GANTT */
+.ganttWrap{overflow-x:auto;}
+.ganttHead{display:flex;background:#EFF6FF;border-bottom:2px solid #DBEAFE;border-radius:6px 6px 0 0;min-width:700px;}
+.ghLabel{width:200px;min-width:200px;padding:8px 10px;font-size:9px;font-weight:700;color:#1a4ed8;border-right:1px solid #DBEAFE;}
+.ghMonths{flex:1;display:flex;}
+.ghMonth{flex:1;padding:8px 2px;text-align:center;font-size:8px;font-weight:700;color:#1a4ed8;border-right:1px solid #DBEAFE;}
+.gRow{display:flex;align-items:center;min-height:42px;border-bottom:1px solid #f1f5f9;min-width:700px;}
+.gRowLabel{width:200px;min-width:200px;padding:6px 10px;border-right:1px solid #e5e7eb;overflow:hidden;}
+.gRowName{font-size:9px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.gRowSub{font-size:8px;color:#6b7280;}
+.gRowChart{flex:1;position:relative;height:42px;}
+.gBar{position:absolute;top:50%;transform:translateY(-50%);height:14px;border-radius:20px;display:flex;align-items:center;padding:0 5px;opacity:.88;}
+.gBar span{font-size:7px;font-weight:700;color:#fff;white-space:nowrap;}
+.gLine{position:absolute;top:0;bottom:0;width:1px;background:#f1f5f9;}
+.gToday{position:absolute;top:0;bottom:0;width:2px;background:rgba(245,130,42,.5);z-index:2;}
+.ganttLegend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+.gLI{display:flex;align-items:center;gap:5px;font-size:10px;color:#6b7280;}
+.gLD{width:12px;height:12px;border-radius:3px;}
+
+/* ALERTS */
+.alertList{display:flex;flex-direction:column;gap:10px;}
+.alertItem{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:12px;}
+.ai-red{background:#FEF2F2;border:1px solid #FECACA;}
+.ai-yellow{background:#FFFBEB;border:1px solid #FDE68A;}
+.ai-blue{background:#EFF6FF;border:1px solid #DBEAFE;}
+.alertIcon{font-size:20px;flex-shrink:0;}
+.alertTitle{font-size:12px;font-weight:700;margin-bottom:2px;}
+.alertSub{font-size:11px;color:#6b7280;line-height:1.5;}
+
+/* AI REPORT */
+.aiBox{background:linear-gradient(135deg,#0f172a,#1a4ed8);border-radius:16px;padding:24px;color:#fff;margin-bottom:16px;}
+.aiBoxTitle{font-size:16px;font-weight:800;margin-bottom:6px;}
+.aiBoxSub{font-size:12px;color:#94a3b8;margin-bottom:20px;}
+.genBtn{background:#f5822a;color:#fff;border:none;padding:12px 28px;border-radius:10px;cursor:pointer;font-family:'Prompt',sans-serif;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:8px;}
+.genBtn:hover{background:#fb923c;}
+.genBtn:disabled{background:#4b5563;cursor:not-allowed;}
+.aiResult{background:#fff;border-radius:14px;padding:20px;margin-top:16px;display:none;}
+.aiLoading{text-align:center;padding:40px;color:#6b7280;display:none;}
+.aiSection{margin-bottom:18px;}
+.aiSTitle{font-size:11px;font-weight:700;color:#1a4ed8;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #DBEAFE;padding-bottom:6px;margin-bottom:10px;}
+.aiText{font-size:13px;line-height:1.8;color:#374151;}
+.aiBullet{display:flex;gap:8px;margin-bottom:5px;font-size:13px;line-height:1.6;}
+.aiDot{color:#f5822a;font-weight:900;flex-shrink:0;}
+
+/* MODULE LINKS */
+.moduleGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.modCard{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,0.06);border:2px solid transparent;transition:all .2s;cursor:pointer;}
+.modCard:hover{border-color:#1a4ed8;transform:translateY(-2px);}
+.modIcon{font-size:28px;margin-bottom:8px;}
+.modTitle{font-size:12px;font-weight:800;color:#0f172a;margin-bottom:4px;}
+.modSub{font-size:10px;color:#6b7280;line-height:1.5;}
+.modStatus{display:inline-block;margin-top:8px;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.ms-done{background:#DCFCE7;color:#16a34a;}
+.ms-active{background:#DBEAFE;color:#1a4ed8;}
+
+/* MY DIV VIEW */
+.myDivHero{background:linear-gradient(135deg,#1a4ed8,#7c3aed);border-radius:16px;padding:24px;color:#fff;margin-bottom:20px;}
+.myDivName{font-size:22px;font-weight:900;margin-bottom:4px;}
+.myDivSub{font-size:13px;color:rgba(255,255,255,.7);}
+.myKpiGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px;}
+.myKpi{background:rgba(255,255,255,.15);border-radius:10px;padding:12px;text-align:center;}
+.myKpiNum{font-size:20px;font-weight:900;}
+.myKpiLbl{font-size:9px;color:rgba(255,255,255,.7);margin-top:2px;}
+
+@media(max-width:700px){
+  .heroStats{grid-template-columns:1fr 1fr;}
+  .divGrid{grid-template-columns:1fr 1fr;}
+  .chartRow{grid-template-columns:1fr;}
+  .moduleGrid{grid-template-columns:1fr 1fr;}
+  .myKpiGrid{grid-template-columns:1fr 1fr;}
+  .avpGrid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="loginBox">
+    <div class="loginIcon">🏆</div>
+    <div class="loginTitle">BP2027 Executive Dashboard</div>
+    <div class="loginSub">Module 4 · ภาพรวม Business Plan 2027 · HomePro K&amp;H</div>
+    <div class="loginLabel">เลือก Division ของคุณ</div>
+    <div class="avpGrid">
+      <button class="avpBtn" data-id="avp_sa" onclick="doLogin(this)"><span class="avpIcon">📊</span>AVP SA<br>Small Appliances</button>
+      <button class="avpBtn" data-id="avp_kc" onclick="doLogin(this)"><span class="avpIcon">🍳</span>AVP KC<br>Kitchen &amp; Cabinet</button>
+      <button class="avpBtn" data-id="avp_ho1" onclick="doLogin(this)"><span class="avpIcon">🏠</span>AVP HO1<br>Storage/Cleaning</button>
+      <button class="avpBtn" data-id="avp_ho2" onclick="doLogin(this)"><span class="avpIcon">🛋️</span>AVP HO2<br>Tools/Cookware</button>
+      <button class="avpBtn" data-id="avp_pro_sa" onclick="doLogin(this)"><span class="avpIcon">🎯</span>AVP PRO SA<br>Promotion SA</button>
+      <button class="avpBtn" data-id="avp_pro_kcho" onclick="doLogin(this)"><span class="avpIcon">📣</span>AVP PRO KC HO<br>Promotion KC&amp;HO</button>
+    </div>
+    <div class="divider"><hr><span>Nick — Executive Access</span><hr></div>
+    <div class="nickGrid">
+      <button class="nickBtn" data-id="nick_monitor" onclick="doLogin(this)"><span class="avpIcon">👑</span>Executive Monitor<br>All Divisions</button>
+      <button class="nickBtn" data-id="nick_svp" onclick="doLogin(this)"><span class="avpIcon">📊</span>SVP Dashboard<br>Portfolio View</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;flex:1;min-width:0;">
+      <div class="topLogo">HOMEPRO</div>
+      <div class="topTitle">BP2027 Executive Dashboard</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <span id="roleBadge" class="roleBadge rb-nick"></span>
+      <button class="logoutBtn" onclick="doLogout()">ออก</button>
+    </div>
+  </div>
+  <div class="tabBar" id="tabBar"></div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<script>
+var DIVS = {
+  avp_sa:      {name:'AVP SA',    label:'Small Appliances',       icon:'📊', color:'#1a4ed8'},
+  avp_kc:      {name:'AVP KC',    label:'Kitchen & Cabinet',      icon:'🍳', color:'#7c3aed'},
+  avp_ho1:     {name:'AVP HO1',   label:'Storage/Cleaning',       icon:'🏠', color:'#16a34a'},
+  avp_ho2:     {name:'AVP HO2',   label:'Tools/Cookware',         icon:'🛋️', color:'#d97706'},
+  avp_pro_sa:  {name:'PRO SA',    label:'Promotion SA',           icon:'🎯', color:'#dc2626'},
+  avp_pro_kcho:{name:'PRO KC HO', label:'Promotion KC & HO',      icon:'📣', color:'#0891b2'}
+};
+var NICK_ROLES = {nick_monitor:1, nick_svp:1};
+var MONTHS_TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+var YEAR = 2027;
+var currentUser = null;
+
+// ── DATA HELPERS ──
+function loadActions(div){ try{ return JSON.parse(localStorage.getItem('apt27_'+div))||[]; }catch(e){return[];} }
+function allActions(){
+  var all=[];
+  var keys=Object.keys(DIVS);
+  for(var i=0;i<keys.length;i++){
+    var arr=loadActions(keys[i]);
+    for(var j=0;j<arr.length;j++){
+      var a={};
+      for(var k in arr[j]) a[k]=arr[j][k];
+      a._div=keys[i]; all.push(a);
+    }
+  }
+  return all;
+}
+function chkOv(a){
+  if(a.status==='done') return a;
+  var today=new Date(); today.setHours(0,0,0,0);
+  if(a.endDate && new Date(a.endDate)<today) a.status='ov';
+  return a;
+}
+function calcStats(arr){
+  var total=arr.length,done=0,ip=0,ov=0,ns=0,fc=0,pSum=0;
+  for(var i=0;i<arr.length;i++){
+    var s=arr[i].status;
+    if(s==='done') done++;
+    else if(s==='ip') ip++;
+    else if(s==='ov') ov++;
+    else ns++;
+    fc+=parseFloat(arr[i].forecast)||0;
+    pSum+=parseInt(arr[i].pct)||0;
+  }
+  return {total:total,done:done,ip:ip,ov:ov,ns:ns,forecast:fc,avgPct:total?Math.round(pSum/total):0};
+}
+function getQ(ds){ var m=new Date(ds).getMonth()+1; return m<=3?'Q1':m<=6?'Q2':m<=9?'Q3':'Q4'; }
+function fmtDate(ds){ if(!ds) return '-'; var d=new Date(ds); return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); }
+function barColor(s){ if(s==='ip') return '#2563eb'; if(s==='done') return '#16a34a'; if(s==='ov') return '#dc2626'; return '#9ca3af'; }
+
+// ── LOGIN ──
+function doLogin(btn){
+  var role=btn.getAttribute('data-id');
+  currentUser=role;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  var badge=document.getElementById('roleBadge');
+  if(NICK_ROLES[role]){
+    badge.className='roleBadge rb-nick';
+    badge.textContent=role==='nick_monitor'?'👑 Executive Monitor':'📊 SVP Dashboard';
+  } else {
+    badge.className='roleBadge rb-avp';
+    badge.textContent=DIVS[role].icon+' '+DIVS[role].name;
+  }
+  buildTabs();
+}
+function doLogout(){
+  currentUser=null;
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('app').style.display='none';
+}
+
+// ── TABS ──
+function buildTabs(){
+  var bar=document.getElementById('tabBar');
+  var tabs;
+  if(NICK_ROLES[currentUser]){
+    tabs=[
+      {id:'overview',lbl:'🏆 Overview'},
+      {id:'divprogress',lbl:'📊 Division Progress'},
+      {id:'gantt',lbl:'📅 Gantt รวม'},
+      {id:'alerts',lbl:'🔔 Alerts'},
+      {id:'aireport',lbl:'🤖 AI Report'},
+      {id:'modules',lbl:'🔗 Modules'}
+    ];
+  } else {
+    tabs=[
+      {id:'mydiv',lbl:'📊 My Division'},
+      {id:'gantt',lbl:'📅 Gantt Timeline'},
+      {id:'aireport',lbl:'🤖 AI Report'},
+      {id:'modules',lbl:'🔗 Modules'}
+    ];
+  }
+  var h='';
+  for(var i=0;i<tabs.length;i++){
+    h+='<button class="tabBtn'+(i===0?' active':'')+'" id="tab_'+tabs[i].id+'" onclick="switchTab(\''+tabs[i].id+'\')">'+tabs[i].lbl+'</button>';
+  }
+  bar.innerHTML=h;
+  switchTab(tabs[0].id);
+}
+function switchTab(id){
+  var btns=document.querySelectorAll('.tabBtn');
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove('active');
+  var b=document.getElementById('tab_'+id);
+  if(b) b.classList.add('active');
+  renderTab(id);
+}
+function renderTab(id){
+  var c=document.getElementById('mainContent');
+  if(id==='overview') c.innerHTML=buildOverview();
+  else if(id==='divprogress') c.innerHTML=buildDivProgress();
+  else if(id==='gantt') c.innerHTML=buildGantt();
+  else if(id==='alerts') c.innerHTML=buildAlerts();
+  else if(id==='aireport') c.innerHTML=buildAIReport();
+  else if(id==='modules') c.innerHTML=buildModules();
+  else if(id==='mydiv') c.innerHTML=buildMyDiv();
+}
+
+// ── HERO STATS HTML ──
+function heroHtml(s){
+  var h='<div class="heroStats">';
+  h+='<div class="hStat hs-blue"><div class="hStatLabel">Total Actions</div><div class="hStatNum">'+s.total+'</div><div class="hStatSub">งานทั้งหมด</div><div class="hStatTrend">📋</div></div>';
+  h+='<div class="hStat hs-green"><div class="hStatLabel">Done</div><div class="hStatNum" style="color:#16a34a">'+s.done+'</div><div class="hStatSub">เสร็จสิ้น ('+( s.total?Math.round(s.done/s.total*100):0 )+'%)</div><div class="hStatTrend">✅</div></div>';
+  h+='<div class="hStat hs-orange"><div class="hStatLabel">In Progress</div><div class="hStatNum" style="color:#f5822a">'+s.ip+'</div><div class="hStatSub">กำลังดำเนินการ</div><div class="hStatTrend">⚡</div></div>';
+  h+='<div class="hStat hs-red"><div class="hStatLabel">Overdue</div><div class="hStatNum" style="color:#dc2626">'+s.ov+'</div><div class="hStatSub">เกินกำหนด</div><div class="hStatTrend">⚠️</div></div>';
+  h+='<div class="hStat hs-purple"><div class="hStatLabel">Total Forecast</div><div class="hStatNum" style="color:#7c3aed">'+s.forecast.toFixed(0)+'M</div><div class="hStatSub">ยอดขายรวม (ลบ.)</div><div class="hStatTrend">💰</div></div>';
+  h+='</div>';
+  return h;
+}
+
+// ── OVERVIEW (Nick) ──
+function buildOverview(){
+  var all=allActions(); for(var i=0;i<all.length;i++) chkOv(all[i]);
+  var s=calcStats(all);
+  var h=heroHtml(s);
+
+  // Division mini cards
+  h+='<div class="sCard"><div class="sHead"><div class="sTitle">📊 Division Progress Overview</div></div><div class="sBody">';
+  h+='<div class="divGrid">';
+  var dkeys=Object.keys(DIVS);
+  for(var i=0;i<dkeys.length;i++){
+    var dk=dkeys[i]; var dv=DIVS[dk];
+    var arr=loadActions(dk); for(var j=0;j<arr.length;j++) chkOv(arr[j]);
+    var ds=calcStats(arr);
+    var donePct=ds.total?Math.round(ds.done/ds.total*100):0;
+    h+='<div class="divCard" style="border-top-color:'+dv.color+'" onclick="switchTab(\'divprogress\')">';
+    h+='<div class="divCardTitle" style="color:'+dv.color+'">'+dv.icon+' '+dv.name+'</div>';
+    h+='<div class="divRow"><span style="color:#6b7280">Actions</span><span style="font-weight:700">'+ds.total+'</span></div>';
+    h+='<div class="divRow"><span style="color:#6b7280">Done / In Progress</span><span style="font-weight:700">'+ds.done+' / '+ds.ip+'</span></div>';
+    if(ds.ov>0) h+='<div class="divRow"><span style="color:#dc2626">Overdue</span><span class="ovPill">⚠️ '+ds.ov+'</span></div>';
+    h+='<div class="divRow"><span style="color:#6b7280">Forecast</span><span style="font-weight:800;color:#7c3aed">฿'+ds.forecast.toFixed(1)+'M</span></div>';
+    h+='<div class="divPbar"><div class="divPfill" style="width:'+donePct+'%;background:'+dv.color+'"></div></div>';
+    h+='<div style="font-size:9px;color:#6b7280;text-align:right;margin-top:3px">'+donePct+'% complete</div>';
+    h+='</div>';
+  }
+  h+='</div></div></div>';
+
+  // Forecast bar chart
+  h+='<div class="chartRow">';
+  h+='<div class="chartCard"><div class="chartTitle">💰 Forecast ยอดขาย แยก Division (ลบ.)</div><div class="barChart">';
+  var maxFc=0;
+  var fcArr=[];
+  for(var i=0;i<dkeys.length;i++){
+    var arr=loadActions(dkeys[i]);
+    var fc=0; for(var j=0;j<arr.length;j++) fc+=parseFloat(arr[j].forecast)||0;
+    fcArr.push(fc);
+    if(fc>maxFc) maxFc=fc;
+  }
+  for(var i=0;i<dkeys.length;i++){
+    var dv2=DIVS[dkeys[i]];
+    var pct2=maxFc?Math.round(fcArr[i]/maxFc*100):0;
+    h+='<div class="barRow"><div class="barLabel">'+dv2.name+'</div><div class="barTrack"><div class="barFill" style="width:'+pct2+'%;background:'+dv2.color+'"><span>฿'+fcArr[i].toFixed(0)+'M</span></div></div></div>';
+  }
+  h+='</div></div>';
+
+  // Status donut (fake SVG)
+  var total2=s.total||1;
+  var donePct2=Math.round(s.done/total2*100);
+  var ipPct=Math.round(s.ip/total2*100);
+  var ovPct=Math.round(s.ov/total2*100);
+  var nsPct=100-donePct2-ipPct-ovPct;
+  h+='<div class="chartCard"><div class="chartTitle">📊 Status Breakdown (ทุก Division)</div>';
+  h+='<div class="donutWrap">';
+  // Simple SVG donut
+  var r=60; var cx=70; var cy=70; var circ=2*Math.PI*r;
+  function arc(pct,offset,color){
+    var dash=circ*pct/100;
+    return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="18" stroke-dasharray="'+dash+' '+(circ-dash)+'" stroke-dashoffset="'+(-offset)+'" transform="rotate(-90 '+cx+' '+cy+')" />';
+  }
+  var o1=0; var o2=circ*donePct2/100; var o3=o2+circ*ipPct/100; var o4=o3+circ*ovPct/100;
+  h+='<svg class="donutSvg" width="140" height="140" viewBox="0 0 140 140">';
+  h+=arc(donePct2,0,'#16a34a');
+  h+=arc(ipPct,o2,'#2563eb');
+  h+=arc(ovPct,o3,'#dc2626');
+  h+=arc(nsPct,o4,'#9ca3af');
+  h+='<text x="70" y="66" text-anchor="middle" font-family="Prompt" font-size="18" font-weight="900" fill="#0f172a">'+total2+'</text>';
+  h+='<text x="70" y="82" text-anchor="middle" font-family="Prompt" font-size="9" fill="#6b7280">actions</text>';
+  h+='</svg>';
+  h+='<div class="donutLegend">';
+  h+='<div class="dLegItem"><div class="dLegDot" style="background:#16a34a"></div>Done ('+s.done+')</div>';
+  h+='<div class="dLegItem"><div class="dLegDot" style="background:#2563eb"></div>In Progress ('+s.ip+')</div>';
+  h+='<div class="dLegItem"><div class="dLegDot" style="background:#dc2626"></div>Overdue ('+s.ov+')</div>';
+  h+='<div class="dLegItem"><div class="dLegDot" style="background:#9ca3af"></div>Not Started ('+s.ns+')</div>';
+  h+='</div></div></div>';
+  h+='</div>';
+  return h;
+}
+
+// ── DIV PROGRESS (Nick) ──
+function buildDivProgress(){
+  var all=allActions(); for(var i=0;i<all.length;i++) chkOv(all[i]);
+  var s=calcStats(all);
+  var h=heroHtml(s);
+  var dkeys=Object.keys(DIVS);
+  for(var i=0;i<dkeys.length;i++){
+    var dk=dkeys[i]; var dv=DIVS[dk];
+    var arr=loadActions(dk); for(var j=0;j<arr.length;j++) chkOv(arr[j]);
+    var ds=calcStats(arr);
+    var donePct=ds.total?Math.round(ds.done/ds.total*100):0;
+    h+='<div class="sCard" style="border-top:4px solid '+dv.color+'">';
+    h+='<div class="sHead"><div class="sTitle">'+dv.icon+' '+dv.name+' — '+dv.label+'</div>';
+    h+='<span style="font-size:12px;font-weight:700;color:'+dv.color+'">'+donePct+'% complete</span></div>';
+    h+='<div class="sBody">';
+    // Mini stats
+    h+='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">';
+    h+='<div style="text-align:center;background:#F3F4F6;border-radius:10px;padding:10px"><div style="font-size:22px;font-weight:900">'+ds.total+'</div><div style="font-size:9px;color:#6b7280">Total</div></div>';
+    h+='<div style="text-align:center;background:#DCFCE7;border-radius:10px;padding:10px"><div style="font-size:22px;font-weight:900;color:#16a34a">'+ds.done+'</div><div style="font-size:9px;color:#6b7280">Done</div></div>';
+    h+='<div style="text-align:center;background:#DBEAFE;border-radius:10px;padding:10px"><div style="font-size:22px;font-weight:900;color:#1a4ed8">'+ds.ip+'</div><div style="font-size:9px;color:#6b7280">In Progress</div></div>';
+    h+='<div style="text-align:center;background:'+(ds.ov>0?'#FEE2E2':'#F3F4F6')+';border-radius:10px;padding:10px"><div style="font-size:22px;font-weight:900;color:'+(ds.ov>0?'#dc2626':'#9ca3af')+'">'+ds.ov+'</div><div style="font-size:9px;color:#6b7280">Overdue</div></div>';
+    h+='<div style="text-align:center;background:#F5F3FF;border-radius:10px;padding:10px"><div style="font-size:18px;font-weight:900;color:#7c3aed">'+ds.forecast.toFixed(0)+'M</div><div style="font-size:9px;color:#6b7280">Forecast</div></div>';
+    h+='</div>';
+    // Action rows
+    if(arr.length){
+      h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
+      h+='<thead><tr style="background:#EFF6FF"><th style="padding:8px 12px;text-align:left;font-size:9px;font-weight:700;color:#1a4ed8;text-transform:uppercase">ชื่องาน</th><th style="padding:8px 12px;text-align:left;font-size:9px;font-weight:700;color:#1a4ed8;text-transform:uppercase">Category</th><th style="padding:8px 12px;text-align:left;font-size:9px;font-weight:700;color:#1a4ed8;text-transform:uppercase">ผู้รับผิดชอบ</th><th style="padding:8px 12px;text-align:left;font-size:9px;font-weight:700;color:#1a4ed8;text-transform:uppercase">ระยะเวลา</th><th style="padding:8px 12px;text-align:left;font-size:9px;font-weight:700;color:#1a4ed8;text-transform:uppercase">Status</th><th style="padding:8px 12px;text-align:left;font-size:9px;font-weight:700;color:#1a4ed8;text-transform:uppercase">%</th><th style="padding:8px 12px;text-align:left;font-size:9px;font-weight:700;color:#1a4ed8;text-transform:uppercase">Forecast</th></tr></thead><tbody>';
+      for(var j=0;j<arr.length;j++){
+        var a=arr[j]; var isOv=a.status==='ov';
+        var sBadge={ns:'background:#F3F4F6;color:#6b7280',ip:'background:#DBEAFE;color:#1a4ed8',done:'background:#DCFCE7;color:#16a34a',ov:'background:#FEE2E2;color:#dc2626'};
+        var sLabel={ns:'Not Started',ip:'In Progress',done:'Done ✓',ov:'Overdue ⚠'};
+        h+='<tr style="border-bottom:1px solid #f1f5f9;'+(isOv?'background:#fff5f5;':'')+(j%2?'background:'+(isOv?'#fff5f5':'#fafbff')+';':'')+'">';
+        h+='<td style="padding:8px 12px;font-weight:600;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+a.name+'</td>';
+        h+='<td style="padding:8px 12px"><span style="background:#f1f5f9;padding:2px 6px;border-radius:5px;font-size:9px;font-weight:700">'+a.category+'</span></td>';
+        h+='<td style="padding:8px 12px;font-size:10px">'+a.owner+'</td>';
+        h+='<td style="padding:8px 12px;font-size:9px;white-space:nowrap">'+fmtDate(a.startDate)+' → '+fmtDate(a.endDate)+'</td>';
+        h+='<td style="padding:8px 12px"><span style="padding:2px 8px;border-radius:20px;font-size:9px;font-weight:700;'+sBadge[a.status]+'">'+sLabel[a.status]+'</span></td>';
+        h+='<td style="padding:8px 12px"><div style="background:#e5e7eb;border-radius:20px;height:5px;width:60px;overflow:hidden"><div style="height:100%;border-radius:20px;background:'+barColor(a.status)+';width:'+(a.pct||0)+'%"></div></div><div style="font-size:9px;font-weight:700;margin-top:2px">'+(a.pct||0)+'%</div></td>';
+        h+='<td style="padding:8px 12px;font-weight:800;color:#16a34a">฿'+(parseFloat(a.forecast)||0).toFixed(1)+'M</td>';
+        h+='</tr>';
+      }
+      h+='</tbody></table></div>';
+    } else {
+      h+='<div style="text-align:center;padding:30px;color:#9ca3af;font-size:12px">ยังไม่มี Action Items — เพิ่มได้ใน Action Tracker (Module 3)</div>';
+    }
+    h+='</div></div>';
+  }
+  return h;
+}
+
+// ── GANTT (All or My Div) ──
+function buildGantt(){
+  var isNick=!!NICK_ROLES[currentUser];
+  var arr=isNick?allActions():loadActions(currentUser);
+  for(var i=0;i<arr.length;i++) chkOv(arr[i]);
+  var yStart=new Date(YEAR,0,1).getTime();
+  var yEnd=new Date(YEAR,11,31,23,59,59).getTime();
+  var dur=yEnd-yStart;
+  function pct(ts){ return Math.max(0,Math.min(100,(ts-yStart)/dur*100)); }
+  var todayPct=pct(new Date().getTime());
+
+  var h='<div class="sCard"><div class="sHead"><div class="sTitle">📅 Gantt Timeline — ปี '+YEAR+' (ทุก Division)</div></div>';
+  h+='<div class="ganttLegend" style="padding:12px 20px 0">';
+  h+='<div class="gLI"><div class="gLD" style="background:#2563eb"></div>In Progress</div>';
+  h+='<div class="gLI"><div class="gLD" style="background:#16a34a"></div>Done</div>';
+  h+='<div class="gLI"><div class="gLD" style="background:#dc2626"></div>Overdue</div>';
+  h+='<div class="gLI"><div class="gLD" style="background:#9ca3af"></div>Not Started</div>';
+  h+='<div class="gLI"><div class="gLD" style="background:rgba(245,130,42,.5)"></div>วันนี้</div>';
+  h+='</div>';
+  // Filter
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap;padding:12px 20px;background:#F3F4F6;border-bottom:1px solid #e5e7eb;">';
+  h+='<select style="padding:7px 10px;border:1px solid #d1d5db;border-radius:7px;font-family:Prompt,sans-serif;font-size:11px;background:#fff" id="gf_cat" onchange="refreshGanttAll()">';
+  h+='<option value="">ทุก Category</option>';
+  var cats=['Sales','Marketing','Product','Operations','Online','Promotion','Supplier','Customer Experience','Training','Other'];
+  for(var i=0;i<cats.length;i++) h+='<option>'+cats[i]+'</option>';
+  h+='</select>';
+  h+='<select style="padding:7px 10px;border:1px solid #d1d5db;border-radius:7px;font-family:Prompt,sans-serif;font-size:11px;background:#fff" id="gf_st" onchange="refreshGanttAll()">';
+  h+='<option value="">ทุก Status</option><option value="ns">Not Started</option><option value="ip">In Progress</option><option value="done">Done</option><option value="ov">Overdue</option>';
+  h+='</select>';
+  if(isNick){
+    h+='<select style="padding:7px 10px;border:1px solid #d1d5db;border-radius:7px;font-family:Prompt,sans-serif;font-size:11px;background:#fff" id="gf_div" onchange="refreshGanttAll()">';
+    h+='<option value="">ทุก Division</option>';
+    var dks=Object.keys(DIVS);
+    for(var j=0;j<dks.length;j++) h+='<option value="'+dks[j]+'">'+DIVS[dks[j]].name+'</option>';
+    h+='</select>';
+  }
+  h+='</div>';
+  h+='<div style="overflow-x:auto;padding:0 20px 20px">';
+  h+='<div class="ganttHead" style="min-width:700px"><div class="ghLabel">งาน / Task</div><div class="ghMonths">';
+  for(var m=0;m<12;m++) h+='<div class="ghMonth">'+MONTHS_TH[m]+'</div>';
+  h+='</div></div>';
+  h+='<div id="ganttAllRows" style="min-width:700px">'+ganttRowsHtml(arr, todayPct, pct)+'</div>';
+  h+='</div></div>';
+  return h;
+}
+
+function ganttRowsHtml(arr, todayPct, pctFn){
+  if(!arr.length) return '<div style="text-align:center;padding:48px;color:#9ca3af">ยังไม่มี Action Items</div>';
+  var h='';
+  for(var i=0;i<arr.length;i++){
+    var a=arr[i]; var isOv=a.status==='ov';
+    var sTs=new Date(a.startDate).getTime();
+    var eTs=new Date(a.endDate).getTime();
+    var lp=pctFn(sTs); var wp=Math.max(0.8,pctFn(eTs)-lp);
+    var bc=barColor(a.status);
+    var dpct=parseInt(a.pct)||0;
+    var divLbl=''; if(a._div&&DIVS[a._div]) divLbl='<span style="font-size:7px;background:#e0e7ff;color:#3730a3;padding:1px 4px;border-radius:3px;margin-left:3px">'+DIVS[a._div].name+'</span>';
+    h+='<div class="gRow" style="'+(isOv?'background:#fff5f5;':'')+(i%2?'background:'+(isOv?'#fff5f5':'#fafbff')+';':'')+'">';
+    h+='<div class="gRowLabel"><div class="gRowName">'+a.name+divLbl+'</div><div class="gRowSub">'+a.category+' · '+a.owner+'</div></div>';
+    h+='<div class="gRowChart">';
+    for(var m=1;m<12;m++) h+='<div class="gLine" style="left:'+(m/12*100).toFixed(1)+'%"></div>';
+    if(todayPct>=0&&todayPct<=100) h+='<div class="gToday" style="left:'+todayPct.toFixed(1)+'%"></div>';
+    h+='<div class="gBar" style="left:'+lp.toFixed(1)+'%;width:'+wp.toFixed(1)+'%;background:'+bc+'">';
+    if(wp>4) h+='<span>'+dpct+'%</span>';
+    h+='</div></div></div>';
+  }
+  return h;
+}
+
+function refreshGanttAll(){
+  var isNick=!!NICK_ROLES[currentUser];
+  var fc=(document.getElementById('gf_cat')||{}).value||'';
+  var fs=(document.getElementById('gf_st')||{}).value||'';
+  var fd=(document.getElementById('gf_div')||{}).value||'';
+  var arr=isNick?allActions():loadActions(currentUser);
+  for(var i=0;i<arr.length;i++) chkOv(arr[i]);
+  arr=arr.filter(function(a){
+    if(fc&&a.category!==fc) return false;
+    if(fs&&a.status!==fs) return false;
+    if(fd&&a._div!==fd) return false;
+    return true;
+  });
+  var yStart=new Date(YEAR,0,1).getTime();
+  var yEnd=new Date(YEAR,11,31,23,59,59).getTime();
+  var dur=yEnd-yStart;
+  function pct(ts){ return Math.max(0,Math.min(100,(ts-yStart)/dur*100)); }
+  var todayPct=pct(new Date().getTime());
+  var el=document.getElementById('ganttAllRows');
+  if(el) el.innerHTML=ganttRowsHtml(arr,todayPct,pct);
+}
+
+// ── ALERTS ──
+function buildAlerts(){
+  var all=allActions(); for(var i=0;i<all.length;i++) chkOv(all[i]);
+  var ovActions=all.filter(function(a){return a.status==='ov';});
+  var highNs=all.filter(function(a){return a.priority==='high'&&a.status==='ns';});
+  var noFc=all.filter(function(a){return !parseFloat(a.forecast);});
+  var h='<div class="sCard"><div class="sHead"><div class="sTitle">🔔 Alerts &amp; Risk Dashboard</div><span style="font-size:12px;color:#6b7280">อัปเดตอัตโนมัติตามข้อมูลจริง</span></div><div class="sBody">';
+  h+='<div class="alertList">';
+  if(ovActions.length){
+    h+='<div class="alertItem ai-red"><div class="alertIcon">🚨</div><div><div class="alertTitle" style="color:#dc2626">Overdue Actions — '+ovActions.length+' งาน</div>';
+    for(var i=0;i<ovActions.length;i++){
+      var a=ovActions[i];
+      h+='<div class="alertSub">• '+a.name+' | '+(DIVS[a._div]?DIVS[a._div].name:'')+' | ผู้รับผิดชอบ: '+a.owner+' | กำหนด: '+fmtDate(a.endDate)+'</div>';
+    }
+    h+='</div></div>';
+  }
+  if(highNs.length){
+    h+='<div class="alertItem ai-yellow"><div class="alertIcon">⚠️</div><div><div class="alertTitle" style="color:#d97706">High Priority — ยังไม่เริ่ม '+highNs.length+' งาน</div>';
+    for(var i=0;i<highNs.length;i++){
+      var a=highNs[i];
+      h+='<div class="alertSub">• '+a.name+' | '+(DIVS[a._div]?DIVS[a._div].name:'')+' | เริ่ม: '+fmtDate(a.startDate)+'</div>';
+    }
+    h+='</div></div>';
+  }
+  // Divs with no actions
+  var dkeys=Object.keys(DIVS); var emptyDivs=[];
+  for(var i=0;i<dkeys.length;i++){ if(!loadActions(dkeys[i]).length) emptyDivs.push(DIVS[dkeys[i]].name); }
+  if(emptyDivs.length){
+    h+='<div class="alertItem ai-yellow"><div class="alertIcon">📭</div><div><div class="alertTitle" style="color:#d97706">Division ที่ยังไม่มี Action Plan</div>';
+    h+='<div class="alertSub">'+emptyDivs.join(', ')+'</div></div></div>';
+  }
+  // Total forecast summary
+  var totalFc=0; for(var i=0;i<all.length;i++) totalFc+=parseFloat(all[i].forecast)||0;
+  h+='<div class="alertItem ai-blue"><div class="alertIcon">💰</div><div><div class="alertTitle" style="color:#1a4ed8">Forecast Summary</div>';
+  h+='<div class="alertSub">Total Forecast ทุก Division: ฿'+totalFc.toFixed(1)+'M | Total Actions: '+all.length+' งาน | Overdue: '+ovActions.length+' งาน</div></div></div>';
+  if(!ovActions.length&&!highNs.length&&!emptyDivs.length){
+    h+='<div class="alertItem" style="background:#DCFCE7;border:1px solid #BBF7D0"><div class="alertIcon">🎉</div><div><div class="alertTitle" style="color:#16a34a">ทุกอย่างเป็นไปตามแผน!</div><div class="alertSub">ไม่มี Overdue, ไม่มี High Priority ที่ยังไม่เริ่ม — ทีมทำงานได้ดีมากครับ</div></div></div>';
+  }
+  h+='</div></div></div>';
+  return h;
+}
+
+// ── AI REPORT ──
+function buildAIReport(){
+  var isNick=!!NICK_ROLES[currentUser];
+  var scope=isNick?'ทุก Division':'Division '+DIVS[currentUser].name;
+  var h='<div class="aiBox">';
+  h+='<div class="aiBoxTitle">🤖 AI Executive Summary Report</div>';
+  h+='<div class="aiBoxSub">สรุปภาพรวม Business Plan 2027 — '+scope+' · สร้างโดย Claude AI</div>';
+  h+='<button class="genBtn" id="genReportBtn" onclick="generateReport()">✨ Generate AI Report</button>';
+  h+='</div>';
+  h+='<div class="aiLoading" id="aiLoading"><div style="font-size:32px;margin-bottom:12px">🤖</div><div style="font-size:14px;font-weight:700;color:#1a4ed8">กำลังวิเคราะห์ข้อมูล Business Plan...</div><div style="font-size:12px;color:#6b7280;margin-top:6px">ใช้เวลาประมาณ 15-20 วินาที</div></div>';
+  h+='<div class="aiResult" id="aiResult"></div>';
+  return h;
+}
+
+function generateReport(){
+  var btn=document.getElementById('genReportBtn');
+  var loading=document.getElementById('aiLoading');
+  var result=document.getElementById('aiResult');
+  if(!btn||!loading||!result) return;
+  btn.disabled=true; btn.textContent='กำลังสร้าง...';
+  loading.style.display='block'; result.style.display='none';
+
+  var isNick=!!NICK_ROLES[currentUser];
+  var arr=isNick?allActions():loadActions(currentUser);
+  for(var i=0;i<arr.length;i++) chkOv(arr[i]);
+  var s=calcStats(arr);
+
+  // Build data summary for prompt
+  var divSummaries='';
+  if(isNick){
+    var dkeys=Object.keys(DIVS);
+    for(var i=0;i<dkeys.length;i++){
+      var da=loadActions(dkeys[i]); for(var j=0;j<da.length;j++) chkOv(da[j]);
+      var ds=calcStats(da);
+      divSummaries+=DIVS[dkeys[i]].name+': Actions='+ds.total+', Done='+ds.done+', InProgress='+ds.ip+', Overdue='+ds.ov+', Forecast='+ds.forecast.toFixed(1)+'M THB\n';
+    }
+  }
+
+  var actionList='';
+  for(var i=0;i<Math.min(arr.length,20);i++){
+    var a=arr[i];
+    actionList+=a.name+' | '+a.category+' | '+a.status+' | '+a.pct+'% | Forecast '+a.forecast+'M\n';
+  }
+
+  var prompt='คุณเป็น McKinsey Consultant ผู้เชี่ยวชาญ Retail Category Management ในประเทศไทย\n\n';
+  prompt+='วิเคราะห์และสรุป Business Plan 2027 ของ HomePro Kitchen & Home Division:\n\n';
+  prompt+='=== ข้อมูล Action Plan ===\n';
+  prompt+='Total Actions: '+s.total+'\nDone: '+s.done+'\nIn Progress: '+s.ip+'\nOverdue: '+s.ov+'\nTotal Forecast: '+s.forecast.toFixed(1)+'M THB\nAvg Completion: '+s.avgPct+'%\n\n';
+  if(divSummaries) prompt+='=== แยกตาม Division ===\n'+divSummaries+'\n';
+  if(actionList) prompt+='=== รายการ Action ===\n'+actionList+'\n';
+  prompt+='\nสรุปในรูปแบบ Executive Report ภาษาไทย ประกอบด้วย:\n';
+  prompt+='1. Executive Summary (2-3 ประโยค)\n';
+  prompt+='2. สถานะภาพรวม Business Plan (วิเคราะห์ Progress)\n';
+  prompt+='3. จุดแข็งและความเสี่ยง (Bullet Points)\n';
+  prompt+='4. Division ที่น่าจับตามอง (ถ้ามีข้อมูล)\n';
+  prompt+='5. คำแนะนำเร่งด่วน (Quick Wins ที่ควรทำ)\n';
+  prompt+='6. สรุปคำแนะนำสุดท้าย\n';
+  prompt+='ตอบเป็นภาษาไทย เชิง Consulting Professional ครับ';
+
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:1000,
+      messages:[{role:'user',content:prompt}]
+    })
+  }).then(function(res){ return res.json(); })
+  .then(function(data){
+    loading.style.display='none';
+    var text=data.content&&data.content[0]?data.content[0].text:'ไม่สามารถสร้าง Report ได้';
+    // Parse into sections
+    result.innerHTML=formatAIReport(text);
+    result.style.display='block';
+    btn.disabled=false; btn.textContent='🔄 Regenerate';
+  })
+  .catch(function(){
+    loading.style.display='none';
+    result.innerHTML='<div style="color:#dc2626;padding:20px;text-align:center">เกิดข้อผิดพลาด กรุณาลองใหม่ครับ</div>';
+    result.style.display='block';
+    btn.disabled=false; btn.textContent='✨ Generate AI Report';
+  });
+}
+
+function formatAIReport(text){
+  var lines=text.split('\n');
+  var h='<div style="border-left:4px solid #1a4ed8;padding-left:16px;margin-bottom:20px;background:#EFF6FF;padding:16px;border-radius:10px">';
+  h+='<div style="font-size:10px;font-weight:700;color:#1a4ed8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🤖 AI Executive Report — Generated by Claude</div>';
+  h+='<div style="font-size:11px;color:#6b7280">'+new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})+'</div>';
+  h+='</div>';
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i].trim();
+    if(!line) continue;
+    if(line.match(/^#+\s/) || line.match(/^\d+\./)){
+      h+='<div style="font-size:13px;font-weight:800;color:#1a4ed8;margin:16px 0 8px;padding-bottom:6px;border-bottom:2px solid #DBEAFE">'+line.replace(/^#+\s/,'').replace(/^\d+\.\s/,'')+'</div>';
+    } else if(line.match(/^[•\-\*]/)){
+      h+='<div style="display:flex;gap:8px;margin-bottom:5px;font-size:13px;line-height:1.7"><span style="color:#f5822a;font-weight:900;flex-shrink:0">▶</span><span>'+line.replace(/^[•\-\*]\s*/,'')+'</span></div>';
+    } else {
+      h+='<div style="font-size:13px;line-height:1.8;color:#374151;margin-bottom:8px">'+line+'</div>';
+    }
+  }
+  return h;
+}
+
+// ── MODULES ──
+function buildModules(){
+  var h='<div class="sCard"><div class="sHead"><div class="sTitle">🔗 BP2027 Module Links</div><span style="font-size:12px;color:#6b7280">เปิดไฟล์จาก GitHub Pages หรือ Files App</span></div><div class="sBody">';
+  h+='<div class="moduleGrid">';
+  var mods=[
+    {icon:'📚',title:'Module 1',sub:'BP2027 Training Team',status:'ms-done',statusLbl:'Active',url:'BP2027_Training_Team.html'},
+    {icon:'🎨',title:'Module 2',sub:'Strategy Canvas 360°',status:'ms-done',statusLbl:'Active',url:'BP2027_Strategy_Canvas.html'},
+    {icon:'🚀',title:'Module 3',sub:'Kickoff Wizard',status:'ms-done',statusLbl:'Active',url:'BP2027_Kickoff_Wizard.html'},
+    {icon:'📋',title:'Module 4',sub:'Action Plan Tracker',status:'ms-active',statusLbl:'Active',url:'BP2027_Action_Tracker.html'},
+    {icon:'🏆',title:'Module 5',sub:'Executive Dashboard',status:'ms-active',statusLbl:'คุณอยู่ที่นี่',url:'#'},
+    {icon:'🏠',title:'HomePro Hub',sub:'Central Dashboard Hub',status:'ms-done',statusLbl:'Active',url:'HOMEPRO_HUB.html'}
+  ];
+  for(var i=0;i<mods.length;i++){
+    var m=mods[i];
+    h+='<div class="modCard" onclick="window.open(\''+m.url+'\',\'_blank\')">';
+    h+='<div class="modIcon">'+m.icon+'</div>';
+    h+='<div class="modTitle">'+m.title+'</div>';
+    h+='<div class="modSub">'+m.sub+'</div>';
+    h+='<span class="modStatus '+m.status+'">'+m.statusLbl+'</span>';
+    h+='</div>';
+  }
+  h+='</div></div></div>';
+  return h;
+}
+
+// ── MY DIV (AVP View) ──
+function buildMyDiv(){
+  var div=currentUser;
+  var dv=DIVS[div];
+  var arr=loadActions(div); for(var i=0;i<arr.length;i++) chkOv(arr[i]);
+  var s=calcStats(arr);
+  var donePct=s.total?Math.round(s.done/s.total*100):0;
+  var h='<div class="myDivHero" style="background:linear-gradient(135deg,'+dv.color+',#0f172a)">';
+  h+='<div class="myDivName">'+dv.icon+' '+dv.name+'</div>';
+  h+='<div class="myDivSub">'+dv.label+' · Business Plan 2027</div>';
+  h+='<div class="myKpiGrid">';
+  h+='<div class="myKpi"><div class="myKpiNum">'+s.total+'</div><div class="myKpiLbl">Total Actions</div></div>';
+  h+='<div class="myKpi"><div class="myKpiNum">'+s.done+'</div><div class="myKpiLbl">Done</div></div>';
+  h+='<div class="myKpi"><div class="myKpiNum">'+s.ov+'</div><div class="myKpiLbl">Overdue</div></div>';
+  h+='<div class="myKpi"><div class="myKpiNum">'+s.forecast.toFixed(0)+'M</div><div class="myKpiLbl">Forecast</div></div>';
+  h+='</div></div>';
+  // Progress bar big
+  h+='<div class="sCard"><div class="sHead"><div class="sTitle">📊 Overall Progress — '+donePct+'% Complete</div></div><div class="sBody">';
+  h+='<div style="background:#e5e7eb;border-radius:20px;height:20px;overflow:hidden;margin-bottom:8px">';
+  h+='<div style="height:100%;border-radius:20px;background:'+dv.color+';width:'+donePct+'%;transition:width .8s;display:flex;align-items:center;padding-left:12px">';
+  if(donePct>8) h+='<span style="font-size:11px;font-weight:700;color:#fff">'+donePct+'%</span>';
+  h+='</div></div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px">';
+  var qs=['Q1','Q2','Q3','Q4'];
+  for(var qi=0;qi<qs.length;qi++){
+    var q=qs[qi]; var qa=[]; var fc=0;
+    for(var j=0;j<arr.length;j++){ if(arr[j].startDate&&getQ(arr[j].startDate)===q){qa.push(arr[j]);fc+=parseFloat(arr[j].forecast)||0;} }
+    h+='<div style="background:#EFF6FF;border-radius:12px;padding:14px;text-align:center">';
+    h+='<div style="font-size:18px;font-weight:900;color:#1a4ed8">'+q+'</div>';
+    h+='<div style="font-size:26px;font-weight:900;margin:6px 0">'+qa.length+'</div>';
+    h+='<div style="font-size:10px;color:#6b7280">actions</div>';
+    h+='<div style="font-size:13px;font-weight:700;color:#16a34a;margin-top:6px">฿'+fc.toFixed(1)+'M</div>';
+    h+='</div>';
+  }
+  h+='</div></div></div>';
+  if(s.ov>0){
+    h+='<div class="alertItem ai-red" style="margin-bottom:20px"><div class="alertIcon">🚨</div><div><div class="alertTitle" style="color:#dc2626">มี '+s.ov+' งานที่เกินกำหนด!</div><div class="alertSub">กรุณาเข้า Action Tracker เพื่ออัปเดต Status ครับ</div></div></div>';
+  }
+  return h;
+}
+
+// ── DEMO DATA (shared with Action Tracker) ──
+function initDemo(){
+  function mk(name,cat,owner,s,e,pri,stat,pct,fc){
+    return {id:'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:name,category:cat,owner:owner,startDate:s,endDate:e,priority:pri,status:stat,pct:pct,forecast:fc,notes:''};
+  }
+  var demo={
+    avp_sa:[
+      mk('Launch Air Fryer Series X','Marketing','สมชาย ว.','2027-01-15','2027-03-31','high','ip',45,28.5),
+      mk('Negotiate Supplier A','Supplier','นิตยา ร.','2027-01-05','2027-02-28','high','done',100,15),
+      mk('Bundle Promotion Q2','Promotion','ประภาส น.','2027-04-01','2027-06-30','med','ns',0,22),
+      mk('Online Channel Activation','Online','กัญญา ส.','2027-02-01','2027-05-31','med','ip',30,18)
+    ],
+    avp_kc:[
+      mk('Cabinet Display Revamp','Product','วิชัย ก.','2027-01-10','2027-04-30','high','ip',60,35),
+      mk('Built-in Oven Supplier Deal','Supplier','มาลัย ล.','2027-02-01','2027-03-15','high','ov',20,12),
+      mk('Showroom Experience Q3','Customer Experience','สุภาพ ท.','2027-07-01','2027-09-30','med','ns',0,20)
+    ],
+    avp_ho1:[
+      mk('Storage Solution Campaign','Marketing','รัตนา ข.','2027-01-20','2027-04-30','med','ip',50,10),
+      mk('Cleaning Range Review','Product','ธนา จ.','2027-03-01','2027-05-31','low','ns',0,8)
+    ],
+    avp_ho2:[
+      mk('Cookware Premium Launch','Sales','อภิชาต พ.','2027-02-15','2027-05-15','high','ip',40,25),
+      mk('Laundry Solutions Q4','Product','ศิริพร ม.','2027-09-01','2027-12-31','med','ns',0,15)
+    ],
+    avp_pro_sa:[
+      mk('SA Promotion Calendar 2027','Promotion','ชลิตา บ.','2027-01-01','2027-03-31','high','done',100,40),
+      mk('Mid-Year Sale SA','Promotion','ชลิตา บ.','2027-06-01','2027-07-15','high','ns',0,55)
+    ],
+    avp_pro_kcho:[
+      mk('KC Year-End Mega Sale','Promotion','พิมพ์ ร.','2027-10-01','2027-12-31','high','ns',0,70),
+      mk('HO Online Exclusive Q2','Online','ณรงค์ ส.','2027-04-01','2027-06-30','med','ns',0,20)
+    ]
+  };
+  var keys=Object.keys(demo);
+  for(var i=0;i<keys.length;i++){
+    if(!loadActions(keys[i]).length) localStorage.setItem('apt27_'+keys[i],JSON.stringify(demo[keys[i]]));
+  }
+}
+initDemo();
+</script>
+</body>
+</html>
