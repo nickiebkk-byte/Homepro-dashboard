@@ -580,8 +580,13 @@ function pickById(btn){
   for(var i=0;i<btns.length;i++) btns[i].classList.remove('selected');
   btn.classList.add('selected');
   selectedRole = {id:id, icon:DICONS[id]||'', label:DNAMES[id]||id, div:DDIVS[id]||id};
+  window._me = {id:id, icon:DICONS[id]||'', label:DNAMES[id]||id, div:DDIVS[id]||id};
   var loginBtn = document.getElementById('btn-login');
-  if(loginBtn){ loginBtn.disabled=false; loginBtn.textContent='เข้าสู่ Canvas — '+DNAMES[id]+' →'; }
+  if(loginBtn){
+    loginBtn.disabled=false;
+    loginBtn.textContent='เข้าสู่ Canvas — '+DNAMES[id]+' →';
+    loginBtn.className='btn-login'+(id==='nick_svp'?' or':id==='nick_mon'?' purple':'');
+  }
 }
 function pick(btn,id,icon,label,div){
   var rb=document.querySelectorAll('.role-btn'); for(var ri=0;ri<rb.length;ri++) rb[ri].classList.remove('selected');
