@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HomePro Team Task Dashboard — Kitchen & Home Division</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" rel="stylesheet">
+<style>
+/* ───────────────────────────────────────────────
+   RESET & ROOT
+─────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --f:'Prompt',sans-serif;
+  --bg:#f0f4fb;
+  --surf:#ffffff;
+  --surf2:#f6f8fd;
+  --primary:#1565c0;
+  --primary-dk:#0d47a1;
+  --primary-lt:#e3edf8;
+  --secondary:#f5822a;
+  --error:#b00020;
+  --success:#2e7d32;
+  --warning:#e65100;
+  --purple:#6a1b9a;
+  --teal:#00695c;
+  --navy:#263238;
+  --text:#1a1c1e;
+  --text2:#44474f;
+  --text3:#74777f;
+  --divider:#e0e2ec;
+  --sh1:0 1px 2px rgba(0,0,0,.1),0 2px 6px rgba(0,0,0,.07);
+  --sh2:0 2px 8px rgba(0,0,0,.12),0 4px 16px rgba(0,0,0,.07);
+  --r:12px;
+  --rsm:8px;
+}
+
+html{scroll-behavior:smooth;}
+body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
+
+/* ───────────────────────────────────────────────
+   APP BAR
+─────────────────────────────────────────────── */
+.appbar{
+  background:var(--primary);
+  height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 10px rgba(21,101,192,.4);
+}
+.appbar-left{display:flex;align-items:center;gap:12px;}
+.logo{
+  background:var(--secondary);color:#fff;
+  font-family:'Prompt',sans-serif;font-weight:700;font-size:16px;
+  padding:6px 14px;border-radius:6px;letter-spacing:.6px;
+  white-space:nowrap;
+}
+.app-title{font-size:20px;font-weight:600;color:#fff;font-family:'Prompt',sans-serif;}
+.app-sub{font-size:14px;color:rgba(255,255,255,.72);font-family:'Prompt',sans-serif;}
+.appbar-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+.live-chip{
+  background:rgba(255,255,255,.15);color:#fff;
+  font-size:13px;font-weight:700;
+  padding:4px 12px;border-radius:20px;
+  display:flex;align-items:center;gap:5px;
+  border:1px solid rgba(255,255,255,.28);
+  font-family:'Prompt',sans-serif;
+}
+.ldot{width:7px;height:7px;background:#69f0ae;border-radius:50%;animation:pulse 1.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#clk{font-size:13px;color:rgba(255,255,255,.68);font-family:'Prompt',sans-serif;}
+
+/* ───────────────────────────────────────────────
+   AVP RAIL
+─────────────────────────────────────────────── */
+.avp-rail{
+  background:var(--surf);
+  border-bottom:1px solid var(--divider);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  box-shadow:0 1px 5px rgba(0,0,0,.05);
+}
+.avp-rail::-webkit-scrollbar{height:3px;}
+.avp-rail::-webkit-scrollbar-thumb{background:var(--divider);border-radius:2px;}
+.avp-row{display:flex;min-width:max-content;}
+.avpc{
+  padding:12px 16px;min-width:130px;
+  cursor:pointer;
+  border-bottom:3px solid transparent;
+  transition:background .15s,border-color .2s;
+  position:relative;
+}
+.avpc:hover{background:var(--primary-lt);}
+.avpc.sel{border-bottom-color:var(--primary);background:var(--primary-lt);}
+.avp-av{
+  width:44px;height:44px;border-radius:50%;
+  margin:0 auto 6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:#fff;
+  box-shadow:0 2px 7px rgba(0,0,0,.22);
+}
+.avp-role{font-size:12px;font-weight:700;text-align:center;margin-bottom:2px;font-family:'Prompt',sans-serif;}
+.avp-nm{font-size:11px;color:var(--text3);text-align:center;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Prompt',sans-serif;}
+.avp-3{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;}
+.s-val{font-size:16px;font-weight:700;line-height:1.2;font-family:'Prompt',sans-serif;}
+.s-lbl{font-size:11px;color:var(--text3);line-height:1.4;font-family:'Prompt',sans-serif;}
+.avp-prog{height:4px;background:var(--divider);border-radius:2px;margin-top:6px;overflow:hidden;}
+.avp-fill{height:100%;border-radius:2px;transition:width .6s;}
+.due-badge{
+  position:absolute;top:6px;right:6px;
+  background:var(--error);color:#fff;
+  font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:20px;
+  font-family:'Prompt',sans-serif;
+}
+
+/* ───────────────────────────────────────────────
+   KPI ROW
+─────────────────────────────────────────────── */
+.kpi-row{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:14px;padding:16px 16px 0;
+}
+@media(min-width:700px){.kpi-row{grid-template-columns:repeat(4,1fr);}}
+.kpi{
+  background:var(--surf);border-radius:var(--r);
+  padding:16px 18px;box-shadow:var(--sh1);
+  position:relative;overflow:hidden;
+}
+.kpi::before{
+  content:'';position:absolute;top:0;left:0;
+  width:4px;height:100%;background:var(--kc);
+}
+.kpi-val{font-size:34px;font-weight:700;color:var(--kc);font-family:'Prompt',sans-serif;line-height:1;}
+.kpi-lbl{font-size:16px;color:var(--text2);margin-top:4px;font-weight:500;font-family:'Prompt',sans-serif;}
+.kpi-sub{font-size:13px;color:var(--text3);margin-top:2px;font-family:'Prompt',sans-serif;}
+
+/* ───────────────────────────────────────────────
+   BODY GRID
+─────────────────────────────────────────────── */
+.body{display:grid;gap:14px;padding:16px;}
+@media(min-width:700px){.body{grid-template-columns:336px 1fr;}}
+
+/* ───────────────────────────────────────────────
+   MATERIAL CARD
+─────────────────────────────────────────────── */
+.mcard{background:var(--surf);border-radius:var(--r);box-shadow:var(--sh1);overflow:hidden;}
+.mcard-hdr{padding:14px 18px;font-size:16px;font-weight:600;display:flex;align-items:center;gap:7px;color:#fff;font-family:'Prompt',sans-serif;}
+.mcard-body{padding:18px 20px;font-family:'Prompt',sans-serif;}
+
+/* ───────────────────────────────────────────────
+   FORM FIELDS
+─────────────────────────────────────────────── */
+.mfield{margin-bottom:14px;}
+.mfield label{display:block;font-size:13px;font-weight:600;color:var(--primary);margin-bottom:6px;letter-spacing:.3px;font-family:'Prompt',sans-serif;}
+.mfield input,.mfield select{
+  width:100%;border:1.5px solid var(--divider);border-radius:var(--rsm);
+  padding:10px 13px;font-size:16px;font-family:'Prompt',sans-serif;
+  color:var(--text);background:#fff;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.mfield input:focus,.mfield select:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(21,101,192,.1);
+}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+/* Assignee chips */
+.achip-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.achip{
+  font-size:14px;font-weight:500;padding:7px 14px;border-radius:20px;
+  border:1.5px solid var(--divider);cursor:pointer;
+  transition:all .15s;color:var(--text2);background:#fff;
+  display:flex;align-items:center;gap:6px;font-family:'Prompt',sans-serif;
+}
+.achip .cdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.achip.on{color:#fff;border-color:transparent;}
+
+/* Priority chips */
+.pri-wrap{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.pc{font-size:14px;font-weight:600;padding:7px 16px;border-radius:20px;border:1.5px solid;cursor:pointer;font-family:'Prompt',sans-serif;transition:all .15s;}
+.pc.cr{border-color:var(--error);color:var(--error);}
+.pc.hi{border-color:var(--warning);color:var(--warning);}
+.pc.md{border-color:#e6a817;color:#9c6f00;}
+.pc.lo{border-color:var(--success);color:var(--success);}
+.pc.on{color:#fff;}
+.pc.cr.on{background:var(--error);}
+.pc.hi.on{background:var(--warning);}
+.pc.md.on{background:#e6a817;}
+.pc.lo.on{background:var(--success);}
+
+/* FAB button */
+.fab-btn{
+  width:100%;background:var(--primary);color:#fff;
+  border:none;border-radius:var(--rsm);padding:15px;
+  font-size:18px;font-weight:600;font-family:'Prompt',sans-serif;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;margin-top:5px;
+  box-shadow:0 2px 8px rgba(21,101,192,.35);
+  transition:background .15s,box-shadow .2s;
+}
+.fab-btn:hover{background:var(--primary-dk);}
+.fab-btn:active{box-shadow:0 1px 3px rgba(21,101,192,.2);}
+.ferr{font-size:14px;color:var(--error);margin-top:6px;display:none;font-family:'Prompt',sans-serif;}
+
+/* ───────────────────────────────────────────────
+   RECENT LIST
+─────────────────────────────────────────────── */
+.rec-item{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--divider);}
+.rec-item:last-child{border-bottom:none;}
+.rdot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+.rn{font-size:16px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Prompt',sans-serif;}
+.rm{font-size:13px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:3px;flex-wrap:wrap;font-family:'Prompt',sans-serif;}
+
+/* ───────────────────────────────────────────────
+   TABS
+─────────────────────────────────────────────── */
+.mtab-bar{
+  display:flex;overflow-x:auto;
+  background:var(--surf);border-bottom:1px solid var(--divider);
+  -webkit-overflow-scrolling:touch;
+}
+.mtab-bar::-webkit-scrollbar{height:0;}
+.mtab{
+  font-size:15px;font-weight:500;font-family:'Prompt',sans-serif;
+  padding:15px 20px;cursor:pointer;color:var(--text3);
+  border-bottom:2px solid transparent;white-space:nowrap;
+  transition:color .15s,border-color .2s;flex-shrink:0;
+}
+.mtab:hover{color:var(--primary);}
+.mtab.on{color:var(--primary);border-bottom-color:var(--primary);font-weight:600;}
+.tc{display:none;}
+.tc.on{display:block;}
+
+/* ───────────────────────────────────────────────
+   KANBAN
+─────────────────────────────────────────────── */
+.kban-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.kban-scroll::-webkit-scrollbar{height:4px;}
+.kban-scroll::-webkit-scrollbar-thumb{background:var(--divider);border-radius:2px;}
+.kban{
+  display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));
+  gap:10px;padding:14px;min-width:660px;
+}
+@media(min-width:700px){.kban{min-width:unset;}}
+.col-hdr{
+  font-size:14px;font-weight:700;padding:8px 13px;
+  border-radius:var(--rsm);margin-bottom:8px;
+  display:flex;align-items:center;justify-content:space-between;
+  letter-spacing:.3px;font-family:'Prompt',sans-serif;
+}
+.col-hdr .cnt{font-size:13px;font-weight:700;padding:2px 8px;border-radius:20px;font-family:'Prompt',sans-serif;}
+.kcol{
+  min-height:90px;border-radius:var(--rsm);padding:3px;
+  border:2px dashed transparent;transition:border-color .2s,background .2s;
+}
+.kcol.dov{border-color:var(--primary);background:var(--primary-lt);}
+.kcard{
+  background:var(--surf);border-radius:var(--rsm);
+  padding:11px 13px;margin-bottom:7px;cursor:grab;
+  box-shadow:var(--sh1);border-top:3px solid var(--cc);
+  transition:box-shadow .2s,transform .15s;
+}
+.kcard:hover{box-shadow:var(--sh2);}
+.kcard:active{cursor:grabbing;}
+.kcard-t{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;font-family:'Prompt',sans-serif;}
+.kcard-m{font-size:13px;color:var(--text3);display:flex;align-items:center;justify-content:space-between;}
+.kcard-d{font-size:13px;margin-top:5px;font-family:'Prompt',sans-serif;}
+.av{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Prompt',sans-serif;}
+.mtag{font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;font-family:'Prompt',sans-serif;}
+
+/* ───────────────────────────────────────────────
+   GANTT
+─────────────────────────────────────────────── */
+.gantt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:14px 16px;}
+.gantt-wrap::-webkit-scrollbar{height:4px;}
+.gantt-wrap::-webkit-scrollbar-thumb{background:var(--divider);border-radius:2px;}
+table.gt{border-collapse:separate;border-spacing:0 4px;font-size:14px;min-width:520px;width:100%;font-family:'Prompt',sans-serif;}
+table.gt th{background:var(--primary-lt);color:var(--primary);padding:8px 13px;font-weight:600;font-size:13px;text-align:left;font-family:'Prompt',sans-serif;}
+table.gt th:first-child{border-radius:var(--rsm) 0 0 var(--rsm);}
+table.gt th:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
+table.gt td{background:var(--surf);padding:8px 12px;color:var(--text);vertical-align:middle;font-family:'Prompt',sans-serif;}
+table.gt tr td:first-child{border-radius:var(--rsm) 0 0 var(--rsm);}
+table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
+.gbar{border-radius:6px;height:20px;display:flex;align-items:center;padding:0 10px;box-shadow:0 1px 4px rgba(0,0,0,.15);}
+.gbar span{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;font-family:'Prompt',sans-serif;}
+
+/* ───────────────────────────────────────────────
+   WORKLOAD
+─────────────────────────────────────────────── */
+.wp-wrap{padding:16px 18px;}
+.wp-person{margin-bottom:14px;}
+.wp-row{display:flex;align-items:center;gap:9px;}
+.wpn{font-size:15px;font-weight:500;color:var(--text);min-width:96px;font-family:'Prompt',sans-serif;}
+.btrack{flex:1;height:13px;background:var(--divider);border-radius:6px;overflow:hidden;}
+.bfill{height:100%;border-radius:6px;transition:width .8s;}
+.wpct{font-size:14px;font-weight:700;min-width:70px;text-align:right;font-family:'Prompt',sans-serif;}
+.wpsub{font-size:13px;color:var(--text3);margin-left:106px;margin-top:3px;font-family:'Prompt',sans-serif;}
+
+/* ───────────────────────────────────────────────
+   ALERTS
+─────────────────────────────────────────────── */
+.al-wrap{padding:16px 18px;}
+.al-item{
+  display:flex;gap:12px;padding:14px 16px;border-radius:var(--rsm);
+  margin-bottom:10px;background:var(--surf2);
+  border:1px solid var(--divider);box-shadow:0 1px 3px rgba(0,0,0,.05);
+  transition:box-shadow .15s;
+}
+.al-item:hover{box-shadow:var(--sh1);}
+.al-item:last-child{margin-bottom:0;}
+.al-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.al-t{font-size:15px;font-weight:600;color:var(--text);font-family:'Prompt',sans-serif;}
+.al-d{font-size:14px;color:var(--text2);margin-top:3px;line-height:1.5;font-family:'Prompt',sans-serif;}
+.al-tm{font-size:13px;font-weight:700;margin-top:5px;font-family:'Prompt',sans-serif;}
+
+/* ───────────────────────────────────────────────
+   QUICK ACTIONS
+─────────────────────────────────────────────── */
+.qa-row{display:flex;gap:7px;padding:10px 14px 14px;flex-wrap:wrap;border-top:1px solid var(--divider);}
+.qb{
+  font-size:14px;font-weight:600;padding:9px 16px;border-radius:20px;
+  border:1.5px solid;cursor:pointer;background:var(--surf);font-family:'Prompt',sans-serif;
+  display:flex;align-items:center;gap:6px;
+  box-shadow:0 1px 3px rgba(0,0,0,.07);
+  transition:box-shadow .15s,background .15s;
+}
+.qb:hover{box-shadow:var(--sh1);}
+.qb:active{box-shadow:none;}
+
+/* ───────────────────────────────────────────────
+   SNACKBAR TOAST
+─────────────────────────────────────────────── */
+#snackbar{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  background:var(--navy);color:#fff;
+  padding:15px 22px;border-radius:var(--rsm);
+  font-size:16px;font-family:'Prompt',sans-serif;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 4px 14px rgba(0,0,0,.22);
+  opacity:0;pointer-events:none;
+  transition:opacity .25s;
+  z-index:9999;min-width:260px;max-width:90vw;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#snackbar.show{opacity:1;}
+
+/* ───────────────────────────────────────────────
+   RESPONSIVE HELPERS
+─────────────────────────────────────────────── */
+@media(max-width:699px){
+  .app-title{font-size:17px;}
+  .app-sub{display:none;}
+  .kpi-val{font-size:28px;}
+  .kpi-lbl{font-size:14px;}
+  .body{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── App Bar ── -->
+<div class="appbar">
+  <div class="appbar-left">
+    <div class="logo">HOMEPRO</div>
+    <div>
+      <div class="app-title">Team Task Dashboard</div>
+      <div class="app-sub">Kitchen &amp; Home Division · Nick SVP</div>
+    </div>
+  </div>
+  <div class="appbar-right">
+    <div class="live-chip"><div class="ldot"></div>LIVE</div>
+    <div id="clk"></div>
+  </div>
+</div>
+
+<!-- ── AVP Rail ── -->
+<div class="avp-rail"><div class="avp-row" id="avp-strip"></div></div>
+
+<!-- ── KPI Row ── -->
+<div class="kpi-row">
+  <div class="kpi" style="--kc:#1565c0"><div class="kpi-val" id="kpi-total">47</div><div class="kpi-lbl">Total Active Tasks</div><div class="kpi-sub" id="kpi-total-sub">+5 vs สัปดาห์แล้ว</div></div>
+  <div class="kpi" style="--kc:#2e7d32"><div class="kpi-val" id="kpi-ontrack">78%</div><div class="kpi-lbl">On-Track</div><div class="kpi-sub" id="kpi-ontrack-sub">37 งานตรงกำหนด</div></div>
+  <div class="kpi" style="--kc:#e65100"><div class="kpi-val">72%</div><div class="kpi-lbl">Team Capacity</div><div class="kpi-sub">เฉลี่ยทีมงาน</div></div>
+  <div class="kpi" style="--kc:#b00020"><div class="kpi-val" id="kpi-urgent">4</div><div class="kpi-lbl">Urgent / Blocked</div><div class="kpi-sub">ต้องตัดสินใจด่วน</div></div>
+</div>
+
+<!-- ── Body ── -->
+<div class="body">
+
+  <!-- Left sidebar -->
+  <div style="display:flex;flex-direction:column;gap:14px;">
+
+    <!-- Create Task -->
+    <div class="mcard">
+      <div class="mcard-hdr" style="background:var(--primary);">
+        <i class="ti ti-plus" style="font-size:16px;"></i> Create &amp; Assign Task
+      </div>
+      <div class="mcard-body">
+        <div class="mfield">
+          <label>Task Name</label>
+          <input type="text" id="tname" placeholder="ชื่องาน / Task Name">
+        </div>
+        <div class="mfield">
+          <label>Assign AVP (เลือกได้หลายคน)</label>
+          <div class="achip-wrap" id="achips"></div>
+        </div>
+        <div class="g2">
+          <div class="mfield">
+            <label>Category (พิมพ์เองได้)</label>
+            <input type="text" id="scat" placeholder="เช่น Commercial, Marketing..." list="cat-list" autocomplete="off">
+            <datalist id="cat-list">
+              <option value="Commercial">
+              <option value="Marketing">
+              <option value="Visual Merch">
+              <option value="Store Ops">
+              <option value="Private Brand">
+              <option value="Promotion">
+              <option value="Buying">
+              <option value="Logistics">
+              <option value="Training">
+            </datalist>
+          </div>
+          <div class="mfield">
+            <label>Due Date</label>
+            <input type="date" id="sdue">
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--primary);margin-bottom:7px;letter-spacing:.3px;">PRIORITY</div>
+        <div class="pri-wrap" id="priwrap">
+          <div class="pc cr on" onclick="setPri(this,'Critical')">Critical</div>
+          <div class="pc hi" onclick="setPri(this,'High')">High</div>
+          <div class="pc md" onclick="setPri(this,'Medium')">Medium</div>
+          <div class="pc lo" onclick="setPri(this,'Low')">Low</div>
+        </div>
+        <button class="fab-btn" onclick="createTask()">
+          <i class="ti ti-plus" style="font-size:17px;"></i> Create Task
+        </button>
+        <div class="ferr" id="ferr"></div>
+      </div>
+    </div>
+
+    <!-- Recent Tasks -->
+    <div class="mcard">
+      <div class="mcard-hdr" style="background:var(--navy);">
+        <i class="ti ti-list-check" style="font-size:16px;"></i> Recent Tasks
+      </div>
+      <div class="mcard-body" id="rec-list"></div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- Right: Tabs -->
+  <div class="mcard" style="overflow:visible;display:flex;flex-direction:column;">
+    <div class="mtab-bar">
+      <div class="mtab on" onclick="stab('kanban',this)">Kanban Board</div>
+      <div class="mtab" onclick="stab('gantt',this)">Gantt / Timeline</div>
+      <div class="mtab" onclick="stab('workload',this)">งานเสร็จ vs ทั้งหมด</div>
+      <div class="mtab" onclick="stab('alerts',this)">
+        Alerts <span id="acnt" style="background:#b00020;color:#fff;font-size:10px;padding:1px 6px;border-radius:20px;margin-left:3px;"></span>
+      </div>
+    </div>
+
+    <!-- Kanban -->
+    <div class="tc on" id="tc-kanban">
+      <div class="kban-scroll">
+        <div class="kban">
+          <div>
+            <div class="col-hdr" style="background:#eceff1;color:#546e7a;">
+              TO DO <span class="cnt" id="cnt-todo" style="background:#b0bec5;color:#fff;"></span>
+            </div>
+            <div class="kcol" id="col-todo" ondragover="adr(event)" ondrop="dpc(event,'todo')"></div>
+          </div>
+          <div>
+            <div class="col-hdr" style="background:#e3f2fd;color:#1565c0;">
+              IN PROGRESS <span class="cnt" id="cnt-inprog" style="background:#42a5f5;color:#fff;"></span>
+            </div>
+            <div class="kcol" id="col-inprog" ondragover="adr(event)" ondrop="dpc(event,'inprog')"></div>
+          </div>
+          <div>
+            <div class="col-hdr" style="background:#fff8e1;color:#e65100;">
+              REVIEW <span class="cnt" id="cnt-review" style="background:#ffa726;color:#fff;"></span>
+            </div>
+            <div class="kcol" id="col-review" ondragover="adr(event)" ondrop="dpc(event,'review')"></div>
+          </div>
+          <div>
+            <div class="col-hdr" style="background:#e8f5e9;color:#2e7d32;">
+              DONE <span class="cnt" id="cnt-done" style="background:#66bb6a;color:#fff;"></span>
+            </div>
+            <div class="kcol" id="col-done" ondragover="adr(event)" ondrop="dpc(event,'done')"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gantt -->
+    <div class="tc" id="tc-gantt">
+      <div class="gantt-wrap">
+        <table class="gt">
+          <thead><tr id="ghd"></tr></thead>
+          <tbody id="gbd"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Workload -->
+    <div class="tc" id="tc-workload">
+      <div class="wp-wrap" id="wp-rows"></div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="tc" id="tc-alerts">
+      <div class="al-wrap" id="al-list"></div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="qa-row">
+      <button class="qb" style="border-color:#1565c0;color:#1565c0;" onclick="qt('กำลัง Export Task Report...')">
+        <i class="ti ti-download" style="font-size:15px;"></i> Export Report
+      </button>
+      <button class="qb" style="border-color:#b00020;color:#b00020;" onclick="qt('Flag Blocked เรียบร้อยแล้ว')">
+        <i class="ti ti-flag" style="font-size:15px;"></i> Flag Blocked
+      </button>
+      <button class="qb" style="border-color:#2e7d32;color:#2e7d32;" onclick="qt('ส่ง Team Update เรียบร้อยแล้ว')">
+        <i class="ti ti-send" style="font-size:15px;"></i> Send Update
+      </button>
+      <button class="qb" style="border-color:#e65100;color:#e65100;" onclick="qt('แสดงงาน Overdue ทั้งหมด')">
+        <i class="ti ti-clock-exclamation" style="font-size:15px;"></i> Review Overdue
+      </button>
+      <button class="qb" style="border-color:#6a1b9a;color:#6a1b9a;" onclick="qt('กำลังสร้าง Weekly Summary...')">
+        <i class="ti ti-file-report" style="font-size:15px;"></i> Weekly Summary
+      </button>
+    </div>
+
+  </div><!-- /right -->
+</div><!-- /body -->
+
+<!-- Email Setup Hint -->
+<div id="email-setup-hint" style="display:none;background:#e8f5e9;border-top:3px solid #2e7d32;padding:14px 20px;align-items:flex-start;gap:12px;">
+  <i class="ti ti-mail-forward" style="font-size:24px;color:#2e7d32;flex-shrink:0;margin-top:2px;"></i>
+  <div style="flex:1;font-family:var(--f);">
+    <div style="font-size:14px;font-weight:700;color:#1b5e20;margin-bottom:4px;">ตั้งค่าระบบส่งอีเมลอัตโนมัติ</div>
+    <div style="font-size:12px;color:#2e7d32;line-height:1.6;">
+      เพื่อให้ส่งอีเมลแจ้ง AVP อัตโนมัติได้ ต้องตั้งค่า Google Apps Script ก่อน
+      (<a href="https://script.google.com" target="_blank" style="color:#1565c0;font-weight:600;">script.google.com</a>)
+      แล้ววาง URL ที่ได้ในตัวแปร <code style="background:#c8e6c9;padding:1px 5px;border-radius:4px;font-size:11px;">APPS_SCRIPT_URL</code> ในไฟล์นี้
+    </div>
+    <details style="margin-top:8px;">
+      <summary style="font-size:12px;font-weight:600;color:#1565c0;cursor:pointer;">ดู Apps Script Code ที่ต้องใช้</summary>
+      <pre style="background:#263238;color:#80cbc4;padding:12px;border-radius:6px;font-size:11px;margin-top:8px;overflow-x:auto;white-space:pre-wrap;">
+// Google Apps Script — วางใน script.google.com
+// File → New → Script → วาง code นี้ → Deploy as Web App
+
+function doPost(e) {
+  var data = JSON.parse(e.postData.contents);
+  var subject, body;
+
+  if (data.action === 'newTask') {
+    subject = '[HomePro] งานใหม่ถูก Assign ให้คุณ: ' + data.taskTitle;
+    body = 'สวัสดีครับ/ค่ะ,\n\n'
+      + 'มีงานใหม่ถูก Assign ให้คุณจาก Nick SVP:\n\n'
+      + '📋 งาน: ' + data.taskTitle + '\n'
+      + '📁 Category: ' + data.taskCat + '\n'
+      + '🔴 Priority: ' + data.taskPri + '\n'
+      + '📅 Due Date: ' + data.taskDue + '\n\n'
+      + 'กรุณาตรวจสอบและดำเนินการตามกำหนด\n\n'
+      + 'HomePro Team Task Dashboard\n'
+      + 'Kitchen & Home Division';
+  } else if (data.action === 'dueSoon') {
+    subject = '[HomePro] ⚠️ งานใกล้ครบกำหนด พรุ่งนี้: ' + data.taskTitle;
+    body = 'แจ้งเตือน: งานของคุณจะครบกำหนดพรุ่งนี้!\n\n'
+      + '📋 งาน: ' + data.taskTitle + '\n'
+      + '📁 Category: ' + data.taskCat + '\n'
+      + '🔴 Priority: ' + data.taskPri + '\n'
+      + '📅 Due Date: ' + data.taskDue + '\n\n'
+      + 'กรุณาเร่งดำเนินการให้ทันกำหนด\n\n'
+      + 'HomePro Team Task Dashboard';
+  }
+
+  data.emails.forEach(function(email) {
+    GmailApp.sendEmail(email, subject, body);
+  });
+
+  return ContentService
+    .createTextOutput(JSON.stringify({status:'ok'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ตั้ง Time Trigger: Triggers → Add Trigger
+// Function: checkDailyReminders | Time: Day timer | 8:00-9:00 AM
+function checkDailyReminders() {
+  // เรียกใช้ doPost จาก Sheets ถ้าต้องการ daily check
+}</pre>
+    </details>
+  </div>
+  <button onclick="document.getElementById('email-setup-hint').style.display='none';"
+    style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:18px;flex-shrink:0;">✕</button>
+</div>
+
+<!-- Snackbar -->
+<div id="snackbar">
+  <i class="ti ti-check" style="font-size:18px;color:#69f0ae;flex-shrink:0;"></i>
+  <span id="snackbar-msg"></span>
+</div>
+
+<script>
+/* ───────────────────────────────────────────────
+   DATA
+─────────────────────────────────────────────── */
+var selPri = 'Critical';
+var dragId = null;
+var taskIdCounter = 100;
+var activeFilter = null;
+
+var avps = [
+  { id:'sa',  role:'AVP SA',       nm:'Small Appliances',  c:'#1565c0', ini:'SA', tasks:14, done:9,  on:85, urg:2, email:'umapornl@homepro.co.th' },
+  { id:'kc',  role:'AVP KC',       nm:'Kitchen & Cabinet', c:'#2e7d32', ini:'KC', tasks:11, done:7,  on:78, urg:1, email:'nijawanj@homepro.co.th' },
+  { id:'h1',  role:'AVP HO1',      nm:'Storage/Cleaning',  c:'#e65100', ini:'H1', tasks:9,  done:5,  on:72, urg:0, email:'thanyanintu@homepro.co.th' },
+  { id:'h2',  role:'AVP HO2',      nm:'Kitchen/Laundry',   c:'#6a1b9a', ini:'H2', tasks:8,  done:6,  on:80, urg:1, email:'sukanyaa@homepro.co.th' },
+  { id:'ps',  role:'AVP PRO SA',   nm:'Promotion SA',      c:'#00695c', ini:'PS', tasks:7,  done:4,  on:68, urg:0, email:'dudchapornl@homepro.co.th' },
+  { id:'pk',  role:'PRO KC HO',    nm:'Promotion KC & HO', c:'#b00020', ini:'PK', tasks:10, done:5,  on:62, urg:2, email:'onsirik@homepro.co.th' }
+];
+
+var tasks = [
+  { id:'t1',  title:'BP2027 Kickoff Brief',      avps:['sa'],      cat:'Commercial',    pri:'Critical', col:'inprog', due:'2026-08-28', c:'#b00020' },
+  { id:'t2',  title:'Private Brand SKU Review',  avps:['kc'],      cat:'Private Brand', pri:'High',     col:'inprog', due:'2026-09-02', c:'#e65100' },
+  { id:'t3',  title:'Strategy Canvas iOS Fix',   avps:['sa','kc'], cat:'Store Ops',     pri:'Critical', col:'todo',   due:'2026-08-28', c:'#b00020' },
+  { id:'t4',  title:'Q4 Promo Campaign Plan',    avps:['ps','pk'], cat:'Promotion',     pri:'High',     col:'review', due:'2026-09-05', c:'#e65100' },
+  { id:'t5',  title:'Inventory Days Reduction',  avps:['h1'],      cat:'Commercial',    pri:'Medium',   col:'inprog', due:'2026-09-10', c:'#e6a817' },
+  { id:'t6',  title:'BigIdea Workshop Prep',     avps:['h2'],      cat:'Marketing',     pri:'High',     col:'todo',   due:'2026-09-12', c:'#e65100' },
+  { id:'t7',  title:'GP% Analysis Report',       avps:['kc'],      cat:'Commercial',    pri:'High',     col:'review', due:'2026-09-01', c:'#e65100' },
+  { id:'t8',  title:'GitHub Hub Deploy Fix',     avps:['sa'],      cat:'Store Ops',     pri:'High',     col:'todo',   due:'2026-08-28', c:'#e65100' },
+  { id:'t9',  title:'Sales Trend Jul Analysis',  avps:['sa'],      cat:'Commercial',    pri:'Low',      col:'done',   due:'2026-08-20', c:'#2e7d32' },
+  { id:'t10', title:'Promo Tracker Firebase',    avps:['ps'],      cat:'Promotion',     pri:'Medium',   col:'done',   due:'2026-08-22', c:'#2e7d32' },
+  { id:'t11', title:'Dashboard Hub Update',      avps:['h1'],      cat:'Store Ops',     pri:'Low',      col:'done',   due:'2026-08-23', c:'#2e7d32' },
+  { id:'t12', title:'GPA Target Setting FY27',   avps:['h2'],      cat:'Commercial',    pri:'Medium',   col:'inprog', due:'2026-09-08', c:'#e6a817' }
+];
+
+var priColors = { Critical:'#b00020', High:'#e65100', Medium:'#e6a817', Low:'#2e7d32' };
+
+/* ───────────────────────────────────────────────
+   HELPERS
+─────────────────────────────────────────────── */
+function getAvp(id) {
+  for (var i = 0; i < avps.length; i++) if (avps[i].id === id) return avps[i];
+  return null;
+}
+function fmtDate(d) {
+  if (!d) return '';
+  var p = d.split('-');
+  return p[2] + '/' + p[1] + '/' + p[0].slice(2);
+}
+function dueColor(d) {
+  if (!d) return 'var(--text3)';
+  var diff = (new Date(d) - new Date()) / 864e5;
+  return diff < 1 ? '#b00020' : diff < 3 ? '#e65100' : 'var(--text3)';
+}
+
+/* ───────────────────────────────────────────────
+   CLOCK
+─────────────────────────────────────────────── */
+function updateClock() {
+  document.getElementById('clk').textContent = new Date().toLocaleString('th-TH', {
+    timeZone: 'Asia/Bangkok',
+    weekday: 'short',
+    day: '2-digit', month: 'short',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+  });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ───────────────────────────────────────────────
+   AVP STRIP
+─────────────────────────────────────────────── */
+function buildStrip() {
+  var tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+  var strip = document.getElementById('avp-strip');
+  strip.innerHTML = '';
+  avps.forEach(function(a) {
+    var dueCount = tasks.filter(function(t) {
+      return t.avps.indexOf(a.id) >= 0 && t.due <= tomorrow && t.col !== 'done';
+    }).length;
+    var pct = Math.round(a.done / a.tasks * 100);
+    var div = document.createElement('div');
+    div.className = 'avpc';
+    div.id = 'avpc-' + a.id;
+    div.onclick = (function(ai) { return function() { filterAvp(ai.id); }; })(a);
+    div.innerHTML =
+      (dueCount > 0 ? '<div class="due-badge">' + dueCount + ' due</div>' : '') +
+      '<div class="avp-av" style="background:' + a.c + ';">' + a.ini + '</div>' +
+      '<div class="avp-role" style="color:' + a.c + ';">' + a.role + '</div>' +
+      '<div class="avp-nm">' + a.nm + '</div>' +
+      '<div class="avp-3">' +
+        '<div><div class="s-val" style="color:' + a.c + ';">' + a.tasks + '</div><div class="s-lbl">Tasks</div></div>' +
+        '<div><div class="s-val" style="color:#2e7d32;">' + a.on + '%</div><div class="s-lbl">On-Track</div></div>' +
+        '<div><div class="s-val" style="color:' + (dueCount > 0 ? '#b00020' : 'var(--text3)') + ';">' + dueCount + '</div><div class="s-lbl">Due</div></div>' +
+      '</div>' +
+      '<div class="avp-prog"><div class="avp-fill" style="width:' + a.on + '%;background:' + a.c + ';"></div></div>';
+    strip.appendChild(div);
+  });
+}
+
+function filterAvp(id) {
+  document.querySelectorAll('.avpc').forEach(function(c) { c.classList.remove('sel'); });
+  if (activeFilter === id) {
+    activeFilter = null;
+    renderKanban(tasks);
+    return;
+  }
+  activeFilter = id;
+  document.getElementById('avpc-' + id).classList.add('sel');
+  renderKanban(tasks.filter(function(t) { return t.avps.indexOf(id) >= 0; }));
+}
+
+/* ───────────────────────────────────────────────
+   CREATE TASK FORM
+─────────────────────────────────────────────── */
+function buildChips() {
+  var g = document.getElementById('achips');
+  g.innerHTML = '';
+  avps.forEach(function(a) {
+    var chip = document.createElement('div');
+    chip.className = 'achip';
+    chip.dataset.id = a.id;
+    chip.innerHTML = '<span class="cdot" style="background:' + a.c + ';"></span>' + a.role;
+    chip.onclick = function() {
+      var on = this.classList.toggle('on');
+      this.style.background = on ? a.c : '';
+    };
+    g.appendChild(chip);
+  });
+}
+
+function setPri(el, val) {
+  var btns = document.getElementById('priwrap').children;
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('on');
+  el.classList.add('on');
+  selPri = val;
+}
+
+function createTask() {
+  var name = document.getElementById('tname').value.trim();
+  var err = document.getElementById('ferr');
+  err.style.display = 'none';
+  if (!name) { err.textContent = 'กรุณาใส่ชื่องาน'; err.style.display = 'block'; return; }
+  var selChips = document.querySelectorAll('#achips .achip.on');
+  var avpIds = [];
+  for (var i = 0; i < selChips.length; i++) avpIds.push(selChips[i].dataset.id);
+  if (!avpIds.length) { err.textContent = 'กรุณาเลือก AVP อย่างน้อย 1 คน'; err.style.display = 'block'; return; }
+  var due = document.getElementById('sdue').value;
+  var cat = document.getElementById('scat').value;
+  var t = {
+    id: 't' + (++taskIdCounter),
+    title: name, avps: avpIds, cat: cat, pri: selPri,
+    col: 'todo', due: due, c: priColors[selPri]
+  };
+  tasks.unshift(t);
+  var filtered = activeFilter ? tasks.filter(function(x) { return x.avps.indexOf(activeFilter) >= 0; }) : tasks;
+  renderKanban(filtered);
+  renderRecent();
+  buildStrip();
+  updateKpis();
+  sendTaskEmail(t, avpIds);
+  document.getElementById('tname').value = '';
+  document.querySelectorAll('#achips .achip.on').forEach(function(c) { c.classList.remove('on'); c.style.background = ''; });
+  var emailNote = APPS_SCRIPT_URL ? ' · ส่งอีเมลแจ้ง AVP แล้ว' : '';
+  toast('สร้างงาน "' + name + '" · ' + avpIds.length + ' AVP' + emailNote);
+}
+
+/* ───────────────────────────────────────────────
+   KPI UPDATE
+─────────────────────────────────────────────── */
+function updateKpis() {
+  var active = tasks.filter(function(t) { return t.col !== 'done'; }).length;
+  var ontrack = tasks.filter(function(t) { return t.col !== 'done' && t.c !== '#b00020'; }).length;
+  var pct = active > 0 ? Math.round(ontrack / active * 100) : 0;
+  document.getElementById('kpi-total').textContent = active;
+  document.getElementById('kpi-ontrack').textContent = pct + '%';
+  document.getElementById('kpi-ontrack-sub').textContent = ontrack + ' งานตรงกำหนด';
+}
+
+/* ───────────────────────────────────────────────
+   KANBAN
+─────────────────────────────────────────────── */
+function renderKanban(ts) {
+  var cols = { todo:[], inprog:[], review:[], done:[] };
+  ts.forEach(function(t) { if (cols[t.col]) cols[t.col].push(t); });
+  var colNames = ['todo', 'inprog', 'review', 'done'];
+  colNames.forEach(function(cn) {
+    var el = document.getElementById('col-' + cn);
+    el.innerHTML = '';
+    cols[cn].forEach(function(t) {
+      var avRow = '';
+      t.avps.forEach(function(aid) { var a = getAvp(aid); if (a) avRow += '<span class="av" style="background:' + a.c + ';">' + a.ini + '</span>'; });
+      var card = document.createElement('div');
+      card.className = 'kcard';
+      card.style.setProperty('--cc', t.c);
+      card.draggable = true;
+      card.dataset.id = t.id;
+      card.addEventListener('dragstart', function() { dragId = t.id; });
+      var dc = t.due ? dueColor(t.due) : 'var(--text3)';
+      card.innerHTML =
+        '<div class="kcard-t">' + t.title + '</div>' +
+        '<div class="kcard-m">' +
+          '<span class="mtag" style="background:' + t.c + '22;color:' + t.c + ';">' + t.pri + '</span>' +
+          '<div style="display:flex;gap:2px;">' + avRow + '</div>' +
+        '</div>' +
+        (t.due ? '<div class="kcard-d" style="color:' + dc + ';">Due: ' + fmtDate(t.due) + '</div>' : '');
+      el.appendChild(card);
+    });
+    document.getElementById('cnt-' + cn).textContent = cols[cn].length;
+  });
+}
+
+function adr(e) { e.preventDefault(); e.currentTarget.classList.add('dov'); }
+function dpc(e, col) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('dov');
+  if (!dragId) return;
+  for (var i = 0; i < tasks.length; i++) {
+    if (tasks[i].id === dragId) { tasks[i].col = col; break; }
+  }
+  var filtered = activeFilter ? tasks.filter(function(x) { return x.avps.indexOf(activeFilter) >= 0; }) : tasks;
+  renderKanban(filtered);
+  buildStrip();
+  updateKpis();
+  dragId = null;
+}
+document.addEventListener('dragover', function(e) {
+  document.querySelectorAll('.kcol').forEach(function(c) {
+    if (!c.contains(e.target)) c.classList.remove('dov');
+  });
+});
+
+/* ───────────────────────────────────────────────
+   GANTT
+─────────────────────────────────────────────── */
+function buildGantt() {
+  var weeks = ['Sep 1', 'Sep 8', 'Sep 15', 'Sep 22', 'Oct 1', 'Oct 8'];
+  var hd = document.getElementById('ghd');
+  hd.innerHTML = '<th style="min-width:140px;">Task</th><th style="min-width:50px;">AVP</th>';
+  weeks.forEach(function(w) { hd.innerHTML += '<th style="text-align:center;min-width:64px;">' + w + '</th>'; });
+  var gdata = [
+    { t:'BP2027 Kickoff',   av:'SA',    c:'#b00020', s:0, l:1 },
+    { t:'Strategy Canvas',  av:'SA/KC', c:'#1565c0', s:0, l:3 },
+    { t:'BigIdea Workshop', av:'ALL',   c:'#e65100', s:1, l:3 },
+    { t:'Private Brand',    av:'HC',    c:'#6a1b9a', s:0, l:4 },
+    { t:'Q4 Promo Plan',    av:'PRO',   c:'#2e7d32', s:2, l:3 },
+    { t:'GP% Report',       av:'KC',    c:'#e65100', s:0, l:2 },
+    { t:'Inv. Reduction',   av:'HO1',   c:'#e6a817', s:1, l:4 },
+    { t:'Exec Dashboard',   av:'ALL',   c:'#263238', s:3, l:2 }
+  ];
+  var bd = document.getElementById('gbd');
+  bd.innerHTML = '';
+  gdata.forEach(function(g) {
+    var tr = document.createElement('tr');
+    var cells = '<td style="font-size:13px;font-weight:500;">' + g.t + '</td>';
+    cells += '<td><span style="background:' + g.c + ';color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">' + g.av + '</span></td>';
+    for (var c = 0; c < 6; c++) {
+      if (c === g.s) {
+        cells += '<td colspan="' + g.l + '" style="padding:2px 3px;"><div class="gbar" style="background:' + g.c + ';"><span>' + g.t + '</span></div></td>';
+        c += g.l - 1;
+      } else {
+        cells += '<td></td>';
+      }
+    }
+    tr.innerHTML = cells;
+    bd.appendChild(tr);
+  });
+}
+
+/* ───────────────────────────────────────────────
+   WORKLOAD
+─────────────────────────────────────────────── */
+function buildWorkload() {
+  var wr = document.getElementById('wp-rows');
+  wr.innerHTML = '';
+  avps.forEach(function(a) {
+    var pct = Math.round(a.done / a.tasks * 100);
+    var oc = a.on >= 80 ? '#2e7d32' : a.on >= 65 ? '#e65100' : '#b00020';
+    wr.innerHTML +=
+      '<div class="wp-person">' +
+        '<div class="wp-row">' +
+          '<span class="wpn">' + a.role + '</span>' +
+          '<div class="btrack"><div class="bfill" style="width:' + pct + '%;background:' + a.c + ';"></div></div>' +
+          '<span class="wpct" style="color:' + a.c + ';">' + a.done + '/' + a.tasks + '</span>' +
+        '</div>' +
+        '<div class="wpsub">' + pct + '% เสร็จ &nbsp;·&nbsp; On-Time <strong style="color:' + oc + ';">' + a.on + '%</strong> &nbsp;·&nbsp; เหลือ ' + (a.tasks - a.done) + ' งาน</div>' +
+      '</div>';
+  });
+}
+
+/* ───────────────────────────────────────────────
+   ALERTS
+─────────────────────────────────────────────── */
+function buildAlerts() {
+  var tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+  var alerts = [
+    { ic:'ti-alert-circle',   bg:'#fce4ec', ic_c:'#b00020', t:'Strategy Canvas iOS Fix — Overdue',       d:'Login บน iOS Safari ยังไม่ได้แก้ · ล่าช้า 2 วัน · ต้อง deploy ด่วน',            tm:'ล่าช้า 2 วัน',   tc:'#b00020' },
+    { ic:'ti-brand-github',   bg:'#e8eaf6', ic_c:'#3949ab', t:'GitHub Hub — Private Brand Card ไม่ขึ้น',  d:'ไฟล์ยังไม่ live บน GitHub Pages · ใช้ web editor upload เป็น fallback',          tm:'ต้องแก้ด่วน',    tc:'#3949ab' },
+    { ic:'ti-clock-exclamation', bg:'#fff3e0', ic_c:'#e65100', t:'BP2027 Kickoff Brief — Due พรุ่งนี้',  d:'AVP SA ยังอยู่ In Progress · ต้องส่งภายใน 28 Aug · ติดตามด่วน',               tm:'Due 28/08/26',   tc:'#e65100' },
+    { ic:'ti-clock-exclamation', bg:'#fff3e0', ic_c:'#e65100', t:'GitHub Deploy Fix — Due พรุ่งนี้',     d:'AVP SA · ไฟล์ยังไม่ตรงกับ live version บน Pages',                               tm:'Due 28/08/26',   tc:'#e65100' },
+    { ic:'ti-trending-down',  bg:'#e8f5e9', ic_c:'#2e7d32', t:'PRO KC HO — On-Track ต่ำสุด (62%)',       d:'มี 2 งานไม่ตรงกำหนด · พิจารณา Redistribute งาน Q4 Promo ให้ทีมอื่น',          tm:'ติดตาม',         tc:'#2e7d32' }
+  ];
+  tasks.forEach(function(t) {
+    if (t.col === 'done' || !t.due) return;
+    var diff = (new Date(t.due) - new Date()) / 864e5;
+    if (diff >= 0 && diff < 1) {
+      var dup = alerts.filter(function(a) { return a.t.indexOf(t.title) >= 0; });
+      if (!dup.length) {
+        alerts.push({ ic:'ti-bell-ringing', bg:'#fff3e0', ic_c:'#e65100', t:t.title + ' — Due ภายใน 24 ชม.', d:t.cat + ' · Priority: ' + t.pri + ' · ยังไม่เสร็จ', tm:'Due ' + fmtDate(t.due), tc:'#e65100' });
+      }
+    }
+  });
+  document.getElementById('acnt').textContent = alerts.length;
+  var el = document.getElementById('al-list');
+  el.innerHTML = '';
+  alerts.forEach(function(a) {
+    el.innerHTML +=
+      '<div class="al-item">' +
+        '<div class="al-icon" style="background:' + a.bg + ';"><i class="ti ' + a.ic + '" style="color:' + a.ic_c + ';font-size:20px;"></i></div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div class="al-t">' + a.t + '</div>' +
+          '<div class="al-d">' + a.d + '</div>' +
+          '<div class="al-tm" style="color:' + a.tc + ';">' + a.tm + '</div>' +
+        '</div>' +
+      '</div>';
+  });
+}
+
+/* ───────────────────────────────────────────────
+   RECENT TASKS
+─────────────────────────────────────────────── */
+function renderRecent() {
+  var el = document.getElementById('rec-list');
+  el.innerHTML = '';
+  tasks.slice(0, 6).forEach(function(t) {
+    var avRow = '';
+    t.avps.forEach(function(aid) { var a = getAvp(aid); if (a) avRow += '<span class="av" style="background:' + a.c + ';width:16px;height:16px;font-size:8px;">' + a.ini + '</span> '; });
+    el.innerHTML +=
+      '<div class="rec-item">' +
+        '<div class="rdot" style="background:' + t.c + ';"></div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div class="rn">' + t.title + '</div>' +
+          '<div class="rm">' + avRow + '<span>' + t.cat + (t.due ? ' · ' + fmtDate(t.due) : '') + '</span></div>' +
+        '</div>' +
+        '<span class="mtag" style="background:' + t.c + '22;color:' + t.c + ';flex-shrink:0;padding:3px 9px;border-radius:20px;">' + t.pri + '</span>' +
+      '</div>';
+  });
+}
+
+/* ───────────────────────────────────────────────
+   TABS
+─────────────────────────────────────────────── */
+function stab(id, el) {
+  document.querySelectorAll('.mtab').forEach(function(t) { t.classList.remove('on'); });
+  document.querySelectorAll('.tc').forEach(function(c) { c.classList.remove('on'); });
+  el.classList.add('on');
+  document.getElementById('tc-' + id).classList.add('on');
+}
+
+/* ───────────────────────────────────────────────
+   SNACKBAR
+─────────────────────────────────────────────── */
+function qt(m) { toast(m); }
+function toast(msg) {
+  var sb = document.getElementById('snackbar');
+  document.getElementById('snackbar-msg').textContent = msg;
+  sb.classList.add('show');
+  clearTimeout(sb._t);
+  sb._t = setTimeout(function() { sb.classList.remove('show'); }, 2800);
+}
+
+/* ───────────────────────────────────────────────
+   EMAIL NOTIFICATION SYSTEM
+   ใช้ Google Apps Script Web App เป็น backend
+   ตั้งค่า APPS_SCRIPT_URL ด้านล่าง
+─────────────────────────────────────────────── */
+
+// 👉 วาง URL ของ Google Apps Script Web App ที่นี่
+// (ได้จากการ Deploy Apps Script → Deploy as Web App)
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZ6P-3wx1RUyEvow0NKzIbgp4iRNRxIrDYKKAbdDI636hqRbJFIllqYNAzT36n9KgS1g/exec';
+
+// ส่งอีเมลแจ้ง AVP เมื่อ Assign งานใหม่
+function sendTaskEmail(task, avpList) {
+  if (!APPS_SCRIPT_URL) return; // ยังไม่ได้ตั้งค่า URL
+  var recipientEmails = [];
+  var recipientNames  = [];
+  avpList.forEach(function(aid) {
+    var a = getAvp(aid);
+    if (a && a.email) {
+      recipientEmails.push(a.email);
+      recipientNames.push(a.role);
+    }
+  });
+  if (!recipientEmails.length) return;
+
+  var payload = {
+    action:     'newTask',
+    taskTitle:  task.title,
+    taskCat:    task.cat,
+    taskPri:    task.pri,
+    taskDue:    task.due ? fmtDate(task.due) : 'ไม่ระบุ',
+    emails:     recipientEmails,
+    names:      recipientNames
+  };
+
+  fetch(APPS_SCRIPT_URL, {
+    method:  'POST',
+    mode:    'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify(payload)
+  }).catch(function(e) { console.warn('Email send failed:', e); });
+}
+
+// ตรวจงานที่ Due พรุ่งนี้ แล้วส่งอีเมลแจ้ง (เรียกตอนโหลดหน้า)
+function checkDueReminders() {
+  if (!APPS_SCRIPT_URL) return;
+  var tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+  var reminded  = JSON.parse(localStorage.getItem('reminded_' + tomorrow) || '[]');
+
+  tasks.forEach(function(t) {
+    if (t.col === 'done' || !t.due) return;
+    if (t.due !== tomorrow)         return;
+    if (reminded.indexOf(t.id) >= 0) return; // ส่งแล้ว
+
+    t.avps.forEach(function(aid) {
+      var a = getAvp(aid);
+      if (!a || !a.email) return;
+      fetch(APPS_SCRIPT_URL, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          action:    'dueSoon',
+          taskTitle: t.title,
+          taskCat:   t.cat,
+          taskPri:   t.pri,
+          taskDue:   fmtDate(t.due),
+          emails:    [a.email],
+          names:     [a.role]
+        })
+      }).catch(function(e) { console.warn('Reminder send failed:', e); });
+    });
+    reminded.push(t.id);
+  });
+
+  localStorage.setItem('reminded_' + tomorrow, JSON.stringify(reminded));
+}
+
+// แสดง panel แนะนำการตั้งค่า Apps Script (ถ้ายังไม่ได้ตั้ง)
+function showEmailSetupHint() {
+  if (APPS_SCRIPT_URL) return;
+  var hint = document.getElementById('email-setup-hint');
+  if (hint) hint.style.display = 'flex';
+}
+
+/* ───────────────────────────────────────────────
+   INIT
+─────────────────────────────────────────────── */
+document.getElementById('sdue').value = new Date().toISOString().slice(0, 10);
+buildChips();
+buildStrip();
+renderKanban(tasks);
+buildGantt();
+buildWorkload();
+buildAlerts();
+renderRecent();
+updateKpis();
+checkDueReminders();
+showEmailSetupHint();
+</script>
+</body>
+</html>
