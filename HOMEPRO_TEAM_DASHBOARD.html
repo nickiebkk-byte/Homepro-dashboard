@@ -379,10 +379,10 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
 
 <!-- ── KPI Row ── -->
 <div class="kpi-row">
-  <div class="kpi" style="--kc:#1565c0"><div class="kpi-val" id="kpi-total">47</div><div class="kpi-lbl">Total Active Tasks</div><div class="kpi-sub" id="kpi-total-sub">+5 vs สัปดาห์แล้ว</div></div>
-  <div class="kpi" style="--kc:#2e7d32"><div class="kpi-val" id="kpi-ontrack">78%</div><div class="kpi-lbl">On-Track</div><div class="kpi-sub" id="kpi-ontrack-sub">37 งานตรงกำหนด</div></div>
-  <div class="kpi" style="--kc:#e65100"><div class="kpi-val">72%</div><div class="kpi-lbl">Team Capacity</div><div class="kpi-sub">เฉลี่ยทีมงาน</div></div>
-  <div class="kpi" style="--kc:#b00020"><div class="kpi-val" id="kpi-urgent">4</div><div class="kpi-lbl">Urgent / Blocked</div><div class="kpi-sub">ต้องตัดสินใจด่วน</div></div>
+  <div class="kpi" style="--kc:#1565c0"><div class="kpi-val" id="kpi-total">0</div><div class="kpi-lbl">Total Active Tasks</div><div class="kpi-sub" id="kpi-total-sub">ทั้งหมด 0 งาน</div></div>
+  <div class="kpi" style="--kc:#2e7d32"><div class="kpi-val" id="kpi-ontrack">0%</div><div class="kpi-lbl">On-Track</div><div class="kpi-sub" id="kpi-ontrack-sub">0 งานตรงกำหนด</div></div>
+  <div class="kpi" style="--kc:#e65100"><div class="kpi-val" id="kpi-capacity">0%</div><div class="kpi-lbl">Team Capacity</div><div class="kpi-sub">เฉลี่ยทีมงาน</div></div>
+  <div class="kpi" style="--kc:#b00020"><div class="kpi-val" id="kpi-urgent">0</div><div class="kpi-lbl">Urgent / Blocked</div><div class="kpi-sub">ต้องตัดสินใจด่วน</div></div>
 </div>
 
 <!-- ── Body ── -->
@@ -515,6 +515,9 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
 
     <!-- Quick Actions -->
     <div class="qa-row">
+      <button class="qb" style="border-color:#b00020;color:#b00020;" onclick="clearAllTasks()">
+        <i class="ti ti-trash" style="font-size:15px;"></i> Clear All
+      </button>
       <button class="qb" style="border-color:#1565c0;color:#1565c0;" onclick="qt('กำลัง Export Task Report...')">
         <i class="ti ti-download" style="font-size:15px;"></i> Export Report
       </button>
@@ -621,22 +624,55 @@ var avps = [
   { id:'pk',  role:'PRO KC HO',    nm:'Promotion KC & HO', c:'#b00020', ini:'PK', tasks:10, done:5,  on:62, urg:2, email:'onsirik@homepro.co.th' }
 ];
 
-var tasks = [
-  { id:'t1',  title:'BP2027 Kickoff Brief',      avps:['sa'],      cat:'Commercial',    pri:'Critical', col:'inprog', due:'2026-08-28', c:'#b00020' },
-  { id:'t2',  title:'Private Brand SKU Review',  avps:['kc'],      cat:'Private Brand', pri:'High',     col:'inprog', due:'2026-09-02', c:'#e65100' },
-  { id:'t3',  title:'Strategy Canvas iOS Fix',   avps:['sa','kc'], cat:'Store Ops',     pri:'Critical', col:'todo',   due:'2026-08-28', c:'#b00020' },
-  { id:'t4',  title:'Q4 Promo Campaign Plan',    avps:['ps','pk'], cat:'Promotion',     pri:'High',     col:'review', due:'2026-09-05', c:'#e65100' },
-  { id:'t5',  title:'Inventory Days Reduction',  avps:['h1'],      cat:'Commercial',    pri:'Medium',   col:'inprog', due:'2026-09-10', c:'#e6a817' },
-  { id:'t6',  title:'BigIdea Workshop Prep',     avps:['h2'],      cat:'Marketing',     pri:'High',     col:'todo',   due:'2026-09-12', c:'#e65100' },
-  { id:'t7',  title:'GP% Analysis Report',       avps:['kc'],      cat:'Commercial',    pri:'High',     col:'review', due:'2026-09-01', c:'#e65100' },
-  { id:'t8',  title:'GitHub Hub Deploy Fix',     avps:['sa'],      cat:'Store Ops',     pri:'High',     col:'todo',   due:'2026-08-28', c:'#e65100' },
-  { id:'t9',  title:'Sales Trend Jul Analysis',  avps:['sa'],      cat:'Commercial',    pri:'Low',      col:'done',   due:'2026-08-20', c:'#2e7d32' },
-  { id:'t10', title:'Promo Tracker Firebase',    avps:['ps'],      cat:'Promotion',     pri:'Medium',   col:'done',   due:'2026-08-22', c:'#2e7d32' },
-  { id:'t11', title:'Dashboard Hub Update',      avps:['h1'],      cat:'Store Ops',     pri:'Low',      col:'done',   due:'2026-08-23', c:'#2e7d32' },
-  { id:'t12', title:'GPA Target Setting FY27',   avps:['h2'],      cat:'Commercial',    pri:'Medium',   col:'inprog', due:'2026-09-08', c:'#e6a817' }
-];
+var tasks = [];
 
 var priColors = { Critical:'#b00020', High:'#e65100', Medium:'#e6a817', Low:'#2e7d32' };
+
+/* ───────────────────────────────────────────────
+   LOCAL STORAGE
+─────────────────────────────────────────────── */
+function saveTasks() {
+  localStorage.setItem('homepro_tasks', JSON.stringify(tasks));
+  localStorage.setItem('homepro_tid', taskIdCounter);
+}
+
+function loadTasks() {
+  var saved = localStorage.getItem('homepro_tasks');
+  if (saved) {
+    try { tasks = JSON.parse(saved); } catch(e) { tasks = []; }
+  }
+  var savedTid = localStorage.getItem('homepro_tid');
+  if (savedTid) taskIdCounter = parseInt(savedTid);
+}
+
+function clearAllTasks() {
+  if (!confirm('ลบงานทั้งหมดออก? ไม่สามารถกู้คืนได้')) return;
+  tasks = [];
+  saveTasks();
+  renderKanban(tasks);
+  renderRecent();
+  buildStrip();
+  buildGantt();
+  buildWorkload();
+  buildAlerts();
+  updateKpis();
+  toast('เคลียร์งานทั้งหมดแล้ว');
+}
+
+function deleteTask(tid) {
+  for (var i = 0; i < tasks.length; i++) {
+    if (tasks[i].id === tid) { tasks.splice(i, 1); break; }
+  }
+  saveTasks();
+  var filtered = activeFilter ? tasks.filter(function(x) { return x.avps.indexOf(activeFilter) >= 0; }) : tasks;
+  renderKanban(filtered);
+  renderRecent();
+  buildStrip();
+  buildGantt();
+  buildWorkload();
+  buildAlerts();
+  updateKpis();
+}
 
 /* ───────────────────────────────────────────────
    HELPERS
@@ -675,13 +711,19 @@ updateClock();
 ─────────────────────────────────────────────── */
 function buildStrip() {
   var tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+  var now = new Date();
   var strip = document.getElementById('avp-strip');
   strip.innerHTML = '';
   avps.forEach(function(a) {
-    var dueCount = tasks.filter(function(t) {
-      return t.avps.indexOf(a.id) >= 0 && t.due <= tomorrow && t.col !== 'done';
-    }).length;
-    var pct = Math.round(a.done / a.tasks * 100);
+    var myTasks = tasks.filter(function(t) { return t.avps.indexOf(a.id) >= 0; });
+    var total = myTasks.length;
+    var done = myTasks.filter(function(t) { return t.col === 'done'; }).length;
+    var dueCount = myTasks.filter(function(t) { return t.col !== 'done' && t.due && t.due <= tomorrow; }).length;
+    var overdue = myTasks.filter(function(t) { return t.col !== 'done' && t.due && (new Date(t.due) - now) / 864e5 < 0; }).length;
+    var ontimePct = total > 0 ? Math.round(((total - overdue) / total) * 100) : 0;
+    var donePct = total > 0 ? Math.round(done / total * 100) : 0;
+    var oc = ontimePct >= 80 ? '#2e7d32' : ontimePct >= 65 ? '#e65100' : total > 0 ? '#b00020' : 'var(--text3)';
+
     var div = document.createElement('div');
     div.className = 'avpc';
     div.id = 'avpc-' + a.id;
@@ -692,11 +734,11 @@ function buildStrip() {
       '<div class="avp-role" style="color:' + a.c + ';">' + a.role + '</div>' +
       '<div class="avp-nm">' + a.nm + '</div>' +
       '<div class="avp-3">' +
-        '<div><div class="s-val" style="color:' + a.c + ';">' + a.tasks + '</div><div class="s-lbl">Tasks</div></div>' +
-        '<div><div class="s-val" style="color:#2e7d32;">' + a.on + '%</div><div class="s-lbl">On-Track</div></div>' +
+        '<div><div class="s-val" style="color:' + a.c + ';">' + total + '</div><div class="s-lbl">Tasks</div></div>' +
+        '<div><div class="s-val" style="color:' + oc + ';">' + (total > 0 ? ontimePct + '%' : '—') + '</div><div class="s-lbl">On-Track</div></div>' +
         '<div><div class="s-val" style="color:' + (dueCount > 0 ? '#b00020' : 'var(--text3)') + ';">' + dueCount + '</div><div class="s-lbl">Due</div></div>' +
       '</div>' +
-      '<div class="avp-prog"><div class="avp-fill" style="width:' + a.on + '%;background:' + a.c + ';"></div></div>';
+      '<div class="avp-prog"><div class="avp-fill" style="width:' + donePct + '%;background:' + a.c + ';"></div></div>';
     strip.appendChild(div);
   });
 }
@@ -756,6 +798,7 @@ function createTask() {
     col: 'todo', due: due, c: priColors[selPri]
   };
   tasks.unshift(t);
+  saveTasks();
   var filtered = activeFilter ? tasks.filter(function(x) { return x.avps.indexOf(activeFilter) >= 0; }) : tasks;
   renderKanban(filtered);
   renderRecent();
@@ -769,15 +812,42 @@ function createTask() {
 }
 
 /* ───────────────────────────────────────────────
-   KPI UPDATE
+   KPI UPDATE — คำนวณจาก tasks จริงทั้งหมด
 ─────────────────────────────────────────────── */
 function updateKpis() {
-  var active = tasks.filter(function(t) { return t.col !== 'done'; }).length;
-  var ontrack = tasks.filter(function(t) { return t.col !== 'done' && t.c !== '#b00020'; }).length;
-  var pct = active > 0 ? Math.round(ontrack / active * 100) : 0;
-  document.getElementById('kpi-total').textContent = active;
+  var now = new Date();
+  var active = tasks.filter(function(t) { return t.col !== 'done'; });
+  var activeCnt = active.length;
+
+  // On-Track = งานที่ยังไม่เกิน due date
+  var ontrack = active.filter(function(t) {
+    if (!t.due) return true;
+    return (new Date(t.due) - now) / 864e5 >= 0;
+  }).length;
+  var pct = activeCnt > 0 ? Math.round(ontrack / activeCnt * 100) : 0;
+
+  // Urgent = Critical priority ที่ยังไม่เสร็จ + งานที่เกิน due date
+  var urgent = active.filter(function(t) {
+    var overdue = t.due && (new Date(t.due) - now) / 864e5 < 0;
+    return t.pri === 'Critical' || overdue;
+  }).length;
+
+  // Team Capacity = % งานที่ยังอยู่ในกำหนด (on-track) เฉลี่ย
+  var totalAssigned = 0;
+  var totalOntime = 0;
+  avps.forEach(function(a) {
+    var myTasks = tasks.filter(function(t) { return t.avps.indexOf(a.id) >= 0 && t.col !== 'done'; });
+    totalAssigned += myTasks.length;
+    totalOntime += myTasks.filter(function(t) { return !t.due || (new Date(t.due) - now) / 864e5 >= 0; }).length;
+  });
+  var capacity = totalAssigned > 0 ? Math.round(totalOntime / totalAssigned * 100) : 0;
+
+  document.getElementById('kpi-total').textContent = activeCnt;
+  document.getElementById('kpi-total-sub').textContent = tasks.length + ' งานทั้งหมด';
   document.getElementById('kpi-ontrack').textContent = pct + '%';
   document.getElementById('kpi-ontrack-sub').textContent = ontrack + ' งานตรงกำหนด';
+  document.getElementById('kpi-capacity').textContent = capacity + '%';
+  document.getElementById('kpi-urgent').textContent = urgent;
 }
 
 /* ───────────────────────────────────────────────
@@ -790,6 +860,9 @@ function renderKanban(ts) {
   colNames.forEach(function(cn) {
     var el = document.getElementById('col-' + cn);
     el.innerHTML = '';
+    if (cols[cn].length === 0) {
+      el.innerHTML = '<div style="text-align:center;padding:20px 10px;color:var(--text3);font-size:13px;font-family:\'Prompt\',sans-serif;">ไม่มีงาน</div>';
+    }
     cols[cn].forEach(function(t) {
       var avRow = '';
       t.avps.forEach(function(aid) { var a = getAvp(aid); if (a) avRow += '<span class="av" style="background:' + a.c + ';">' + a.ini + '</span>'; });
@@ -801,7 +874,10 @@ function renderKanban(ts) {
       card.addEventListener('dragstart', function() { dragId = t.id; });
       var dc = t.due ? dueColor(t.due) : 'var(--text3)';
       card.innerHTML =
-        '<div class="kcard-t">' + t.title + '</div>' +
+        '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px;">' +
+          '<div class="kcard-t" style="flex:1;">' + t.title + '</div>' +
+          '<button onclick="deleteTask(\'' + t.id + '\')" title="ลบงานนี้" style="background:none;border:none;cursor:pointer;color:#b0bec5;font-size:16px;padding:0;line-height:1;flex-shrink:0;" onmouseover="this.style.color=\'#b00020\'" onmouseout="this.style.color=\'#b0bec5\'">&#10005;</button>' +
+        '</div>' +
         '<div class="kcard-m">' +
           '<span class="mtag" style="background:' + t.c + '22;color:' + t.c + ';">' + t.pri + '</span>' +
           '<div style="display:flex;gap:2px;">' + avRow + '</div>' +
@@ -821,6 +897,7 @@ function dpc(e, col) {
   for (var i = 0; i < tasks.length; i++) {
     if (tasks[i].id === dragId) { tasks[i].col = col; break; }
   }
+  saveTasks();
   var filtered = activeFilter ? tasks.filter(function(x) { return x.avps.indexOf(activeFilter) >= 0; }) : tasks;
   renderKanban(filtered);
   buildStrip();
@@ -834,88 +911,129 @@ document.addEventListener('dragover', function(e) {
 });
 
 /* ───────────────────────────────────────────────
-   GANTT
+   GANTT — สร้างจาก tasks จริง
 ─────────────────────────────────────────────── */
 function buildGantt() {
-  var weeks = ['Sep 1', 'Sep 8', 'Sep 15', 'Sep 22', 'Oct 1', 'Oct 8'];
-  var hd = document.getElementById('ghd');
-  hd.innerHTML = '<th style="min-width:140px;">Task</th><th style="min-width:50px;">AVP</th>';
-  weeks.forEach(function(w) { hd.innerHTML += '<th style="text-align:center;min-width:64px;">' + w + '</th>'; });
-  var gdata = [
-    { t:'BP2027 Kickoff',   av:'SA',    c:'#b00020', s:0, l:1 },
-    { t:'Strategy Canvas',  av:'SA/KC', c:'#1565c0', s:0, l:3 },
-    { t:'BigIdea Workshop', av:'ALL',   c:'#e65100', s:1, l:3 },
-    { t:'Private Brand',    av:'HC',    c:'#6a1b9a', s:0, l:4 },
-    { t:'Q4 Promo Plan',    av:'PRO',   c:'#2e7d32', s:2, l:3 },
-    { t:'GP% Report',       av:'KC',    c:'#e65100', s:0, l:2 },
-    { t:'Inv. Reduction',   av:'HO1',   c:'#e6a817', s:1, l:4 },
-    { t:'Exec Dashboard',   av:'ALL',   c:'#263238', s:3, l:2 }
-  ];
   var bd = document.getElementById('gbd');
+  var hd = document.getElementById('ghd');
+  hd.innerHTML = '<th style="min-width:160px;">Task</th><th style="min-width:50px;">AVP</th><th style="min-width:100px;">Due Date</th><th style="min-width:80px;">Priority</th><th style="min-width:100px;">Status</th>';
   bd.innerHTML = '';
-  gdata.forEach(function(g) {
+
+  var activeTasks = tasks.filter(function(t) { return t.col !== 'done'; });
+
+  if (activeTasks.length === 0) {
+    bd.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text3);font-family:\'Prompt\',sans-serif;font-size:14px;">ยังไม่มีงาน — สร้างงานใหม่ด้านซ้ายได้เลย</td></tr>';
+    return;
+  }
+
+  var colMap = { todo:'#b0bec5', inprog:'#1565c0', review:'#e65100', done:'#2e7d32' };
+  var colLabel = { todo:'To Do', inprog:'In Progress', review:'Review', done:'Done' };
+
+  activeTasks.forEach(function(t) {
+    var avRow = '';
+    t.avps.forEach(function(aid) {
+      var a = getAvp(aid);
+      if (a) avRow += '<span style="background:' + a.c + ';color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-right:2px;">' + a.ini + '</span>';
+    });
+    var dc = t.due ? dueColor(t.due) : 'var(--text3)';
     var tr = document.createElement('tr');
-    var cells = '<td style="font-size:13px;font-weight:500;">' + g.t + '</td>';
-    cells += '<td><span style="background:' + g.c + ';color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;">' + g.av + '</span></td>';
-    for (var c = 0; c < 6; c++) {
-      if (c === g.s) {
-        cells += '<td colspan="' + g.l + '" style="padding:2px 3px;"><div class="gbar" style="background:' + g.c + ';"><span>' + g.t + '</span></div></td>';
-        c += g.l - 1;
-      } else {
-        cells += '<td></td>';
-      }
-    }
-    tr.innerHTML = cells;
+    tr.innerHTML =
+      '<td style="font-size:14px;font-weight:500;font-family:\'Prompt\',sans-serif;">' + t.title + '</td>' +
+      '<td>' + avRow + '</td>' +
+      '<td style="font-size:13px;color:' + dc + ';font-weight:600;font-family:\'Prompt\',sans-serif;">' + (t.due ? fmtDate(t.due) : '—') + '</td>' +
+      '<td><span style="background:' + t.c + '22;color:' + t.c + ';font-size:12px;font-weight:700;padding:3px 9px;border-radius:20px;font-family:\'Prompt\',sans-serif;">' + t.pri + '</span></td>' +
+      '<td><span style="background:' + colMap[t.col] + '22;color:' + colMap[t.col] + ';font-size:12px;font-weight:600;padding:3px 9px;border-radius:20px;font-family:\'Prompt\',sans-serif;">' + colLabel[t.col] + '</span></td>';
     bd.appendChild(tr);
   });
 }
 
 /* ───────────────────────────────────────────────
-   WORKLOAD
+   WORKLOAD — คำนวณจาก tasks จริง
 ─────────────────────────────────────────────── */
 function buildWorkload() {
   var wr = document.getElementById('wp-rows');
   wr.innerHTML = '';
+
+  if (tasks.length === 0) {
+    wr.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);font-family:\'Prompt\',sans-serif;font-size:14px;">ยังไม่มีงาน</div>';
+    return;
+  }
+
   avps.forEach(function(a) {
-    var pct = Math.round(a.done / a.tasks * 100);
-    var oc = a.on >= 80 ? '#2e7d32' : a.on >= 65 ? '#e65100' : '#b00020';
+    var myTasks = tasks.filter(function(t) { return t.avps.indexOf(a.id) >= 0; });
+    var total = myTasks.length;
+    if (total === 0) return;
+    var done = myTasks.filter(function(t) { return t.col === 'done'; }).length;
+    var pct = Math.round(done / total * 100);
+    var remaining = total - done;
+    var ontime = myTasks.filter(function(t) {
+      return t.col !== 'done' && t.due && (new Date(t.due) - new Date()) / 864e5 >= 0;
+    }).length;
+    var ontimePct = total > 0 ? Math.round(((total - myTasks.filter(function(t) {
+      return t.col !== 'done' && t.due && (new Date(t.due) - new Date()) / 864e5 < 0;
+    }).length) / total) * 100) : 100;
+    var oc = ontimePct >= 80 ? '#2e7d32' : ontimePct >= 65 ? '#e65100' : '#b00020';
+
     wr.innerHTML +=
       '<div class="wp-person">' +
         '<div class="wp-row">' +
           '<span class="wpn">' + a.role + '</span>' +
           '<div class="btrack"><div class="bfill" style="width:' + pct + '%;background:' + a.c + ';"></div></div>' +
-          '<span class="wpct" style="color:' + a.c + ';">' + a.done + '/' + a.tasks + '</span>' +
+          '<span class="wpct" style="color:' + a.c + ';">' + done + '/' + total + '</span>' +
         '</div>' +
-        '<div class="wpsub">' + pct + '% เสร็จ &nbsp;·&nbsp; On-Time <strong style="color:' + oc + ';">' + a.on + '%</strong> &nbsp;·&nbsp; เหลือ ' + (a.tasks - a.done) + ' งาน</div>' +
+        '<div class="wpsub">' + pct + '% เสร็จ &nbsp;·&nbsp; On-Time <strong style="color:' + oc + ';">' + ontimePct + '%</strong> &nbsp;·&nbsp; เหลือ ' + remaining + ' งาน</div>' +
       '</div>';
   });
+
+  if (wr.innerHTML === '') {
+    wr.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);font-family:\'Prompt\',sans-serif;font-size:14px;">ยังไม่มีงานที่ assign ให้ AVP</div>';
+  }
 }
 
 /* ───────────────────────────────────────────────
-   ALERTS
+   ALERTS — สร้างจาก tasks จริงเท่านั้น
 ─────────────────────────────────────────────── */
 function buildAlerts() {
-  var tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
-  var alerts = [
-    { ic:'ti-alert-circle',   bg:'#fce4ec', ic_c:'#b00020', t:'Strategy Canvas iOS Fix — Overdue',       d:'Login บน iOS Safari ยังไม่ได้แก้ · ล่าช้า 2 วัน · ต้อง deploy ด่วน',            tm:'ล่าช้า 2 วัน',   tc:'#b00020' },
-    { ic:'ti-brand-github',   bg:'#e8eaf6', ic_c:'#3949ab', t:'GitHub Hub — Private Brand Card ไม่ขึ้น',  d:'ไฟล์ยังไม่ live บน GitHub Pages · ใช้ web editor upload เป็น fallback',          tm:'ต้องแก้ด่วน',    tc:'#3949ab' },
-    { ic:'ti-clock-exclamation', bg:'#fff3e0', ic_c:'#e65100', t:'BP2027 Kickoff Brief — Due พรุ่งนี้',  d:'AVP SA ยังอยู่ In Progress · ต้องส่งภายใน 28 Aug · ติดตามด่วน',               tm:'Due 28/08/26',   tc:'#e65100' },
-    { ic:'ti-clock-exclamation', bg:'#fff3e0', ic_c:'#e65100', t:'GitHub Deploy Fix — Due พรุ่งนี้',     d:'AVP SA · ไฟล์ยังไม่ตรงกับ live version บน Pages',                               tm:'Due 28/08/26',   tc:'#e65100' },
-    { ic:'ti-trending-down',  bg:'#e8f5e9', ic_c:'#2e7d32', t:'PRO KC HO — On-Track ต่ำสุด (62%)',       d:'มี 2 งานไม่ตรงกำหนด · พิจารณา Redistribute งาน Q4 Promo ให้ทีมอื่น',          tm:'ติดตาม',         tc:'#2e7d32' }
-  ];
+  var alerts = [];
+  var now = new Date();
+
   tasks.forEach(function(t) {
     if (t.col === 'done' || !t.due) return;
-    var diff = (new Date(t.due) - new Date()) / 864e5;
-    if (diff >= 0 && diff < 1) {
-      var dup = alerts.filter(function(a) { return a.t.indexOf(t.title) >= 0; });
-      if (!dup.length) {
-        alerts.push({ ic:'ti-bell-ringing', bg:'#fff3e0', ic_c:'#e65100', t:t.title + ' — Due ภายใน 24 ชม.', d:t.cat + ' · Priority: ' + t.pri + ' · ยังไม่เสร็จ', tm:'Due ' + fmtDate(t.due), tc:'#e65100' });
-      }
+    var diff = (new Date(t.due) - now) / 864e5;
+    var avpNames = t.avps.map(function(aid) { var a = getAvp(aid); return a ? a.role : aid; }).join(', ');
+
+    if (diff < 0) {
+      alerts.push({ ic:'ti-alert-circle', bg:'#fce4ec', ic_c:'#b00020',
+        t: t.title + ' — เกินกำหนดแล้ว',
+        d: avpNames + ' · ' + t.cat + ' · ล่าช้า ' + Math.abs(Math.round(diff)) + ' วัน',
+        tm: 'Due ' + fmtDate(t.due), tc:'#b00020' });
+    } else if (diff < 1) {
+      alerts.push({ ic:'ti-clock-exclamation', bg:'#fff3e0', ic_c:'#e65100',
+        t: t.title + ' — Due วันนี้!',
+        d: avpNames + ' · ' + t.cat + ' · Priority: ' + t.pri,
+        tm: 'Due ' + fmtDate(t.due), tc:'#e65100' });
+    } else if (diff < 2) {
+      alerts.push({ ic:'ti-clock-exclamation', bg:'#fff3e0', ic_c:'#e65100',
+        t: t.title + ' — Due พรุ่งนี้',
+        d: avpNames + ' · ' + t.cat + ' · Priority: ' + t.pri,
+        tm: 'Due ' + fmtDate(t.due), tc:'#e65100' });
+    } else if (t.pri === 'Critical') {
+      alerts.push({ ic:'ti-flag', bg:'#fce4ec', ic_c:'#b00020',
+        t: t.title + ' — Critical Priority',
+        d: avpNames + ' · ' + t.cat,
+        tm: 'Due ' + fmtDate(t.due), tc:'#b00020' });
     }
   });
-  document.getElementById('acnt').textContent = alerts.length;
+
+  document.getElementById('acnt').textContent = alerts.length || '';
   var el = document.getElementById('al-list');
   el.innerHTML = '';
+
+  if (alerts.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3);font-family:\'Prompt\',sans-serif;font-size:16px;">ไม่มีการแจ้งเตือน ✅<br><span style="font-size:13px;">งานทุกชิ้นอยู่ในกำหนด</span></div>';
+    return;
+  }
+
   alerts.forEach(function(a) {
     el.innerHTML +=
       '<div class="al-item">' +
@@ -1060,6 +1178,12 @@ function showEmailSetupHint() {
    INIT
 ─────────────────────────────────────────────── */
 document.getElementById('sdue').value = new Date().toISOString().slice(0, 10);
+loadTasks();
+// ถ้า localStorage มีข้อมูลเก่าก่อนเวอร์ชัน clean ให้เคลียร์ทิ้ง
+if (tasks.length > 0 && tasks[0].id === 't1') {
+  tasks = [];
+  saveTasks();
+}
 buildChips();
 buildStrip();
 renderKanban(tasks);
