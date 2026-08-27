@@ -327,6 +327,113 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
 .field-label { font-size: 11px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
 .required-star { color: var(--red); }
 @media(max-width:900px) { .avp-add-form { grid-template-columns: 1fr 1fr; gap: 8px; } }
+
+/* ── ANNOUNCEMENTS ── */
+.ann-svp { background: linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%); border-radius: 14px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 6px 24px rgba(0,0,50,.18); position: relative; }
+.ann-svp-banner { background: var(--hp-orange); padding: 5px 18px; display: flex; align-items: center; gap: 10px; }
+.ann-svp-banner .bl { font-size: 11px; font-weight: 800; color: #fff; letter-spacing: 1.2px; text-transform: uppercase; }
+.ann-svp-banner .bt { font-size: 11px; color: #ffe0c0; }
+.ann-svp-body { padding: 18px 22px 20px; }
+.ann-svp-from { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.svp-av { width: 40px; height: 40px; border-radius: 50%; background: var(--hp-orange); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; border: 3px solid rgba(255,255,255,.25); flex-shrink: 0; }
+.svp-name { font-size: 14px; font-weight: 700; color: #fff; }
+.svp-role-txt { font-size: 11px; color: #94a3b8; }
+.svp-headline { font-size: 22px; font-weight: 800; color: #fff; line-height: 1.25; margin-bottom: 10px; }
+.svp-body-text { font-size: 14px; color: #cbd5e1; line-height: 1.75; }
+.svp-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.1); flex-wrap: wrap; gap: 8px; }
+.svp-date { font-size: 11px; color: #64748b; }
+.pin-badge-ann { background: var(--hp-orange); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+
+.ann-avp { background: var(--white); border-radius: 12px; border: 2px solid var(--border); overflow: hidden; margin-bottom: 10px; box-shadow: var(--shadow); }
+.ann-avp-banner { padding: 6px 18px; display: flex; align-items: center; gap: 10px; }
+.ann-avp-banner .bl { font-size: 11px; font-weight: 800; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
+.ann-avp-banner .bt { font-size: 11px; color: rgba(255,255,255,.8); }
+.ann-avp-body { padding: 14px 18px 16px; }
+.ann-avp-from { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.avp-av-sm { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+.avp-headline { font-size: 18px; font-weight: 800; color: var(--text); line-height: 1.3; margin-bottom: 8px; }
+.avp-body-text { font-size: 13px; color: var(--text2); line-height: 1.75; }
+.avp-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+
+.ann-tag-u { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; display: inline-block; }
+.at-urgent  { background:var(--red-bg);  color:var(--red);   border:1px solid var(--red-br); }
+.at-info    { background:#e8f0fe; color:#1967d2; border:1px solid #b8d0f8; }
+.at-success { background:var(--green-bg);color:var(--green); border:1px solid var(--green-br); }
+.at-warning { background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-br); }
+.exp-chip   { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-br); }
+.exp-chip.soon { background: var(--red-bg); color: var(--red); border-color: var(--red-br); }
+
+.ann-sec-hdr { display: flex; align-items: center; gap: 10px; margin: 16px 0 12px; }
+.ann-sec-line { flex:1; height:2px; background:var(--border); border-radius:2px; }
+.ann-sec-label { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+
+/* Compose */
+.ann-compose { background: var(--white); border-radius: var(--radius); border: 1.5px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
+.ann-compose-hdr { padding: 12px 20px; background: var(--surface); border-bottom: 2px solid var(--border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+.ann-compose-hdr-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.ann-compose-body { padding: 16px 20px; display: none; }
+.ann-compose-body.open { display: block; }
+.ann-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ann-form-grid .full { grid-column: 1/-1; }
+.ann-field label { font-size: 11px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 5px; }
+.ann-field input, .ann-field select, .ann-field textarea { width: 100%; font-family: 'Prompt', sans-serif; font-size: 13px; border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 12px; background: var(--surface); color: var(--text); transition: .15s; }
+.ann-field input:focus, .ann-field select:focus, .ann-field textarea:focus { outline: none; border-color: var(--accent); background: #fff; }
+.ann-field textarea { resize: vertical; min-height: 80px; }
+.quick-exp { font-family: 'Prompt', sans-serif; font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 20px; border: 1.5px solid var(--accent); background: none; color: var(--accent); cursor: pointer; transition: .15s; }
+.quick-exp:hover { background: var(--accent); color: #fff; }
+.target-chk-wrap { border: 1.5px solid var(--border); border-radius: 8px; background: var(--surface); padding: 6px 0; max-height: 160px; overflow-y: auto; }
+.tgt-item { display: flex; align-items: center; gap: 8px; padding: 5px 12px; cursor: pointer; font-size: 13px; }
+.tgt-item:hover { background: var(--bg); }
+.tgt-item input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+.btn-post-ann { font-family: 'Prompt', sans-serif; font-size: 13px; font-weight: 700; background: var(--accent); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; }
+.btn-post-ann:hover { background: #003fa3; }
+.new-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); display: inline-block; margin-left: 4px; vertical-align: middle; animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.empty-ann { text-align: center; padding: 40px; color: var(--gray); background: var(--white); border-radius: var(--radius); border: 1.5px dashed var(--border); font-size: 13px; }
+
+/* ── SVP DASHBOARD ── */
+.avp-selector-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+.avp-sel-tab { font-family:'Prompt',sans-serif; font-size:12px; font-weight:600; padding:7px 16px; border-radius:30px; border:2px solid var(--border); background:var(--white); color:var(--gray); cursor:pointer; transition:.15s; display:flex; align-items:center; gap:6px; }
+.avp-sel-tab:hover { border-color:var(--accent); color:var(--accent); }
+.avp-sel-tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+.avp-sel-tab.all-sel.active { background:var(--text); border-color:var(--text); }
+.avp-sel-tab .sel-dot { width:7px; height:7px; border-radius:50%; }
+.svp-kpi-row { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:20px; }
+.svp-alert { background:var(--red-bg); border:1.5px solid var(--red-br); border-radius:var(--radius); padding:12px 16px; margin-bottom:16px; display:flex; align-items:flex-start; gap:10px; font-size:13px; color:var(--red); }
+.svp-avp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+.svp-avp-card { background:var(--white); border-radius:12px; border:1.5px solid var(--border); box-shadow:var(--shadow); overflow:hidden; cursor:pointer; transition:.2s; }
+.svp-avp-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.12); }
+.svp-avp-card.sel { border-color:var(--accent); box-shadow:0 0 0 3px #0052cc22; }
+.svp-avp-top { padding:14px 16px 12px; border-bottom:1px solid var(--border); }
+.svp-avp-name { font-size:15px; font-weight:800; }
+.svp-avp-role { font-size:11px; color:var(--gray); margin-top:1px; }
+.svp-avp-prog { display:flex; align-items:center; gap:8px; margin-top:10px; }
+.svp-avp-bar-w { flex:1; background:var(--border); border-radius:20px; height:7px; overflow:hidden; }
+.svp-avp-bar-f { height:7px; border-radius:20px; }
+.svp-avp-kpi { display:grid; grid-template-columns:repeat(3,1fr); }
+.svp-avp-kpi-item { padding:10px 12px; border-right:1px solid var(--border); text-align:center; }
+.svp-avp-kpi-item:last-child { border-right:none; }
+.svp-avp-kpi-num { font-size:18px; font-weight:800; line-height:1; }
+.svp-avp-kpi-label { font-size:10px; color:var(--gray); text-transform:uppercase; letter-spacing:.4px; margin-top:2px; }
+.svp-detail { background:var(--white); border-radius:var(--radius); border:1.5px solid var(--border); box-shadow:var(--shadow); overflow:hidden; margin-bottom:16px; }
+.svp-detail-hdr { padding:14px 20px; background:var(--surface); border-bottom:2px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.svp-member-hdr { display:grid; grid-template-columns:190px 1fr 100px 100px 100px 140px; padding:8px 20px; background:var(--surface); border-bottom:1px solid var(--border); }
+.svp-member-row { display:grid; grid-template-columns:190px 1fr 100px 100px 100px 140px; padding:11px 20px; border-bottom:1px solid var(--border); align-items:center; transition:.1s; }
+.svp-member-row:last-child { border-bottom:none; }
+.svp-member-row:hover { background:var(--surface); }
+.sm-name-cell { display:flex; align-items:center; gap:8px; }
+.sm-av { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0; }
+.sm-prog-wrap { display:flex; align-items:center; gap:6px; }
+.sm-bar-w { flex:1; background:var(--border); border-radius:20px; height:7px; overflow:hidden; }
+.sm-bar-f { height:7px; border-radius:20px; }
+.sm-pct { font-size:11px; font-weight:700; width:32px; }
+.sbadge { font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; }
+.sb-g { background:var(--green-bg); color:var(--green); border:1px solid var(--green-br); }
+.sb-y { background:var(--yellow-bg); color:var(--yellow); border:1px solid var(--yellow-br); }
+.sb-r { background:var(--red-bg); color:var(--red); border:1px solid var(--red-br); }
+.sb-x { background:var(--bg); color:var(--gray); border:1px solid var(--border); }
+@media(max-width:1000px){ .svp-kpi-row{grid-template-columns:repeat(3,1fr);} .svp-avp-grid{grid-template-columns:1fr 1fr;} }
+@media(max-width:700px){ .svp-avp-grid{grid-template-columns:1fr;} .svp-member-hdr,.svp-member-row{grid-template-columns:1fr;gap:4px;} }
 </style>
 </head>
 <body>
@@ -381,6 +488,21 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
       <input class="form-input" id="login-pin" type="password" placeholder="••••" maxlength="4" onkeydown="if(event.key==='Enter')loginAVP()">
       <button class="btn-main btn-orange" id="avp-login-btn" onclick="loginAVP()" style="margin-top:12px">เข้าสู่ระบบ AVP</button>
     </div>
+
+    <div class="divider"><span>หรือเข้าสู่ระบบในฐานะ SVP</span></div>
+
+    <div id="svp-login-wrap" style="background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:38px;height:38px;border-radius:50%;background:#0f172a;color:var(--hp-orange);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0">N</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text)">Nick — SVP</div>
+          <div style="font-size:11px;color:var(--gray)">Category Management · เข้าถึงข้อมูลทุกทีม</div>
+        </div>
+      </div>
+      <label class="form-label">PIN สำหรับ SVP</label>
+      <input class="form-input" id="login-svp-pin" type="password" placeholder="••••" maxlength="4" onkeydown="if(event.key==='Enter')loginSVP()">
+      <button class="btn-main" onclick="loginSVP()" style="margin-top:12px;background:#0f172a;color:var(--hp-orange)">🏢 เข้าสู่ระบบ SVP</button>
+    </div>
   </div>
 </div>
 
@@ -395,9 +517,11 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
     </div>
   </div>
   <div class="tab-nav">
-    <button class="tab-btn active" id="tab-my"  onclick="switchTab('my-tasks',this)">งานของฉัน</button>
+    <button class="tab-btn" id="tab-ann" onclick="switchTab('announce',this)">📢 ประกาศ <span class="new-dot" id="ann-dot"></span></button>
+    <button class="tab-btn" id="tab-my"  onclick="switchTab('my-tasks',this)">งานของฉัน</button>
     <button class="tab-btn" style="display:none" id="tab-cal" onclick="switchTab('calendar',this)">📅 ปฏิทิน</button>
-    <button class="tab-btn"        id="tab-mgr" onclick="switchTab('manager',this)"  style="display:none">มุมมอง AVP</button>
+    <button class="tab-btn" id="tab-mgr" onclick="switchTab('manager',this)" style="display:none">มุมมอง AVP</button>
+    <button class="tab-btn" id="tab-svp" onclick="switchTab('svp',this)" style="display:none">📊 SVP Overview</button>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="user-chip"><div class="uc-dot"></div><span id="header-user"></span></div>
@@ -407,7 +531,74 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
 </header>
 
 <!-- MY TASKS -->
-<div class="view active" id="view-my-tasks">
+<!-- ANNOUNCE VIEW -->
+<div class="view active" id="view-announce">
+  <div class="sec-title" id="ann-page-title">📢 ประกาศและข่าวสาร</div>
+  <div class="sec-sub" id="ann-page-sub">ประกาศจากผู้บริหารและหัวหน้าทีม</div>
+
+  <!-- COMPOSE (AVP/Nick only) -->
+  <div class="ann-compose" id="ann-compose-wrap" style="display:none">
+    <div class="ann-compose-hdr" onclick="toggleCompose()">
+      <div class="ann-compose-hdr-title">📝 ออกประกาศใหม่</div>
+      <span id="compose-arrow" style="color:var(--gray);font-size:18px">›</span>
+    </div>
+    <div class="ann-compose-body" id="ann-compose-body">
+      <div class="ann-form-grid">
+        <div class="ann-field">
+          <label>ประเภทประกาศ</label>
+          <select id="ann-type">
+            <option value="info">💬 ข่าวสารทั่วไป</option>
+            <option value="urgent">🔴 ด่วน</option>
+            <option value="success">✅ ผลสำเร็จ/ยินดี</option>
+            <option value="warning">⚠️ แจ้งเตือน</option>
+          </select>
+        </div>
+        <div class="ann-field" id="ann-target-wrap">
+          <label>ส่งถึง <span style="color:var(--red)">*</span></label>
+          <div class="target-chk-wrap">
+            <div class="tgt-item" style="border-bottom:1px solid var(--border);margin-bottom:4px;padding-bottom:6px">
+              <input type="checkbox" id="tgt-all" onchange="toggleAllTargets(this)">
+              <label for="tgt-all" style="font-weight:700;color:var(--accent);cursor:pointer">ทุกคนในแผนก</label>
+            </div>
+            <div class="tgt-item"><input type="checkbox" class="tgt-chk" value="AVP SA" onchange="syncAllChk()"><label style="cursor:pointer">ทีม SA</label></div>
+            <div class="tgt-item"><input type="checkbox" class="tgt-chk" value="AVP KC" onchange="syncAllChk()"><label style="cursor:pointer">ทีม KC</label></div>
+            <div class="tgt-item"><input type="checkbox" class="tgt-chk" value="AVP HO1" onchange="syncAllChk()"><label style="cursor:pointer">ทีม HO1</label></div>
+            <div class="tgt-item"><input type="checkbox" class="tgt-chk" value="AVP HO2" onchange="syncAllChk()"><label style="cursor:pointer">ทีม HO2</label></div>
+            <div class="tgt-item"><input type="checkbox" class="tgt-chk" value="AVP PRO KC HO" onchange="syncAllChk()"><label style="cursor:pointer">ทีม PRO KC HO</label></div>
+            <div class="tgt-item"><input type="checkbox" class="tgt-chk" value="AVP PRO SA" onchange="syncAllChk()"><label style="cursor:pointer">ทีม PRO SA</label></div>
+          </div>
+        </div>
+        <div class="ann-field full">
+          <label>หัวข้อประกาศ <span style="color:var(--red)">*</span></label>
+          <input type="text" id="ann-headline" placeholder="ระบุหัวข้อประกาศ...">
+        </div>
+        <div class="ann-field full">
+          <label>เนื้อหา <span style="color:var(--red)">*</span></label>
+          <textarea id="ann-body" placeholder="รายละเอียดประกาศ..."></textarea>
+        </div>
+        <div class="ann-field full">
+          <label>วันหมดอายุ <span style="color:var(--red)">*</span></label>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <input type="date" id="ann-expiry" style="width:180px">
+            <button class="quick-exp" onclick="setAnnExpiry(1)">+1 วัน</button>
+            <button class="quick-exp" onclick="setAnnExpiry(3)">+3 วัน</button>
+            <button class="quick-exp" onclick="setAnnExpiry(7)">+1 สัปดาห์</button>
+            <button class="quick-exp" onclick="setAnnExpiry(14)">+2 สัปดาห์</button>
+            <button class="quick-exp" onclick="setAnnExpiry(30)">+1 เดือน</button>
+          </div>
+        </div>
+        <div class="full" style="display:flex;justify-content:flex-end;gap:8px;margin-top:6px">
+          <button onclick="clearAnnForm()" style="font-family:'Prompt',sans-serif;font-size:13px;padding:9px 16px;border:1.5px solid var(--border);border-radius:8px;background:none;color:var(--gray);cursor:pointer">ล้างข้อมูล</button>
+          <button class="btn-post-ann" onclick="postAnnouncement()">📢 ประกาศ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ann-board"></div>
+</div>
+
+<div class="view" id="view-my-tasks">
   <div class="sec-title" id="my-title">งานของฉัน</div>
   <div class="sec-sub"   id="my-sub"></div>
   <div class="kpi-row">
@@ -561,6 +752,40 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
 </div>
 
 </div>
+
+<!-- SVP OVERVIEW VIEW -->
+<div class="view" id="view-svp">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div>
+      <div style="font-size:24px;font-weight:800;color:var(--text)">📊 SVP Overview</div>
+      <div style="font-size:13px;color:var(--gray);margin-top:2px">ภาพรวมทุกหน่วยงาน — อัปเดต Real-time</div>
+    </div>
+    <div id="svp-summary-chips" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="svp-kpi-row" id="svp-kpi-row"></div>
+
+  <!-- ALERT -->
+  <div class="svp-alert" id="svp-alert" style="display:none">
+    <span style="font-size:18px;flex-shrink:0">⚑</span>
+    <div>
+      <div style="font-weight:700;margin-bottom:3px">พบงานเลยกำหนด — ต้องติดตามด่วน</div>
+      <div id="svp-alert-body" style="font-size:12px;line-height:1.6"></div>
+    </div>
+  </div>
+
+  <!-- AVP SELECTOR -->
+  <div style="font-size:16px;font-weight:700;margin-bottom:12px">เลือกดูหน่วยงาน</div>
+  <div class="avp-selector-tabs" id="svp-avp-tabs"></div>
+
+  <!-- AVP CARDS -->
+  <div class="svp-avp-grid" id="svp-avp-grid"></div>
+
+  <!-- DETAIL -->
+  <div id="svp-detail-wrap"></div>
+</div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -568,6 +793,7 @@ header { background: var(--white); border-bottom: 2px solid var(--border); paddi
 <script>
 // ── CONFIG ──
 const AVP_PIN = '1234';
+const SVP_PIN  = '0000'; // PIN สำหรับ SVP (เปลี่ยนได้)
 const COLORS  = [
   {bg:'#e8f0fe',tc:'#1967d2'},{bg:'#e6f4ea',tc:'#137333'},
   {bg:'#fff3e0',tc:'#e37400'},{bg:'#fce8e6',tc:'#c5221f'},
@@ -627,6 +853,17 @@ async function loginMember() {
   showApp();
 }
 
+async function loginSVP() {
+  var pin = document.getElementById('login-svp-pin').value.trim();
+  if (pin !== SVP_PIN) { showToast('PIN ไม่ถูกต้อง'); return; }
+  me = {
+    id: 'svp_nick', name: 'Nick', position: 'SVP',
+    avp: 'SVP', isAVP: false, isSVP: true
+  };
+  sessionStorage.setItem('hp_sess', JSON.stringify(me));
+  showApp();
+}
+
 async function loginAVP() {
   if (!selectedAVP) { showToast('กรุณาเลือก AVP ก่อน'); return; }
   const pin = document.getElementById('login-pin').value.trim();
@@ -639,20 +876,39 @@ async function loginAVP() {
 function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('main-app').style.display     = 'block';
-  document.getElementById('header-user').textContent    = me.name + (me.isAVP ? ' 👔' : '');
+  document.getElementById('header-user').textContent    = me.name + (me.isSVP ? ' 🏢 SVP' : me.isAVP ? ' 👔' : '');
+  // Detect SVP vs AVP vs Member
+  if (me.isSVP) {
+    // SVP — full access
+    document.getElementById('ann-compose-wrap').style.display = 'block';
+    document.getElementById('ann-target-wrap').style.display = 'block';
+    document.getElementById('tab-svp').style.display = 'block';
+    document.getElementById('tab-mgr').style.display = 'none';
+    // SVP lands on announce first, then can go to SVP overview
+  } else if (me.isAVP) {
+    document.getElementById('ann-compose-wrap').style.display = 'block';
+    document.getElementById('ann-target-wrap').style.display = 'none';
+  }
   if (me.isAVP) {
     document.getElementById('tab-mgr').style.display = 'block';
     document.getElementById('tab-cal').style.display = 'block';
     document.getElementById('tab-my').style.display  = 'none';
     // Set manager as active default
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.getElementById('tab-mgr').classList.add('active');
+    document.getElementById('tab-ann').classList.add('active');
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    document.getElementById('view-manager').classList.add('active');
-    listenManagerView();
+    document.getElementById('view-announce').classList.add('active');
+    // Show compose for AVP
+    document.getElementById('ann-compose-wrap').style.display = 'block';
+    listenAnnouncements();
   } else {
     document.getElementById('tab-cal').style.display = 'block';
-    listenMyTasks();
+    // Default to announce tab
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('view-announce').classList.add('active');
+    document.getElementById('tab-ann').classList.add('active');
+    listenAnnouncements();
   }
 }
 
@@ -664,7 +920,14 @@ function logout() {
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('tab-mgr').style.display      = 'none';
   document.getElementById('tab-cal').style.display      = 'none';
+  document.getElementById('tab-svp').style.display      = 'none';
   document.getElementById('tab-my').style.display       = 'block';
+  document.getElementById('ann-compose-wrap').style.display = 'none';
+  // Reset to announce view
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-announce').classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-ann').classList.add('active');
   document.getElementById('avp-pin-wrap').style.display = 'none';
   document.querySelectorAll('.role-tab').forEach(b=>b.classList.remove('selected'));
 }
@@ -677,6 +940,12 @@ function switchTab(view, btn) {
   btn.classList.add('active');
   if (view === 'manager') listenManagerView();
   else if (view === 'calendar') { calDate = new Date(); listenCalendar(); }
+  else if (view === 'announce') {
+    var dot = document.getElementById('ann-dot');
+    if (dot) dot.style.display = 'none';
+    listenAnnouncements();
+  }
+  else if (view === 'svp') listenSVP();
   else listenMyTasks();
 }
 
@@ -968,23 +1237,27 @@ function goToday() { calDate = new Date(); renderCalendar(); }
 
 async function listenCalendar() {
   const { db, ref, onValue } = window._fb;
-  const today = new Date(); today.setHours(0,0,0,0);
+  var calGotMembers = false, calGotTasks = false;
 
   onValue(ref(db,'members'), snap => {
     const data = snap.val()||{};
     calMembersCache = Object.values(data);
-    renderCalendar();
+    calGotMembers = true;
+    if (calGotTasks) renderCalendar();
   });
 
   onValue(ref(db,'tasks'), snap => {
     const data = snap.val()||{};
     calTasksCache = [];
-    Object.entries(data).forEach(([memberId, mTasks]) => {
-      Object.entries(mTasks||{}).forEach(([key, t]) => {
-        calTasksCache.push({...t, key, memberId});
+    Object.entries(data).forEach(function(entry) {
+      var memberId = entry[0], mTasks = entry[1];
+      Object.entries(mTasks||{}).forEach(function(te) {
+        var key = te[0], t = te[1];
+        calTasksCache.push(Object.assign({}, t, {key: key, memberId: memberId}));
       });
     });
-    renderCalendar();
+    calGotTasks = true;
+    if (calGotMembers) renderCalendar();
   });
 }
 
@@ -993,10 +1266,12 @@ function getVisibleTasks() {
   let tasks = calTasksCache.filter(t => t.due);
 
   // กรองตามสิทธิ์
-  if (!me.isAVP) {
-    tasks = tasks.filter(t => t.memberId === me.id);
-  } else {
+  if (me.isSVP) {
+    // SVP เห็นทุกทีม
+  } else if (me.isAVP) {
     tasks = tasks.filter(t => t.avp === me.avp);
+  } else {
+    tasks = tasks.filter(t => t.memberId === me.id);
   }
 
   // กรองตาม filter
@@ -1017,6 +1292,10 @@ function getEventClass(t) {
 }
 
 function renderCalendar() {
+  var body = document.getElementById('cal-body');
+  if (body && calTasksCache.length === 0 && calMembersCache.length === 0) {
+    body.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray)">กำลังโหลดข้อมูล...</div>';
+  }
   if (calView==='month') renderMonth();
   else renderWeek();
 }
@@ -1063,15 +1342,15 @@ function renderMonth() {
     const cellTasks = taskMap[dateStr] || [];
 
     let cls = 'cal-cell';
-    if (!isCurrentMonth) cls += ' other-month';
-    if (isToday) cls += ' today';
+    if (!isCurrentMonth) cls += ' other';
+    if (isToday) cls += ' today-cell';
 
     let eventsHtml = '';
     const showMax = 3;
     cellTasks.slice(0, showMax).forEach(t => {
       const ec = getEventClass(t);
       const m  = calMembersCache.find(x=>x.id===t.memberId);
-      const label = me.isAVP && m ? `${m.name.split(' ')[0]}: ${t.name}` : t.name;
+      const label = (me.isAVP || me.isSVP) && m ? `${m.name.split(' ')[0]}: ${t.name}` : t.name;
       eventsHtml += `<div class="cal-event ${ec}" onclick="showPopup(event,'${t.key}','${t.memberId}')" title="${t.name}">${label}</div>`;
     });
     if (cellTasks.length > showMax) {
@@ -1079,7 +1358,7 @@ function renderMonth() {
     }
 
     html += `<div class="${cls}">
-      <div class="cal-date ${isWeekend?'weekend':''}">${isCurrentMonth?dayNum:''}</div>
+      <div class="cal-date ${isWeekend?'wknd-num':''} ${isToday?'today-num':''}">${isCurrentMonth?dayNum:''}</div>
       ${eventsHtml}
     </div>`;
   }
@@ -1132,7 +1411,7 @@ function renderWeek() {
     cellTasks.forEach(t => {
       const ec = getEventClass(t);
       const m  = calMembersCache.find(x=>x.id===t.memberId);
-      const label = me.isAVP && m ? `${m.name.split(' ')[0]}: ${t.name}` : t.name;
+      const label = (me.isAVP || me.isSVP) && m ? `${m.name.split(' ')[0]}: ${t.name}` : t.name;
       evHtml += `<div class="cal-event ${ec}" onclick="showPopup(event,'${t.key}','${t.memberId}')" title="${t.name}">${label}</div>`;
     });
     html += `<div class="week-task-cell" style="${isToday?'background:#e8f0fe':''}">${evHtml||'<div style="color:var(--border);font-size:11px;text-align:center;padding-top:20px">—</div>'}</div>`;
@@ -1349,6 +1628,454 @@ async function avpAddTask() {
 
   const names = members.map(m=>m.name.split(' ')[0]).join(', ');
   showToast(`✅ เพิ่มงานให้ ${names} เรียบร้อย`);
+}
+
+
+// ── ANNOUNCEMENTS ─────────────────────────────────────────
+const AVP_BANNER_COLORS = {
+  'AVP SA':'#1967d2','AVP KC':'#137333','AVP HO1':'#e37400',
+  'AVP HO2':'#c5221f','AVP PRO KC HO':'#7b1fa2','AVP PRO SA':'#006064',
+};
+const AVP_CHIP_COLORS = {
+  'AVP SA':{bg:'#e8f0fe',tc:'#1967d2'},'AVP KC':{bg:'#e6f4ea',tc:'#137333'},
+  'AVP HO1':{bg:'#fff3e0',tc:'#e37400'},'AVP HO2':{bg:'#fce8e6',tc:'#c5221f'},
+  'AVP PRO KC HO':{bg:'#f3e8fd',tc:'#7b1fa2'},'AVP PRO SA':{bg:'#e0f7fa',tc:'#006064'},
+};
+const ANN_TYPE_CFG = {
+  info:{label:'ข่าวสาร',cls:'at-info'},urgent:{label:'🔴 ด่วน',cls:'at-urgent'},
+  success:{label:'✅ ยินดี',cls:'at-success'},warning:{label:'⚠️ แจ้งเตือน',cls:'at-warning'},
+};
+
+function toggleCompose() {
+  const body = document.getElementById('ann-compose-body');
+  const arrow = document.getElementById('compose-arrow');
+  body.classList.toggle('open');
+  arrow.textContent = body.classList.contains('open') ? '˅' : '›';
+}
+
+function toggleAllTargets(cb) {
+  document.querySelectorAll('.tgt-chk').forEach(c => c.checked = cb.checked);
+}
+function syncAllChk() {
+  const all = document.querySelectorAll('.tgt-chk');
+  const chk = document.querySelectorAll('.tgt-chk:checked');
+  document.getElementById('tgt-all').checked = all.length === chk.length;
+  document.getElementById('tgt-all').indeterminate = chk.length > 0 && chk.length < all.length;
+}
+
+function setAnnExpiry(days) {
+  const d = new Date(); d.setDate(d.getDate()+days);
+  document.getElementById('ann-expiry').value = d.toISOString().split('T')[0];
+}
+
+function clearAnnForm() {
+  ['ann-headline','ann-body','ann-expiry'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('ann-type').value = 'info';
+  document.getElementById('tgt-all').checked = false;
+  document.querySelectorAll('.tgt-chk').forEach(c => c.checked = false);
+}
+
+function getExpiryChip(expiry) {
+  if (!expiry) return '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const exp   = new Date(expiry); exp.setHours(0,0,0,0);
+  const diff  = Math.ceil((exp-today)/86400000);
+  if (diff < 0)   return '';
+  if (diff === 0) return '<span class="exp-chip soon">⏰ หมดอายุวันนี้</span>';
+  if (diff <= 3)  return `<span class="exp-chip soon">⏰ หมดอายุใน ${diff} วัน</span>`;
+  const dstr = exp.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});
+  return `<span class="exp-chip">⏰ หมดอายุ ${dstr}</span>`;
+}
+
+async function postAnnouncement() {
+  const headline = document.getElementById('ann-headline').value.trim();
+  const body     = document.getElementById('ann-body').value.trim();
+  const expiry   = document.getElementById('ann-expiry').value;
+  const type     = document.getElementById('ann-type').value;
+  if (!headline) { showToast('กรุณาใส่หัวข้อประกาศ'); return; }
+  if (!body)     { showToast('กรุณาใส่เนื้อหา'); return; }
+  if (!expiry)   { showToast('กรุณาระบุวันหมดอายุ'); return; }
+
+  // Determine targets
+  let targets = [];
+  const isNick = !me.isAVP; // Nick is not AVP — assume Nick if not AVP (adjust as needed)
+  // Detect SVP vs AVP vs Member
+  if (me.isSVP) {
+    // SVP — full access
+    document.getElementById('ann-compose-wrap').style.display = 'block';
+    document.getElementById('ann-target-wrap').style.display = 'block';
+    document.getElementById('tab-svp').style.display = 'block';
+    document.getElementById('tab-mgr').style.display = 'none';
+    // SVP lands on announce first, then can go to SVP overview
+  } else if (me.isAVP) {
+    document.getElementById('ann-compose-wrap').style.display = 'block';
+    document.getElementById('ann-target-wrap').style.display = 'none';
+  }
+  if (me.isAVP) {
+    targets = [me.avp];
+  } else {
+    const allChk = document.getElementById('tgt-all').checked;
+    if (allChk) {
+      targets = ['ALL'];
+    } else {
+      targets = Array.from(document.querySelectorAll('.tgt-chk:checked')).map(c=>c.value);
+    }
+    if (!targets.length) { showToast('กรุณาเลือกทีมที่ต้องการส่ง'); return; }
+  }
+
+  const { db, ref, push } = window._fb;
+  await push(ref(db,'announcements'), {
+    fromId:   me.id,
+    fromName: me.name,
+    fromRole: me.isAVP ? me.avp : 'SVP',
+    isNick:   !me.isAVP,
+    targets,
+    type,
+    headline,
+    body,
+    expiry,
+    date: new Date().toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'}),
+    createdAt: new Date().toISOString(),
+    pinned: false,
+  });
+
+  clearAnnForm();
+  showToast('📢 ออกประกาศเรียบร้อยแล้ว');
+}
+
+function listenAnnouncements() {
+  const { db, ref, onValue } = window._fb;
+  onValue(ref(db,'announcements'), snap => {
+    const data = snap.val() || {};
+    const anns = Object.entries(data).map(([k,v])=>({...v,key:k}));
+    renderAnnBoard(anns);
+  });
+}
+
+function isAnnVisible(ann) {
+  // Check expiry
+  if (ann.expiry) {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const exp   = new Date(ann.expiry); exp.setHours(0,0,0,0);
+    if (exp < today) return false;
+  }
+  // Check target
+  if (ann.targets && ann.targets.includes('ALL')) return true;
+  // Detect SVP vs AVP vs Member
+  if (me.isSVP) {
+    // SVP — full access
+    document.getElementById('ann-compose-wrap').style.display = 'block';
+    document.getElementById('ann-target-wrap').style.display = 'block';
+    document.getElementById('tab-svp').style.display = 'block';
+    document.getElementById('tab-mgr').style.display = 'none';
+    // SVP lands on announce first, then can go to SVP overview
+  } else if (me.isAVP) {
+    document.getElementById('ann-compose-wrap').style.display = 'block';
+    document.getElementById('ann-target-wrap').style.display = 'none';
+  }
+  if (me.isAVP) {
+    return ann.targets && ann.targets.includes(me.avp);
+  } else {
+    // Member — check their AVP
+    return ann.targets && ann.targets.includes(me.avp);
+  }
+}
+
+function renderAnnBoard(anns) {
+  const board = document.getElementById('ann-board');
+  const visible = anns.filter(a => isAnnVisible(a))
+    .sort((a,b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return new Date(b.createdAt||0) - new Date(a.createdAt||0);
+    });
+
+  // Show new-dot if any announcement within last 24h
+  const newAnns = visible.filter(a => {
+    if (!a.createdAt) return false;
+    return (Date.now() - new Date(a.createdAt).getTime()) < 86400000;
+  });
+  const dot = document.getElementById('ann-dot');
+  if (dot) dot.style.display = newAnns.length > 0 ? 'inline-block' : 'none';
+
+  if (!visible.length) {
+    board.innerHTML = '<div class="empty-ann">ยังไม่มีประกาศในขณะนี้</div>';
+    return;
+  }
+
+  const pinned = visible.filter(a=>a.pinned);
+  const others = visible.filter(a=>!a.pinned);
+  let html = '';
+
+  if (pinned.length) {
+    html += `<div class="ann-sec-hdr"><div class="ann-sec-label">📌 ประกาศสำคัญ</div><div class="ann-sec-line"></div></div>`;
+    pinned.forEach(a => { html += renderAnnCard(a); });
+  }
+  html += `<div class="ann-sec-hdr"><div class="ann-sec-label">📬 ประกาศล่าสุด</div><div class="ann-sec-line"></div></div>`;
+  if (others.length) {
+    others.forEach(a => { html += renderAnnCard(a); });
+  } else {
+    html += '<div class="empty-ann" style="margin-bottom:10px">ไม่มีประกาศอื่นๆ</div>';
+  }
+  board.innerHTML = html;
+}
+
+function renderAnnCard(a) {
+  const tc  = ANN_TYPE_CFG[a.type] || ANN_TYPE_CFG.info;
+  const exp = getExpiryChip(a.expiry);
+  const bodyHtml = (a.body||'').split('\n').join('<br>');
+  const toLabel = a.targets && a.targets.includes('ALL') ? 'ทุกคนในแผนก'
+                : a.targets ? a.targets.join(', ') : '';
+
+  if (a.isNick || a.fromRole === 'SVP') {
+    return `<div class="ann-svp">
+      <div class="ann-svp-banner">
+        <span class="bl">ประกาศจากผู้บริหาร</span>
+        <span class="bt">→ ${toLabel}</span>
+        <span class="ann-tag-u ${tc.cls}" style="margin-left:auto">${tc.label}</span>
+      </div>
+      <div class="ann-svp-body">
+        <div class="ann-svp-from">
+          <div class="svp-av">N</div>
+          <div><div class="svp-name">${a.fromName}</div><div class="svp-role-txt">SVP · Category Management</div></div>
+        </div>
+        <div class="svp-headline">${a.headline}</div>
+        <div class="svp-body-text">${bodyHtml}</div>
+        <div class="svp-footer">
+          <div class="svp-date">🕐 ${a.date||''}</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            ${a.pinned?'<span class="pin-badge-ann">📌 ปักหมุด</span>':''}
+            ${exp}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    const bc = AVP_BANNER_COLORS[a.fromRole] || '#0052cc';
+    const cc = AVP_CHIP_COLORS[a.fromRole]   || {bg:'#e8f0fe',tc:'#1967d2'};
+    const initials = (a.fromName||'').substring(0,2);
+    return `<div class="ann-avp">
+      <div class="ann-avp-banner" style="background:${bc}">
+        <span class="bl">${a.fromRole}</span>
+        <span class="bt">→ ${toLabel}</span>
+        <span class="ann-tag-u ${tc.cls}" style="margin-left:auto">${tc.label}</span>
+      </div>
+      <div class="ann-avp-body">
+        <div class="ann-avp-from">
+          <div class="avp-av-sm" style="background:${cc.bg};color:${cc.tc}">${initials}</div>
+          <div><div style="font-size:13px;font-weight:700">${a.fromName}</div><div style="font-size:11px;color:var(--gray)">${a.fromRole}</div></div>
+        </div>
+        <div class="avp-headline">${a.headline}</div>
+        <div class="avp-body-text">${bodyHtml}</div>
+        <div class="avp-footer">
+          <div style="font-size:11px;color:var(--gray)">🕐 ${a.date||''}</div>
+          ${exp}
+        </div>
+      </div>
+    </div>`;
+  }
+}
+
+
+// ── SVP OVERVIEW ────────────────────────────────────────────
+const SVP_AVP_LIST = [
+  {id:'AVP SA',      color:'#1967d2', bg:'#e8f0fe'},
+  {id:'AVP KC',      color:'#137333', bg:'#e6f4ea'},
+  {id:'AVP HO1',     color:'#e37400', bg:'#fff3e0'},
+  {id:'AVP HO2',     color:'#c5221f', bg:'#fce8e6'},
+  {id:'AVP PRO KC HO',color:'#7b1fa2',bg:'#f3e8fd'},
+  {id:'AVP PRO SA',  color:'#006064', bg:'#e0f7fa'},
+];
+let svpFilter = 'all';
+let svpMembersData = {};
+let svpTasksData   = {};
+
+function listenSVP() {
+  const { db, ref, onValue } = window._fb;
+  let gotM = false, gotT = false;
+  onValue(ref(db,'members'), snap => {
+    svpMembersData = snap.val()||{};
+    gotM = true;
+    if (gotT) renderSVP();
+  });
+  onValue(ref(db,'tasks'), snap => {
+    svpTasksData = snap.val()||{};
+    gotT = true;
+    if (gotM) renderSVP();
+  });
+}
+
+function svpGetStats(avpId) {
+  const today   = new Date(); today.setHours(0,0,0,0);
+  const members = Object.values(svpMembersData).filter(m => m.avp===avpId && !m.removed);
+  let done=0, inprog=0, todo=0, over=0, total=0;
+  members.forEach(m => {
+    const tasks = svpTasksData[m.id] ? Object.values(svpTasksData[m.id]) : [];
+    done   += tasks.filter(t=>t.status==='done').length;
+    inprog += tasks.filter(t=>t.status==='inprogress').length;
+    todo   += tasks.filter(t=>t.status==='todo').length;
+    over   += tasks.filter(t=>t.status!=='done'&&t.due&&new Date(t.due)<today).length;
+    total  += tasks.length;
+  });
+  const pct = total>0 ? Math.round((done/total)*100) : 0;
+  return { members, done, inprog, todo, over, total, pct };
+}
+
+function renderSVP() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const show  = svpFilter==='all' ? SVP_AVP_LIST : SVP_AVP_LIST.filter(a=>a.id===svpFilter);
+
+  // ── OVERALL KPI ──
+  let allMembers=0, allDone=0, allTotal=0, allOver=0, allInprog=0;
+  SVP_AVP_LIST.forEach(a => {
+    const s = svpGetStats(a.id);
+    allMembers += s.members.length;
+    allDone    += s.done;
+    allTotal   += s.total;
+    allOver    += s.over;
+    allInprog  += s.inprog;
+  });
+  const allPct = allTotal>0 ? Math.round((allDone/allTotal)*100) : 0;
+  const pctColor = allOver>0?'var(--red)':allPct>=80?'var(--green)':allPct>=50?'var(--hp-orange)':'var(--yellow)';
+
+  document.getElementById('svp-kpi-row').innerHTML = `
+    <div class="kpi-card c-blue"><div class="kpi-label">สมาชิกทั้งหมด</div><div class="kpi-value" style="color:var(--text)">${allMembers}</div><div class="kpi-sub">6 AVP ทั้งหมด</div></div>
+    <div class="kpi-card c-blue"><div class="kpi-label">Task ทั้งหมด</div><div class="kpi-value" style="color:var(--accent)">${allTotal}</div><div class="kpi-sub">รวมทุกทีม</div></div>
+    <div class="kpi-card c-green"><div class="kpi-label">% เสร็จภาพรวม</div><div class="kpi-value" style="color:${pctColor}">${allPct}%</div><div class="kpi-sub">เสร็จ ${allDone} / ค้าง ${allTotal-allDone}</div></div>
+    <div class="kpi-card c-orange"><div class="kpi-label">กำลังดำเนินการ</div><div class="kpi-value" style="color:var(--hp-orange)">${allInprog}</div><div class="kpi-sub">งานที่อยู่ระหว่างทำ</div></div>
+    <div class="kpi-card c-red"><div class="kpi-label">เลยกำหนด</div><div class="kpi-value" style="color:${allOver>0?'var(--red)':'var(--gray)'}">${allOver}</div><div class="kpi-sub">${allOver>0?'ต้องติดตามด่วน':'ไม่มีงานค้าง'}</div></div>
+  `;
+
+  // ── ALERT ──
+  const alertEl = document.getElementById('svp-alert');
+  if (allOver > 0) {
+    alertEl.style.display = 'flex';
+    let alertLines = [];
+    SVP_AVP_LIST.forEach(a => {
+      const s = svpGetStats(a.id);
+      if (s.over > 0) {
+        s.members.forEach(m => {
+          const mTasks = svpTasksData[m.id] ? Object.values(svpTasksData[m.id]) : [];
+          const mOver  = mTasks.filter(t=>t.status!=='done'&&t.due&&new Date(t.due)<today).length;
+          if (mOver > 0) alertLines.push(`${a.id}: ${m.name} (${mOver} งาน)`);
+        });
+      }
+    });
+    document.getElementById('svp-alert-body').textContent = alertLines.join(' · ');
+  } else {
+    alertEl.style.display = 'none';
+  }
+
+  // ── AVP TABS ──
+  document.getElementById('svp-avp-tabs').innerHTML =
+    `<button class="avp-sel-tab all-sel ${svpFilter==='all'?'active':''}" onclick="svpSelect('all',this)">🏢 ทุกหน่วยงาน</button>` +
+    SVP_AVP_LIST.map(a => {
+      const s = svpGetStats(a.id);
+      return `<button class="avp-sel-tab ${svpFilter===a.id?'active':''}" onclick="svpSelect('${a.id}',this)">
+        <span class="sel-dot" style="background:${a.color}"></span>
+        ${a.id}
+        <span style="font-size:11px;font-weight:700">${s.pct}%</span>
+      </button>`;
+    }).join('');
+
+  // ── AVP CARDS ──
+  const grid = document.getElementById('svp-avp-grid');
+  grid.style.gridTemplateColumns = show.length===1?'1fr':show.length<=2?'1fr 1fr':'repeat(3,1fr)';
+  grid.innerHTML = show.map(avp => {
+    const s = svpGetStats(avp.id);
+    const bc = s.over>0?'var(--red)':s.pct>=80?'var(--green)':s.pct>=50?'var(--hp-orange)':'var(--yellow)';
+    return `<div class="svp-avp-card ${svpFilter===avp.id?'sel':''}" onclick="svpSelect('${avp.id}',null)">
+      <div class="svp-avp-top">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:36px;height:36px;border-radius:50%;background:${avp.bg};color:${avp.color};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800">${avp.id.replace('AVP ','').substring(0,2)}</div>
+          <div>
+            <div class="svp-avp-name" style="color:${avp.color}">${avp.id}</div>
+            <div class="svp-avp-role">${s.members.length} คน · ${s.total} งาน</div>
+          </div>
+        </div>
+        <div class="svp-avp-prog">
+          <div class="svp-avp-bar-w"><div class="svp-avp-bar-f" style="width:${s.pct}%;background:${bc}"></div></div>
+          <div style="font-size:14px;font-weight:800;color:${bc}">${s.pct}%</div>
+        </div>
+      </div>
+      <div class="svp-avp-kpi">
+        <div class="svp-avp-kpi-item"><div class="svp-avp-kpi-num" style="color:var(--green)">${s.done}</div><div class="svp-avp-kpi-label">เสร็จ</div></div>
+        <div class="svp-avp-kpi-item"><div class="svp-avp-kpi-num" style="color:var(--yellow)">${s.inprog}</div><div class="svp-avp-kpi-label">ทำอยู่</div></div>
+        <div class="svp-avp-kpi-item"><div class="svp-avp-kpi-num" style="color:${s.over>0?'var(--red)':'var(--gray)'}">${s.over>0?s.over:s.todo}</div><div class="svp-avp-kpi-label">${s.over>0?'เลยกำหนด':'ยังไม่เริ่ม'}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // ── DETAIL ──
+  const detail = document.getElementById('svp-detail-wrap');
+  let html = '';
+  show.forEach(avp => {
+    const s = svpGetStats(avp.id);
+    html += `<div class="svp-detail">
+      <div class="svp-detail-hdr" style="border-left:4px solid ${avp.color}">
+        <div style="font-size:14px;font-weight:700"><span style="color:${avp.color}">${avp.id}</span>
+          <span style="color:var(--gray);font-weight:400;font-size:12px;margin-left:6px">${s.members.length} คน</span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <span class="sbadge sb-g">${s.done} เสร็จ</span>
+          <span class="sbadge sb-y">${s.inprog} ทำอยู่</span>
+          ${s.over>0?`<span class="sbadge sb-r">${s.over} เลยกำหนด</span>`:''}
+        </div>
+      </div>
+      <div class="svp-member-hdr">
+        <div class="col-h">ชื่อ-ตำแหน่ง</div>
+        <div class="col-h">ความคืบหน้า</div>
+        <div class="col-h" style="text-align:center">เสร็จ</div>
+        <div class="col-h" style="text-align:center">ทำอยู่</div>
+        <div class="col-h" style="text-align:center">ยังไม่เริ่ม</div>
+        <div class="col-h" style="text-align:center">สถานะ</div>
+      </div>`;
+    if (!s.members.length) {
+      html += `<div style="padding:20px;text-align:center;color:var(--gray);font-size:13px">ยังไม่มีสมาชิก</div>`;
+    } else {
+      s.members.forEach((m,i) => {
+        const mTasks  = svpTasksData[m.id] ? Object.values(svpTasksData[m.id]) : [];
+        const mDone   = mTasks.filter(t=>t.status==='done').length;
+        const mInprog = mTasks.filter(t=>t.status==='inprogress').length;
+        const mTodo   = mTasks.filter(t=>t.status==='todo').length;
+        const mOver   = mTasks.filter(t=>t.status!=='done'&&t.due&&new Date(t.due)<today).length;
+        const mTotal  = mTasks.length;
+        const pct     = mTotal>0 ? Math.round((mDone/mTotal)*100) : 0;
+        const bc      = mOver>0?'var(--red)':pct>=80?'var(--green)':pct>=50?'var(--hp-orange)':'var(--yellow)';
+        const initials= m.name.substring(0,2);
+        const COLORS  = [{bg:'#e8f0fe',tc:'#1967d2'},{bg:'#e6f4ea',tc:'#137333'},{bg:'#fff3e0',tc:'#e37400'},{bg:'#fce8e6',tc:'#c5221f'},{bg:'#f3e8fd',tc:'#7b1fa2'},{bg:'#e0f7fa',tc:'#006064'}];
+        const ci      = i % COLORS.length;
+        const status  = mOver>0 ? `<span class="sbadge sb-r">⚑ เลยกำหนด ${mOver}</span>`
+                      : pct===100&&mTotal>0 ? `<span class="sbadge sb-g">✅ เสร็จหมด</span>`
+                      : mInprog>0 ? `<span class="sbadge sb-y">⏳ ทำอยู่</span>`
+                      : mTotal===0 ? `<span class="sbadge sb-x">— ไม่มีงาน</span>`
+                      : `<span class="sbadge sb-x">📋 ยังไม่เริ่ม</span>`;
+        html += `<div class="svp-member-row">
+          <div class="sm-name-cell">
+            <div class="sm-av" style="background:${COLORS[ci].bg};color:${COLORS[ci].tc}">${initials}</div>
+            <div><div style="font-size:13px;font-weight:600">${m.name}</div><div style="font-size:11px;color:var(--gray)">${m.position}</div></div>
+          </div>
+          <div class="sm-prog-wrap">
+            <div class="sm-bar-w"><div class="sm-bar-f" style="width:${pct}%;background:${bc}"></div></div>
+            <div class="sm-pct" style="color:${bc}">${pct}%</div>
+          </div>
+          <div style="text-align:center;font-weight:700;color:var(--green)">${mDone}</div>
+          <div style="text-align:center;font-weight:700;color:var(--yellow)">${mInprog}</div>
+          <div style="text-align:center;font-weight:700;color:var(--gray)">${mTodo}</div>
+          <div style="text-align:center">${status}</div>
+        </div>`;
+      });
+    }
+    html += '</div>';
+  });
+  detail.innerHTML = html;
+}
+
+function svpSelect(id, btn) {
+  svpFilter = id;
+  document.querySelectorAll('.avp-sel-tab').forEach(b=>b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderSVP();
 }
 
 </script>
