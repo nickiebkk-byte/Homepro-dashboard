@@ -766,46 +766,91 @@ var taskIdCounter = 100;
 var activeFilter = null;
 
 var avps = [
-  { id:'sa',  role:'AVP SA',       nm:'Small Appliances',  c:'#1565c0', ini:'SA', tasks:14, done:9,  on:85, urg:2, email:'umapornl@homepro.co.th' },
-  { id:'kc',  role:'AVP KC',       nm:'Kitchen & Cabinet', c:'#2e7d32', ini:'KC', tasks:11, done:7,  on:78, urg:1, email:'nijawanj@homepro.co.th' },
-  { id:'h1',  role:'AVP HO1',      nm:'Storage/Cleaning',  c:'#e65100', ini:'H1', tasks:9,  done:5,  on:72, urg:0, email:'thanyanintu@homepro.co.th' },
-  { id:'h2',  role:'AVP HO2',      nm:'Kitchen/Laundry',   c:'#6a1b9a', ini:'H2', tasks:8,  done:6,  on:80, urg:1, email:'sukanyaa@homepro.co.th' },
-  { id:'ps',  role:'AVP PRO SA',   nm:'Promotion SA',      c:'#00695c', ini:'PS', tasks:7,  done:4,  on:68, urg:0, email:'dudchapornl@homepro.co.th' },
-  { id:'pk',  role:'AVP PRO KC HO', nm:'Promotion KC & HO', c:'#b00020', ini:'PK', tasks:10, done:5,  on:62, urg:2, email:'onsirik@homepro.co.th' }
+  { id:'sa',  role:'AVP SA',        nm:'Small Appliances',  c:'#1565c0', ini:'SA', email:'umapornl@homepro.co.th' },
+  { id:'kc',  role:'AVP KC',        nm:'Kitchen & Cabinet', c:'#2e7d32', ini:'KC', email:'nijawanj@homepro.co.th' },
+  { id:'h1',  role:'AVP HO1',       nm:'Storage/Cleaning',  c:'#e65100', ini:'H1', email:'thanyanintu@homepro.co.th' },
+  { id:'h2',  role:'AVP HO2',       nm:'Kitchen/Laundry',   c:'#6a1b9a', ini:'H2', email:'sukanyaa@homepro.co.th' },
+  { id:'ps',  role:'AVP PRO SA',    nm:'Promotion SA',      c:'#00695c', ini:'PS', email:'dudchapornl@homepro.co.th' },
+  { id:'pk',  role:'AVP PRO KC HO', nm:'Promotion KC & HO', c:'#b00020', ini:'PK', email:'onsirik@homepro.co.th' }
 ];
 
 var tasks = [];
-
 var priColors = { Critical:'#b00020', High:'#e65100', Medium:'#e6a817', Low:'#2e7d32' };
 
 /* ───────────────────────────────────────────────
-   LOCAL STORAGE
+   FIREBASE CONFIG — work-11e8b
 ─────────────────────────────────────────────── */
-function saveTasks() {
-  localStorage.setItem('homepro_tasks', JSON.stringify(tasks));
-  localStorage.setItem('homepro_tid', taskIdCounter);
+var FB_URL = 'https://work-11e8b-default-rtdb.asia-southeast1.firebasedatabase.app/task_dashboard';
+var fbReady = false;
+
+function fbGet(cb) {
+  fetch(FB_URL + '.json')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data && data.tasks) {
+        try { tasks = JSON.parse(data.tasks); } catch(e){ tasks=[]; }
+      } else { tasks = []; }
+      if (data && data.tid) taskIdCounter = parseInt(data.tid);
+      cb();
+    })
+    .catch(function(e){ console.warn('FB get error', e); cb(); });
 }
 
-function loadTasks() {
-  var saved = localStorage.getItem('homepro_tasks');
-  if (saved) {
-    try { tasks = JSON.parse(saved); } catch(e) { tasks = []; }
-  }
-  var savedTid = localStorage.getItem('homepro_tid');
-  if (savedTid) taskIdCounter = parseInt(savedTid);
+function fbSet() {
+  fetch(FB_URL + '.json', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ tasks: JSON.stringify(tasks), tid: taskIdCounter })
+  }).catch(function(e){ console.warn('FB set error', e); });
+  // ยัง save localStorage เป็น backup
+  localStorage.setItem('homepro_tasks_bk', JSON.stringify(tasks));
+  localStorage.setItem('homepro_tid_bk', taskIdCounter);
+}
+
+function fbSaveMx(key, val) {
+  var mxKey = key.replace(/[.#$/\[\]]/g,'_');
+  fetch(FB_URL + '/mx/' + mxKey + '.json', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(val ? '1' : null)
+  }).catch(function(e){ console.warn('FB mx error', e); });
+  if (val) localStorage.setItem(key, '1');
+  else localStorage.removeItem(key);
+}
+
+function fbGetMx(key, cb) {
+  var mxKey = key.replace(/[.#$/\[\]]/g,'_');
+  fetch(FB_URL + '/mx/' + mxKey + '.json')
+    .then(function(r){ return r.json(); })
+    .then(function(v){ cb(v === '1'); })
+    .catch(function(){ cb(localStorage.getItem(key) === '1'); });
+}
+
+// alias เดิมให้ยังใช้ได้
+function saveTasks() { fbSet(); }
+function loadTasks(cb) { fbGet(cb || function(){}); }
+
+// Real-time listener — poll ทุก 5 วินาที ถ้า Firebase เปลี่ยน → refresh
+var _fbLastHash = '';
+function fbStartListen() {
+  setInterval(function() {
+    fetch(FB_URL + '/tasks.json')
+      .then(function(r){ return r.text(); })
+      .then(function(raw) {
+        if (raw !== _fbLastHash) {
+          _fbLastHash = raw;
+          try { tasks = JSON.parse(JSON.parse(raw)); } catch(e){}
+          refreshAll();
+        }
+      }).catch(function(){});
+  }, 5000);
 }
 
 function clearAllTasks() {
   if (!confirm('ลบงานทั้งหมดออก? ไม่สามารถกู้คืนได้')) return;
   tasks = [];
   saveTasks();
-  renderKanban(tasks);
-  renderRecent();
-  buildStrip();
-  buildGantt();
-  buildWorkload();
-  buildAlerts();
-  updateKpis();
+  refreshAll();
   toast('เคลียร์งานทั้งหมดแล้ว');
 }
 
@@ -822,6 +867,7 @@ function deleteTask(tid) {
   buildWorkload();
   buildAlerts();
   updateKpis();
+  calRender();
 }
 
 /* ───────────────────────────────────────────────
@@ -1149,30 +1195,25 @@ function toggleMx(tid, avpId, el) {
   var isDone = localStorage.getItem(key) === '1';
   var a = getAvp(avpId); if (!a) return;
 
-  // หา task จริง
   var task = null;
   for (var i = 0; i < tasks.length; i++) { if (tasks[i].id === tid) { task = tasks[i]; break; } }
   if (!task) return;
 
   if (isDone) {
-    // ยกเลิก done — กลับไป todo
-    localStorage.removeItem(key);
+    fbSaveMx(key, false);
     el.style.background = 'transparent';
     el.style.borderColor = a.c;
     el.innerHTML = '';
-    // ถ้าทุก AVP ที่ assigned ยกเลิกหมดแล้ว ถึงเปลี่ยน col กลับ
     var anyDone = false;
     task.avps.forEach(function(aid) {
       if (localStorage.getItem('mx_' + tid + '_' + aid) === '1') anyDone = true;
     });
     if (!anyDone) task.col = 'todo';
   } else {
-    // mark done
-    localStorage.setItem(key, '1');
+    fbSaveMx(key, true);
     el.style.background = a.c;
     el.style.borderColor = a.c;
     el.innerHTML = '<i class="ti ti-check" style="color:#fff;font-size:13px;"></i>';
-    // ถ้า AVP ที่ assigned ทุกคน done หมด → task.col = done
     var allDone = true;
     task.avps.forEach(function(aid) {
       if (localStorage.getItem('mx_' + tid + '_' + aid) !== '1') allDone = false;
@@ -1184,17 +1225,15 @@ function toggleMx(tid, avpId, el) {
       toast(a.role + ' — DONE ✓');
     }
   }
-
-  // บันทึกและ refresh ทุก view
   saveTasks();
-  var filtered = activeFilter ? tasks.filter(function(x) { return x.avps.indexOf(activeFilter) >= 0; }) : tasks;
+  var filtered = activeFilter ? tasks.filter(function(x){ return x.avps.indexOf(activeFilter)>=0; }) : tasks;
   renderKanban(filtered);
   buildWorkload();
   buildStrip();
   buildAlerts();
   updateKpis();
-  // rebuild matrix เพื่ออัปเดต status column
   buildGantt();
+  calRender();
 }
 
 /* ───────────────────────────────────────────────
@@ -1590,30 +1629,37 @@ function buildCalAvpFilter() {
   });
 }
 
+function refreshAll() {
+  var filtered = activeFilter ? tasks.filter(function(x){ return x.avps.indexOf(activeFilter)>=0; }) : tasks;
+  renderKanban(filtered);
+  renderRecent();
+  buildStrip();
+  buildGantt();
+  buildWorkload();
+  buildAlerts();
+  updateKpis();
+  calRender();
+}
+
 /* ───────────────────────────────────────────────
    INIT
 ─────────────────────────────────────────────── */
 document.getElementById('sdue').value = new Date().toISOString().slice(0, 10);
-loadTasks();
-// ถ้า localStorage มีข้อมูลเก่าก่อนเวอร์ชัน clean ให้เคลียร์ทิ้ง
-if (tasks.length > 0 && tasks[0].id === 't1') {
-  tasks = [];
-  saveTasks();
-}
+// แสดง loading indicator
+document.body.insertAdjacentHTML('afterbegin','<div id="fb-loading" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(21,101,192,.08);z-index:9999;display:flex;align-items:center;justify-content:center;"><div style="background:#fff;border-radius:12px;padding:24px 32px;box-shadow:0 4px 20px rgba(0,0,0,.15);font-family:Prompt,sans-serif;font-size:14px;color:#1565c0;display:flex;align-items:center;gap:10px;"><div style="width:20px;height:20px;border:3px solid #e3edf8;border-top-color:#1565c0;border-radius:50%;animation:spin .8s linear infinite;"></div>กำลังโหลดข้อมูล...</div></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style>');
+
 buildChips();
-buildStrip();
-renderKanban(tasks);
-buildGantt();
-buildWorkload();
-buildAlerts();
-renderRecent();
-updateKpis();
-checkDueReminders();
-showEmailSetupHint();
-// Calendar init
 var _cn = new Date(); calYear = _cn.getFullYear(); calMonth = _cn.getMonth();
 buildCalAvpFilter();
-calRender();
+
+// โหลดจาก Firebase → render ทุกอย่าง
+fbGet(function() {
+  document.getElementById('fb-loading').remove();
+  refreshAll();
+  checkDueReminders();
+  showEmailSetupHint();
+  fbStartListen(); // เริ่ม poll real-time ทุก 5 วินาที
+});
 </script>
 </body>
 </html>
