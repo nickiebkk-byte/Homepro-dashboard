@@ -953,16 +953,53 @@ function toggleMx(tid, avpId, el) {
   var key = 'mx_' + tid + '_' + avpId;
   var isDone = localStorage.getItem(key) === '1';
   var a = getAvp(avpId); if (!a) return;
+
+  // หา task จริง
+  var task = null;
+  for (var i = 0; i < tasks.length; i++) { if (tasks[i].id === tid) { task = tasks[i]; break; } }
+  if (!task) return;
+
   if (isDone) {
+    // ยกเลิก done — กลับไป todo
     localStorage.removeItem(key);
     el.style.background = 'transparent';
+    el.style.borderColor = a.c;
     el.innerHTML = '';
+    // ถ้าทุก AVP ที่ assigned ยกเลิกหมดแล้ว ถึงเปลี่ยน col กลับ
+    var anyDone = false;
+    task.avps.forEach(function(aid) {
+      if (localStorage.getItem('mx_' + tid + '_' + aid) === '1') anyDone = true;
+    });
+    if (!anyDone) task.col = 'todo';
   } else {
+    // mark done
     localStorage.setItem(key, '1');
     el.style.background = a.c;
+    el.style.borderColor = a.c;
     el.innerHTML = '<i class="ti ti-check" style="color:#fff;font-size:13px;"></i>';
-    toast(a.role + ' — DONE ✓');
+    // ถ้า AVP ที่ assigned ทุกคน done หมด → task.col = done
+    var allDone = true;
+    task.avps.forEach(function(aid) {
+      if (localStorage.getItem('mx_' + tid + '_' + aid) !== '1') allDone = false;
+    });
+    if (allDone) {
+      task.col = 'done';
+      toast(task.title + ' — DONE ✓ ทุก AVP');
+    } else {
+      toast(a.role + ' — DONE ✓');
+    }
   }
+
+  // บันทึกและ refresh ทุก view
+  saveTasks();
+  var filtered = activeFilter ? tasks.filter(function(x) { return x.avps.indexOf(activeFilter) >= 0; }) : tasks;
+  renderKanban(filtered);
+  buildWorkload();
+  buildStrip();
+  buildAlerts();
+  updateKpis();
+  // rebuild matrix เพื่ออัปเดต status column
+  buildGantt();
 }
 
 /* ───────────────────────────────────────────────
