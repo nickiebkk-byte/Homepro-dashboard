@@ -332,15 +332,148 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
 #snackbar.show{opacity:1;}
 
 /* ───────────────────────────────────────────────
-   RESPONSIVE HELPERS
+   RESPONSIVE — Mobile / Tablet / Desktop
 ─────────────────────────────────────────────── */
-@media(max-width:699px){
-  .app-title{font-size:17px;}
+
+/* ── Base: add scroll behaviours ── */
+.kban-scroll{-webkit-overflow-scrolling:touch;}
+.kban-scroll::-webkit-scrollbar{height:3px;}
+.kban-scroll::-webkit-scrollbar-thumb{background:var(--divider);border-radius:2px;}
+.matrix-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.matrix-scroll::-webkit-scrollbar{height:3px;}
+.matrix-scroll::-webkit-scrollbar-thumb{background:var(--divider);border-radius:2px;}
+
+/* ── MOBILE (< 600px) ── */
+@media(max-width:599px){
+  /* App bar */
+  .appbar{padding:0 12px;height:52px;}
+  .app-title{font-size:13px;}
   .app-sub{display:none;}
-  .kpi-val{font-size:28px;}
-  .kpi-lbl{font-size:14px;}
-  .body{grid-template-columns:1fr;}
+  .logo{font-size:11px;padding:4px 8px;}
+  #clk{display:none;}
+
+  /* Create bar */
+  .mcard-hdr{font-size:12px;padding:10px 12px;}
+  .mcard-body{padding:12px 12px;}
+  .g2{grid-template-columns:1fr;}
+  .mfield label{font-size:10px;}
+  .mfield input,.mfield select{font-size:13px;padding:8px 10px;}
+  .achip{font-size:10px;padding:4px 9px;}
+  .pc{font-size:10px;padding:4px 10px;}
+  .fab-btn{font-size:13px;padding:10px;}
+  .pri-wrap{flex-wrap:wrap;}
+
+  /* KPI */
+  .kpi-row{grid-template-columns:repeat(2,1fr);gap:8px;padding:10px 12px 0;}
+  .kpi{padding:10px 12px;}
+  .kpi-val{font-size:22px;}
+  .kpi-lbl{font-size:11px;}
+  .kpi-sub{font-size:9px;}
+
+  /* Body: stack vertically */
+  .body{grid-template-columns:1fr;gap:10px;padding:10px 12px;}
+
+  /* AVP Strip */
+  .avp-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .avp-section{padding:10px 12px 0;}
+  .avp-av{width:38px;height:38px;font-size:12px;}
+  .avp-role{font-size:9px;}
+  .avp-nm{font-size:8px;}
+  .s-val{font-size:12px;}
+  .s-lbl{font-size:8px;}
+
+  /* Tabs */
+  .mtab-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .mtab-bar::-webkit-scrollbar{height:0;}
+  .mtab{font-size:10px;padding:10px 12px;white-space:nowrap;flex-shrink:0;}
+
+  /* Kanban */
+  .kban{grid-template-columns:repeat(2,minmax(140px,1fr));min-width:300px;padding:10px;}
+  .col-hdr{font-size:10px;padding:5px 8px;}
+  .kcard-t{font-size:11px;}
+  .kcard-m{font-size:10px;}
+  .kcard-d{font-size:10px;}
+
+  /* Workload */
+  .wp-wrap{padding:10px 12px;}
+  .wpn{font-size:11px;min-width:60px;}
+  .wpct{font-size:10px;min-width:48px;}
+  .wpsub{font-size:9px;margin-left:70px;}
+
+  /* Alerts */
+  .al-wrap{padding:10px 12px;}
+  .al-t{font-size:11px;}
+  .al-d{font-size:10px;}
+  .al-tm{font-size:9px;}
+  .al-icon{width:32px;height:32px;}
+
+  /* Matrix */
+  .matrix-section{padding:10px 12px 0;}
+
+  /* Calendar */
+  .cal-cell{min-height:50px;padding:3px;}
+  .cal-day-num{font-size:10px;}
+  .cal-task-dot{font-size:8px;padding:1px 3px;}
+
+  /* Snackbar */
+  #snackbar{font-size:12px;padding:10px 14px;max-width:85vw;}
 }
+
+/* ── TABLET (600px – 899px) ── */
+@media(min-width:600px) and (max-width:899px){
+  /* App bar */
+  .app-sub{display:none;}
+  .app-title{font-size:15px;}
+  #clk{font-size:10px;}
+
+  /* KPI */
+  .kpi-row{grid-template-columns:repeat(4,1fr);gap:10px;padding:12px 14px 0;}
+  .kpi-val{font-size:24px;}
+  .kpi-lbl{font-size:12px;}
+
+  /* Body: stack vertically on tablet */
+  .body{grid-template-columns:1fr;gap:12px;padding:12px 14px;}
+
+  /* AVP Strip */
+  .avp-grid{grid-template-columns:repeat(3,1fr);}
+  .avp-section{padding:12px 14px 0;}
+
+  /* Tabs */
+  .mtab{font-size:11px;padding:11px 14px;}
+  .mtab-bar::-webkit-scrollbar{height:0;}
+
+  /* Kanban */
+  .kban{grid-template-columns:repeat(4,minmax(130px,1fr));min-width:520px;padding:10px 12px;}
+
+  /* Create task */
+  .mcard-body{padding:14px 16px;}
+  .g2{grid-template-columns:1fr 1fr;}
+}
+
+/* ── DESKTOP (≥ 900px) ── */
+@media(min-width:900px){
+  .body{grid-template-columns:var(--sidebar-w, 336px) 1fr;}
+  .avp-grid{grid-template-columns:repeat(6,1fr);}
+  .kpi-row{grid-template-columns:repeat(4,1fr);}
+  .kban{grid-template-columns:repeat(4,1fr);min-width:unset;}
+  .cal-cell{min-height:80px;}
+}
+
+/* ── LARGE DESKTOP (≥ 1200px) ── */
+@media(min-width:1200px){
+  .body{grid-template-columns:380px 1fr;}
+  .kban{gap:12px;padding:14px;}
+}
+
+/* ── Calendar ── */
+.cal-cell{min-height:72px;border-radius:var(--rsm);padding:5px;border:1px solid var(--divider);background:#fafbff;position:relative;vertical-align:top;transition:background .15s;}
+.cal-cell:hover{background:var(--primary-lt);}
+.cal-cell.cal-today{border-color:var(--primary);background:var(--primary-lt);}
+.cal-cell.cal-today .cal-day-num{color:var(--primary);font-weight:700;}
+.cal-cell.cal-other{opacity:.45;background:#f4f4f6;}
+.cal-day-num{font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.cal-task-dot{font-size:9px;font-weight:600;padding:1px 5px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;cursor:default;}
+.cal-flt{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;border:1.5px solid;cursor:pointer;font-family:'Prompt',sans-serif;background:#fff;transition:all .15s;}
 </style>
 </head>
 <body>
@@ -428,8 +561,9 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
       <div class="mtab" onclick="stab('gantt',this)">UPDATE งาน</div>
       <div class="mtab" onclick="stab('workload',this)">งานเสร็จ VS ทั้งหมด</div>
       <div class="mtab" onclick="stab('alerts',this)">
-        Alerts <span id="acnt" style="background:#b00020;color:#fff;font-size:10px;padding:1px 6px;border-radius:20px;margin-left:3px;"></span>
+        ALERTS <span id="acnt" style="background:#b00020;color:#fff;font-size:10px;padding:1px 6px;border-radius:20px;margin-left:3px;"></span>
       </div>
+      <div class="mtab" onclick="stab('calendar',this)"><i class="ti ti-calendar-event" style="font-size:13px;"></i> CALENDAR</div>
     </div>
 
     <!-- Kanban -->
@@ -488,7 +622,68 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
       <div class="al-wrap" id="al-list"></div>
     </div>
 
+    <!-- Calendar -->
+    <div class="tc" id="tc-calendar">
+      <div style="padding:14px 16px;">
+        <!-- Cal Nav -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button onclick="calChangeMonth(-1)" style="background:var(--primary);color:#fff;border:none;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;"><i class="ti ti-chevron-left"></i></button>
+            <div id="cal-month-year" style="font-size:14px;font-weight:700;color:var(--primary);min-width:150px;text-align:center;"></div>
+            <button onclick="calChangeMonth(1)" style="background:var(--primary);color:#fff;border:none;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;"><i class="ti ti-chevron-right"></i></button>
+          </div>
+          <button onclick="calGoToday()" style="background:var(--primary-lt);color:var(--primary);border:1.5px solid var(--primary);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;font-family:'Prompt',sans-serif;cursor:pointer;">TODAY</button>
+        </div>
+        <!-- DOW headers -->
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;">
+          <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px 0;">SUN</div>
+          <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px 0;">MON</div>
+          <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px 0;">TUE</div>
+          <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px 0;">WED</div>
+          <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px 0;">THU</div>
+          <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px 0;">FRI</div>
+          <div style="text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:3px 0;">SAT</div>
+        </div>
+        <!-- Cal grid -->
+        <div id="cal-cells" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
 
+        <!-- Task List below calendar -->
+        <div style="margin-top:16px;border-top:2px solid var(--divider);padding-top:14px;">
+          <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+            <span>รายการงานทั้งหมด</span>
+            <span id="cal-task-count" style="font-size:11px;font-weight:500;color:var(--text3);"></span>
+          </div>
+          <!-- Filters -->
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
+            <div id="cal-filter-btns" style="display:flex;gap:5px;flex-wrap:wrap;">
+              <button class="cal-flt active" data-filter="all" onclick="calSetFilter('all',this)" style="border-color:#1565c0;color:#1565c0;background:#1565c0;color:#fff;">ALL</button>
+              <button class="cal-flt" data-filter="todo" onclick="calSetFilter('todo',this)" style="border-color:#b0bec5;color:#546e7a;">TO DO</button>
+              <button class="cal-flt" data-filter="critical" onclick="calSetFilter('critical',this)" style="border-color:#b00020;color:#b00020;">CRITICAL</button>
+              <button class="cal-flt" data-filter="overdue" onclick="calSetFilter('overdue',this)" style="border-color:#e65100;color:#e65100;">OVERDUE</button>
+              <button class="cal-flt" data-filter="done" onclick="calSetFilter('done',this)" style="border-color:#2e7d32;color:#2e7d32;">DONE</button>
+            </div>
+            <select id="cal-avp-filter" onchange="calRenderList()" style="margin-left:auto;font-size:11px;font-family:'Prompt',sans-serif;border:1.5px solid var(--divider);border-radius:6px;padding:4px 8px;background:#fff;color:var(--text);outline:none;"></select>
+          </div>
+          <!-- Table -->
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:separate;border-spacing:0 3px;min-width:580px;font-family:'Prompt',sans-serif;">
+              <thead>
+                <tr>
+                  <th style="background:var(--primary-lt);color:var(--primary);padding:7px 10px;font-size:10px;font-weight:700;text-align:left;border-radius:7px 0 0 7px;min-width:160px;">TASK</th>
+                  <th style="background:var(--primary-lt);color:var(--primary);padding:7px 10px;font-size:10px;font-weight:700;text-align:left;min-width:130px;">ASSIGNED AVP</th>
+                  <th style="background:var(--primary-lt);color:var(--primary);padding:7px 10px;font-size:10px;font-weight:700;text-align:left;min-width:85px;">START DATE</th>
+                  <th style="background:var(--primary-lt);color:var(--primary);padding:7px 10px;font-size:10px;font-weight:700;text-align:left;min-width:85px;">DUE DATE</th>
+                  <th style="background:var(--primary-lt);color:var(--primary);padding:7px 10px;font-size:10px;font-weight:700;text-align:left;min-width:80px;">PRIORITY</th>
+                  <th style="background:var(--primary-lt);color:var(--primary);padding:7px 10px;font-size:10px;font-weight:700;text-align:left;border-radius:0 7px 7px 0;min-width:85px;">STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="cal-task-tbody"></tbody>
+            </table>
+            <div id="cal-task-empty" style="display:none;text-align:center;padding:30px;color:var(--text3);font-size:12px;">ไม่มีงาน</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div><!-- /right -->
 </div><!-- /body -->
@@ -1231,6 +1426,171 @@ function showEmailSetupHint() {
 }
 
 /* ───────────────────────────────────────────────
+   CALENDAR
+─────────────────────────────────────────────── */
+var calYear, calMonth, calFilter = 'all', calAvpFilter = 'all';
+var CAL_MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+
+function calGetStatus(t) {
+  if (t.col === 'done') return 'DONE';
+  if (t.due && (new Date(t.due) - new Date()) / 864e5 < 0) return 'OVERDUE';
+  if (t.pri === 'Critical') return 'CRITICAL';
+  return 'TO DO';
+}
+function calStatusColor(s) {
+  return s==='DONE'?'#2e7d32':s==='OVERDUE'?'#e65100':s==='CRITICAL'?'#b00020':'#b0bec5';
+}
+
+function calChangeMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  calRender();
+}
+function calGoToday() {
+  var n = new Date(); calYear = n.getFullYear(); calMonth = n.getMonth();
+  calRender();
+}
+
+function calRender() {
+  document.getElementById('cal-month-year').textContent = CAL_MONTHS[calMonth] + ' ' + calYear;
+  var cells = document.getElementById('cal-cells');
+  if (!cells) return;
+  cells.innerHTML = '';
+
+  var today = new Date();
+  var firstDay = new Date(calYear, calMonth, 1).getDay();
+  var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  var daysInPrev  = new Date(calYear, calMonth, 0).getDate();
+
+  // build task map by date key
+  var tmap = {};
+  tasks.forEach(function(t) {
+    if (t.due) { if (!tmap[t.due]) tmap[t.due]=[]; tmap[t.due].push(t); }
+    if (t.start && t.start !== t.due) { if (!tmap[t.start]) tmap[t.start]=[]; tmap[t.start].push(t); }
+  });
+
+  var total = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+  for (var i = 0; i < total; i++) {
+    var day, mo, yr, isOther = false;
+    if (i < firstDay) {
+      day = daysInPrev - firstDay + i + 1; mo = calMonth - 1; yr = calYear;
+      if (mo < 0) { mo = 11; yr--; } isOther = true;
+    } else if (i >= firstDay + daysInMonth) {
+      day = i - firstDay - daysInMonth + 1; mo = calMonth + 1; yr = calYear;
+      if (mo > 11) { mo = 0; yr++; } isOther = true;
+    } else {
+      day = i - firstDay + 1; mo = calMonth; yr = calYear;
+    }
+
+    var dStr = yr + '-' + String(mo+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    var isToday = (day===today.getDate() && mo===today.getMonth() && yr===today.getFullYear());
+
+    var cell = document.createElement('div');
+    cell.className = 'cal-cell' + (isOther?' cal-other':'') + (isToday?' cal-today':'');
+
+    var dn = document.createElement('div');
+    dn.className = 'cal-day-num'; dn.textContent = day;
+    cell.appendChild(dn);
+
+    var dayTasks = tmap[dStr] || [];
+    dayTasks.slice(0, 2).forEach(function(t) {
+      var s = calGetStatus(t); var c = calStatusColor(s);
+      var dot = document.createElement('div');
+      dot.className = 'cal-task-dot';
+      dot.style.background = c + '22'; dot.style.color = c;
+      dot.textContent = t.title;
+      cell.appendChild(dot);
+    });
+    if (dayTasks.length > 2) {
+      var more = document.createElement('div');
+      more.style.cssText = 'font-size:9px;color:var(--text3);margin-top:1px;';
+      more.textContent = '+' + (dayTasks.length - 2) + ' MORE';
+      cell.appendChild(more);
+    }
+    cells.appendChild(cell);
+  }
+  calRenderList();
+}
+
+function calSetFilter(f, btn) {
+  calFilter = f;
+  document.querySelectorAll('.cal-flt').forEach(function(b) {
+    b.classList.remove('active');
+    b.style.background = '#fff';
+    b.style.color = b.style.borderColor;
+  });
+  btn.classList.add('active');
+  btn.style.background = btn.style.borderColor;
+  btn.style.color = '#fff';
+  calRenderList();
+}
+
+function calRenderList() {
+  var avpSel = document.getElementById('cal-avp-filter');
+  if (avpSel) calAvpFilter = avpSel.value;
+
+  var filtered = tasks.filter(function(t) {
+    var s = calGetStatus(t);
+    var avpOk = calAvpFilter === 'all' || t.avps.indexOf(calAvpFilter) >= 0;
+    var sOk = calFilter === 'all' ||
+      (calFilter === 'todo'     && s === 'TO DO') ||
+      (calFilter === 'critical' && s === 'CRITICAL') ||
+      (calFilter === 'overdue'  && s === 'OVERDUE') ||
+      (calFilter === 'done'     && s === 'DONE');
+    return avpOk && sOk;
+  });
+
+  filtered.sort(function(a,b){
+    if (!a.due) return 1; if (!b.due) return -1;
+    return a.due > b.due ? 1 : -1;
+  });
+
+  var tbody = document.getElementById('cal-task-tbody');
+  var empty  = document.getElementById('cal-task-empty');
+  var count  = document.getElementById('cal-task-count');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (count) count.textContent = filtered.length + ' TASKS';
+
+  if (filtered.length === 0) { empty.style.display='block'; return; }
+  empty.style.display = 'none';
+
+  var priColors2 = { Critical:'#b00020', High:'#e65100', Medium:'#e6a817', Low:'#2e7d32' };
+  var tdS = 'background:#fff;padding:8px 10px;font-size:11px;vertical-align:middle;border-bottom:1px solid #f1f5f9;';
+
+  filtered.forEach(function(t) {
+    var s = calGetStatus(t); var sc = calStatusColor(s);
+    var pc = priColors2[t.pri] || '#b0bec5';
+    var avChips = t.avps.map(function(aid){var a=getAvp(aid);return a?'<span style="background:'+a.c+';color:#fff;font-size:8px;font-weight:700;padding:1px 5px;border-radius:20px;">'+a.ini+'</span>':''}).join(' ');
+    var avNames = t.avps.map(function(aid){var a=getAvp(aid);return a?a.role:aid;}).join(', ');
+    var dc = 'var(--text)';
+    if (t.due) { var diff=(new Date(t.due)-new Date())/864e5; dc=diff<0?'#b00020':diff<2?'#e65100':'var(--text)'; }
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td style="'+tdS+'border-radius:7px 0 0 7px;font-weight:600;">'+t.title+
+        (t.cat?'<div style="font-size:9px;color:var(--text3);margin-top:1px;">'+t.cat+'</div>':'')+
+      '</td>'+
+      '<td style="'+tdS+'">'+avChips+'<div style="font-size:9px;color:var(--text3);margin-top:2px;">'+avNames+'</div></td>'+
+      '<td style="'+tdS+'color:var(--text2);">'+(t.start?fmtDate(t.start):'—')+'</td>'+
+      '<td style="'+tdS+'font-weight:600;color:'+dc+';">'+(t.due?fmtDate(t.due):'—')+'</td>'+
+      '<td style="'+tdS+'"><span style="background:'+pc+'22;color:'+pc+';font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;">'+t.pri+'</span></td>'+
+      '<td style="'+tdS+'border-radius:0 7px 7px 0;"><span style="background:'+sc+'22;color:'+sc+';font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;">'+s+'</span></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function buildCalAvpFilter() {
+  var sel = document.getElementById('cal-avp-filter');
+  if (!sel) return;
+  sel.innerHTML = '<option value="all">ALL AVP</option>';
+  avps.forEach(function(a){
+    var o = document.createElement('option'); o.value=a.id; o.textContent=a.role;
+    sel.appendChild(o);
+  });
+}
+
+/* ───────────────────────────────────────────────
    INIT
 ─────────────────────────────────────────────── */
 document.getElementById('sdue').value = new Date().toISOString().slice(0, 10);
@@ -1250,6 +1610,10 @@ renderRecent();
 updateKpis();
 checkDueReminders();
 showEmailSetupHint();
+// Calendar init
+var _cn = new Date(); calYear = _cn.getFullYear(); calMonth = _cn.getMonth();
+buildCalAvpFilter();
+calRender();
 </script>
 </body>
 </html>
