@@ -37,7 +37,7 @@
 }
 
 html{scroll-behavior:smooth;}
-body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;}
+body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;text-transform:uppercase;}
 
 /* ───────────────────────────────────────────────
    APP BAR
@@ -58,7 +58,7 @@ body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-
   white-space:nowrap;
 }
 .app-title{font-size:20px;font-weight:600;color:#fff;font-family:'Prompt',sans-serif;}
-.app-sub{font-size:14px;color:rgba(255,255,255,.72);font-family:'Prompt',sans-serif;}
+.app-sub{font-size:13px;color:rgba(255,255,255,.72);font-family:'Prompt',sans-serif;}
 .appbar-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
 .live-chip{
   background:rgba(255,255,255,.15);color:#fff;
@@ -70,7 +70,7 @@ body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-
 }
 .ldot{width:7px;height:7px;background:#69f0ae;border-radius:50%;animation:pulse 1.4s ease-in-out infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-#clk{font-size:13px;color:rgba(255,255,255,.68);font-family:'Prompt',sans-serif;}
+#clk{font-size:12px;color:rgba(255,255,255,.68);font-family:'Prompt',sans-serif;}
 
 /* ───────────────────────────────────────────────
    AVP RAIL
@@ -101,10 +101,10 @@ body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-
   box-shadow:0 2px 7px rgba(0,0,0,.22);
 }
 .avp-role{font-size:12px;font-weight:700;text-align:center;margin-bottom:2px;font-family:'Prompt',sans-serif;}
-.avp-nm{font-size:11px;color:var(--text3);text-align:center;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Prompt',sans-serif;}
+.avp-nm{font-size:10px;color:var(--text3);text-align:center;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Prompt',sans-serif;}
 .avp-3{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;}
 .s-val{font-size:16px;font-weight:700;line-height:1.2;font-family:'Prompt',sans-serif;}
-.s-lbl{font-size:11px;color:var(--text3);line-height:1.4;font-family:'Prompt',sans-serif;}
+.s-lbl{font-size:10px;color:var(--text3);line-height:1.4;font-family:'Prompt',sans-serif;}
 .avp-prog{height:4px;background:var(--divider);border-radius:2px;margin-top:6px;overflow:hidden;}
 .avp-fill{height:100%;border-radius:2px;transition:width .6s;}
 .due-badge{
@@ -134,7 +134,7 @@ body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-
 }
 .kpi-val{font-size:34px;font-weight:700;color:var(--kc);font-family:'Prompt',sans-serif;line-height:1;}
 .kpi-lbl{font-size:16px;color:var(--text2);margin-top:4px;font-weight:500;font-family:'Prompt',sans-serif;}
-.kpi-sub{font-size:13px;color:var(--text3);margin-top:2px;font-family:'Prompt',sans-serif;}
+.kpi-sub{font-size:12px;color:var(--text3);margin-top:2px;font-family:'Prompt',sans-serif;}
 
 /* ───────────────────────────────────────────────
    BODY GRID
@@ -153,10 +153,10 @@ body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-
    FORM FIELDS
 ─────────────────────────────────────────────── */
 .mfield{margin-bottom:14px;}
-.mfield label{display:block;font-size:13px;font-weight:600;color:var(--primary);margin-bottom:6px;letter-spacing:.3px;font-family:'Prompt',sans-serif;}
+.mfield label{display:block;font-size:12px;font-weight:600;color:var(--primary);margin-bottom:6px;letter-spacing:.3px;font-family:'Prompt',sans-serif;}
 .mfield input,.mfield select{
   width:100%;border:1.5px solid var(--divider);border-radius:var(--rsm);
-  padding:10px 13px;font-size:16px;font-family:'Prompt',sans-serif;
+  padding:9px 12px;font-size:14px;font-family:'Prompt',sans-serif;
   color:var(--text);background:#fff;outline:none;
   transition:border-color .2s,box-shadow .2s;
 }
@@ -169,7 +169,7 @@ body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-
 /* Assignee chips */
 .achip-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
 .achip{
-  font-size:14px;font-weight:500;padding:7px 14px;border-radius:20px;
+  font-size:13px;font-weight:500;padding:6px 13px;border-radius:20px;
   border:1.5px solid var(--divider);cursor:pointer;
   transition:all .15s;color:var(--text2);background:#fff;
   display:flex;align-items:center;gap:6px;font-family:'Prompt',sans-serif;
@@ -178,8 +178,8 @@ body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-
 .achip.on{color:#fff;border-color:transparent;}
 
 /* Priority chips */
-.pri-wrap{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-.pc{font-size:14px;font-weight:600;padding:7px 16px;border-radius:20px;border:1.5px solid;cursor:pointer;font-family:'Prompt',sans-serif;transition:all .15s;}
+.pri-wrap{display:flex;gap:6px;margin-bottom:14px;flex-wrap:nowrap;align-items:center;}
+.pc{font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;border:1.5px solid;cursor:pointer;font-family:'Prompt',sans-serif;transition:all .15s;white-space:nowrap;}
 .pc.cr{border-color:var(--error);color:var(--error);}
 .pc.hi{border-color:var(--warning);color:var(--warning);}
 .pc.md{border-color:#e6a817;color:#9c6f00;}
@@ -201,7 +201,7 @@ body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-
 }
 .fab-btn:hover{background:var(--primary-dk);}
 .fab-btn:active{box-shadow:0 1px 3px rgba(21,101,192,.2);}
-.ferr{font-size:14px;color:var(--error);margin-top:6px;display:none;font-family:'Prompt',sans-serif;}
+.ferr{font-size:13px;color:var(--error);margin-top:6px;display:none;font-family:'Prompt',sans-serif;}
 
 /* ───────────────────────────────────────────────
    RECENT LIST
@@ -209,8 +209,8 @@ body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-
 .rec-item{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--divider);}
 .rec-item:last-child{border-bottom:none;}
 .rdot{width:9px;height:9px;border-radius:50%;margin-top:4px;flex-shrink:0;}
-.rn{font-size:16px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Prompt',sans-serif;}
-.rm{font-size:13px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:3px;flex-wrap:wrap;font-family:'Prompt',sans-serif;}
+.rn{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Prompt',sans-serif;}
+.rm{font-size:12px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:3px;flex-wrap:wrap;font-family:'Prompt',sans-serif;}
 
 /* ───────────────────────────────────────────────
    TABS
@@ -263,11 +263,11 @@ body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--text);min-
 }
 .kcard:hover{box-shadow:var(--sh2);}
 .kcard:active{cursor:grabbing;}
-.kcard-t{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;font-family:'Prompt',sans-serif;}
-.kcard-m{font-size:13px;color:var(--text3);display:flex;align-items:center;justify-content:space-between;}
-.kcard-d{font-size:13px;margin-top:5px;font-family:'Prompt',sans-serif;}
+.kcard-t{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;font-family:'Prompt',sans-serif;}
+.kcard-m{font-size:12px;color:var(--text3);display:flex;align-items:center;justify-content:space-between;}
+.kcard-d{font-size:12px;margin-top:5px;font-family:'Prompt',sans-serif;}
 .av{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Prompt',sans-serif;}
-.mtag{font-size:12px;font-weight:700;padding:2px 9px;border-radius:20px;font-family:'Prompt',sans-serif;}
+.mtag{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;font-family:'Prompt',sans-serif;}
 
 /* ───────────────────────────────────────────────
    GANTT
@@ -291,11 +291,11 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
 .wp-wrap{padding:16px 18px;}
 .wp-person{margin-bottom:14px;}
 .wp-row{display:flex;align-items:center;gap:9px;}
-.wpn{font-size:15px;font-weight:500;color:var(--text);min-width:96px;font-family:'Prompt',sans-serif;}
+.wpn{font-size:13px;font-weight:500;color:var(--text);min-width:96px;font-family:'Prompt',sans-serif;}
 .btrack{flex:1;height:13px;background:var(--divider);border-radius:6px;overflow:hidden;}
 .bfill{height:100%;border-radius:6px;transition:width .8s;}
-.wpct{font-size:14px;font-weight:700;min-width:70px;text-align:right;font-family:'Prompt',sans-serif;}
-.wpsub{font-size:13px;color:var(--text3);margin-left:106px;margin-top:3px;font-family:'Prompt',sans-serif;}
+.wpct{font-size:13px;font-weight:700;min-width:70px;text-align:right;font-family:'Prompt',sans-serif;}
+.wpsub{font-size:12px;color:var(--text3);margin-left:106px;margin-top:3px;font-family:'Prompt',sans-serif;}
 
 /* ───────────────────────────────────────────────
    ALERTS
@@ -311,22 +311,8 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
 .al-item:last-child{margin-bottom:0;}
 .al-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .al-t{font-size:15px;font-weight:600;color:var(--text);font-family:'Prompt',sans-serif;}
-.al-d{font-size:14px;color:var(--text2);margin-top:3px;line-height:1.5;font-family:'Prompt',sans-serif;}
-.al-tm{font-size:13px;font-weight:700;margin-top:5px;font-family:'Prompt',sans-serif;}
-
-/* ───────────────────────────────────────────────
-   QUICK ACTIONS
-─────────────────────────────────────────────── */
-.qa-row{display:flex;gap:7px;padding:10px 14px 14px;flex-wrap:wrap;border-top:1px solid var(--divider);}
-.qb{
-  font-size:14px;font-weight:600;padding:9px 16px;border-radius:20px;
-  border:1.5px solid;cursor:pointer;background:var(--surf);font-family:'Prompt',sans-serif;
-  display:flex;align-items:center;gap:6px;
-  box-shadow:0 1px 3px rgba(0,0,0,.07);
-  transition:box-shadow .15s,background .15s;
-}
-.qb:hover{box-shadow:var(--sh1);}
-.qb:active{box-shadow:none;}
+.al-d{font-size:13px;color:var(--text2);margin-top:3px;line-height:1.5;font-family:'Prompt',sans-serif;}
+.al-tm{font-size:12px;font-weight:700;margin-top:5px;font-family:'Prompt',sans-serif;}
 
 /* ───────────────────────────────────────────────
    SNACKBAR TOAST
@@ -381,7 +367,7 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
 <div class="kpi-row">
   <div class="kpi" style="--kc:#1565c0"><div class="kpi-val" id="kpi-total">0</div><div class="kpi-lbl">Total Active Tasks</div><div class="kpi-sub" id="kpi-total-sub">ทั้งหมด 0 งาน</div></div>
   <div class="kpi" style="--kc:#2e7d32"><div class="kpi-val" id="kpi-ontrack">0%</div><div class="kpi-lbl">On-Track</div><div class="kpi-sub" id="kpi-ontrack-sub">0 งานตรงกำหนด</div></div>
-  <div class="kpi" style="--kc:#e65100"><div class="kpi-val" id="kpi-capacity">0%</div><div class="kpi-lbl">Team Capacity</div><div class="kpi-sub">เฉลี่ยทีมงาน</div></div>
+  <div class="kpi" style="--kc:#e65100"><div class="kpi-val" id="kpi-capacity">0</div><div class="kpi-lbl">OVERDUE</div><div class="kpi-sub">งานเลยกำหนด</div></div>
   <div class="kpi" style="--kc:#b00020"><div class="kpi-val" id="kpi-urgent">0</div><div class="kpi-lbl">Urgent / Blocked</div><div class="kpi-sub">ต้องตัดสินใจด่วน</div></div>
 </div>
 
@@ -405,21 +391,14 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
           <label>Assign AVP (เลือกได้หลายคน)</label>
           <div class="achip-wrap" id="achips"></div>
         </div>
+        <div class="mfield">
+          <label>รายละเอียดงาน</label>
+          <textarea id="scat" placeholder="รายละเอียดงาน / รายการที่ต้องทำ..." rows="3" style="width:100%;border:1.5px solid var(--divider);border-radius:var(--rsm);padding:9px 11px;font-size:14px;font-family:'Prompt',sans-serif;color:var(--text);background:#fff;outline:none;resize:vertical;transition:border-color .2s;"></textarea>
+        </div>
         <div class="g2">
           <div class="mfield">
-            <label>Category (พิมพ์เองได้)</label>
-            <input type="text" id="scat" placeholder="เช่น Commercial, Marketing..." list="cat-list" autocomplete="off">
-            <datalist id="cat-list">
-              <option value="Commercial">
-              <option value="Marketing">
-              <option value="Visual Merch">
-              <option value="Store Ops">
-              <option value="Private Brand">
-              <option value="Promotion">
-              <option value="Buying">
-              <option value="Logistics">
-              <option value="Training">
-            </datalist>
+            <label>Start Date</label>
+            <input type="date" id="sstart">
           </div>
           <div class="mfield">
             <label>Due Date</label>
@@ -440,22 +419,14 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
       </div>
     </div>
 
-    <!-- Recent Tasks -->
-    <div class="mcard">
-      <div class="mcard-hdr" style="background:var(--navy);">
-        <i class="ti ti-list-check" style="font-size:16px;"></i> Recent Tasks
-      </div>
-      <div class="mcard-body" id="rec-list"></div>
-    </div>
-
   </div><!-- /left -->
 
   <!-- Right: Tabs -->
   <div class="mcard" style="overflow:visible;display:flex;flex-direction:column;">
     <div class="mtab-bar">
-      <div class="mtab on" onclick="stab('kanban',this)">Kanban Board</div>
-      <div class="mtab" onclick="stab('gantt',this)">Gantt / Timeline</div>
-      <div class="mtab" onclick="stab('workload',this)">งานเสร็จ vs ทั้งหมด</div>
+      <div class="mtab on" onclick="stab('kanban',this)">KANBAN BOARD</div>
+      <div class="mtab" onclick="stab('gantt',this)">UPDATE งาน</div>
+      <div class="mtab" onclick="stab('workload',this)">งานเสร็จ VS ทั้งหมด</div>
       <div class="mtab" onclick="stab('alerts',this)">
         Alerts <span id="acnt" style="background:#b00020;color:#fff;font-size:10px;padding:1px 6px;border-radius:20px;margin-left:3px;"></span>
       </div>
@@ -472,14 +443,14 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
             <div class="kcol" id="col-todo" ondragover="adr(event)" ondrop="dpc(event,'todo')"></div>
           </div>
           <div>
-            <div class="col-hdr" style="background:#e3f2fd;color:#1565c0;">
-              IN PROGRESS <span class="cnt" id="cnt-inprog" style="background:#42a5f5;color:#fff;"></span>
+            <div class="col-hdr" style="background:#fce4ec;color:#b00020;">
+              CRITICAL <span class="cnt" id="cnt-inprog" style="background:#ef5350;color:#fff;"></span>
             </div>
             <div class="kcol" id="col-inprog" ondragover="adr(event)" ondrop="dpc(event,'inprog')"></div>
           </div>
           <div>
-            <div class="col-hdr" style="background:#fff8e1;color:#e65100;">
-              REVIEW <span class="cnt" id="cnt-review" style="background:#ffa726;color:#fff;"></span>
+            <div class="col-hdr" style="background:#fff3e0;color:#e65100;">
+              OVERDUE <span class="cnt" id="cnt-review" style="background:#ffa726;color:#fff;"></span>
             </div>
             <div class="kcol" id="col-review" ondragover="adr(event)" ondrop="dpc(event,'review')"></div>
           </div>
@@ -493,13 +464,17 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
       </div>
     </div>
 
-    <!-- Gantt -->
+    <!-- UPDATE งาน Matrix -->
     <div class="tc" id="tc-gantt">
-      <div class="gantt-wrap">
-        <table class="gt">
-          <thead><tr id="ghd"></tr></thead>
-          <tbody id="gbd"></tbody>
+      <div style="padding:14px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;">
+        <div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:12px;letter-spacing:.5px;font-family:'Prompt',sans-serif;">UPDATE งาน — สถานะการทำงานของแต่ละ AVP</div>
+        <table id="update-table" style="border-collapse:separate;border-spacing:0 4px;width:100%;min-width:720px;font-family:'Prompt',sans-serif;">
+          <thead><tr id="update-head"></tr></thead>
+          <tbody id="update-body"></tbody>
         </table>
+        <div id="update-empty" style="display:none;text-align:center;padding:30px;color:var(--text3);font-size:13px;background:var(--surf);border-radius:12px;margin-top:4px;">
+          ยังไม่มีงาน — สร้างงานใหม่ด้านซ้ายได้เลย
+        </div>
       </div>
     </div>
 
@@ -513,27 +488,7 @@ table.gt tr td:last-child{border-radius:0 var(--rsm) var(--rsm) 0;}
       <div class="al-wrap" id="al-list"></div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="qa-row">
-      <button class="qb" style="border-color:#b00020;color:#b00020;" onclick="clearAllTasks()">
-        <i class="ti ti-trash" style="font-size:15px;"></i> Clear All
-      </button>
-      <button class="qb" style="border-color:#1565c0;color:#1565c0;" onclick="qt('กำลัง Export Task Report...')">
-        <i class="ti ti-download" style="font-size:15px;"></i> Export Report
-      </button>
-      <button class="qb" style="border-color:#b00020;color:#b00020;" onclick="qt('Flag Blocked เรียบร้อยแล้ว')">
-        <i class="ti ti-flag" style="font-size:15px;"></i> Flag Blocked
-      </button>
-      <button class="qb" style="border-color:#2e7d32;color:#2e7d32;" onclick="qt('ส่ง Team Update เรียบร้อยแล้ว')">
-        <i class="ti ti-send" style="font-size:15px;"></i> Send Update
-      </button>
-      <button class="qb" style="border-color:#e65100;color:#e65100;" onclick="qt('แสดงงาน Overdue ทั้งหมด')">
-        <i class="ti ti-clock-exclamation" style="font-size:15px;"></i> Review Overdue
-      </button>
-      <button class="qb" style="border-color:#6a1b9a;color:#6a1b9a;" onclick="qt('กำลังสร้าง Weekly Summary...')">
-        <i class="ti ti-file-report" style="font-size:15px;"></i> Weekly Summary
-      </button>
-    </div>
+
 
   </div><!-- /right -->
 </div><!-- /body -->
@@ -621,7 +576,7 @@ var avps = [
   { id:'h1',  role:'AVP HO1',      nm:'Storage/Cleaning',  c:'#e65100', ini:'H1', tasks:9,  done:5,  on:72, urg:0, email:'thanyanintu@homepro.co.th' },
   { id:'h2',  role:'AVP HO2',      nm:'Kitchen/Laundry',   c:'#6a1b9a', ini:'H2', tasks:8,  done:6,  on:80, urg:1, email:'sukanyaa@homepro.co.th' },
   { id:'ps',  role:'AVP PRO SA',   nm:'Promotion SA',      c:'#00695c', ini:'PS', tasks:7,  done:4,  on:68, urg:0, email:'dudchapornl@homepro.co.th' },
-  { id:'pk',  role:'PRO KC HO',    nm:'Promotion KC & HO', c:'#b00020', ini:'PK', tasks:10, done:5,  on:62, urg:2, email:'onsirik@homepro.co.th' }
+  { id:'pk',  role:'AVP PRO KC HO', nm:'Promotion KC & HO', c:'#b00020', ini:'PK', tasks:10, done:5,  on:62, urg:2, email:'onsirik@homepro.co.th' }
 ];
 
 var tasks = [];
@@ -791,11 +746,12 @@ function createTask() {
   for (var i = 0; i < selChips.length; i++) avpIds.push(selChips[i].dataset.id);
   if (!avpIds.length) { err.textContent = 'กรุณาเลือก AVP อย่างน้อย 1 คน'; err.style.display = 'block'; return; }
   var due = document.getElementById('sdue').value;
+  var start = document.getElementById('sstart').value;
   var cat = document.getElementById('scat').value;
   var t = {
     id: 't' + (++taskIdCounter),
     title: name, avps: avpIds, cat: cat, pri: selPri,
-    col: 'todo', due: due, c: priColors[selPri]
+    col: 'todo', due: due, start: start, c: priColors[selPri]
   };
   tasks.unshift(t);
   saveTasks();
@@ -826,42 +782,48 @@ function updateKpis() {
   }).length;
   var pct = activeCnt > 0 ? Math.round(ontrack / activeCnt * 100) : 0;
 
-  // Urgent = Critical priority ที่ยังไม่เสร็จ + งานที่เกิน due date
+  // Urgent = Critical priority ที่ยังไม่เสร็จ
   var urgent = active.filter(function(t) {
-    var overdue = t.due && (new Date(t.due) - now) / 864e5 < 0;
-    return t.pri === 'Critical' || overdue;
+    return t.pri === 'Critical';
   }).length;
 
-  // Team Capacity = % งานที่ยังอยู่ในกำหนด (on-track) เฉลี่ย
-  var totalAssigned = 0;
-  var totalOntime = 0;
-  avps.forEach(function(a) {
-    var myTasks = tasks.filter(function(t) { return t.avps.indexOf(a.id) >= 0 && t.col !== 'done'; });
-    totalAssigned += myTasks.length;
-    totalOntime += myTasks.filter(function(t) { return !t.due || (new Date(t.due) - now) / 864e5 >= 0; }).length;
-  });
-  var capacity = totalAssigned > 0 ? Math.round(totalOntime / totalAssigned * 100) : 0;
+  // Overdue = งานที่เกินกำหนดส่งแล้ว
+  var overdue = active.filter(function(t) {
+    return t.due && (new Date(t.due) - now) / 864e5 < 0;
+  }).length;
 
   document.getElementById('kpi-total').textContent = activeCnt;
   document.getElementById('kpi-total-sub').textContent = tasks.length + ' งานทั้งหมด';
   document.getElementById('kpi-ontrack').textContent = pct + '%';
   document.getElementById('kpi-ontrack-sub').textContent = ontrack + ' งานตรงกำหนด';
-  document.getElementById('kpi-capacity').textContent = capacity + '%';
+  document.getElementById('kpi-capacity').textContent = overdue;
   document.getElementById('kpi-urgent').textContent = urgent;
 }
 
 /* ───────────────────────────────────────────────
-   KANBAN
+   KANBAN — TO DO / CRITICAL / OVERDUE / DONE
 ─────────────────────────────────────────────── */
 function renderKanban(ts) {
+  var now = new Date();
+
+  // Categorise tasks into 4 new columns
   var cols = { todo:[], inprog:[], review:[], done:[] };
-  ts.forEach(function(t) { if (cols[t.col]) cols[t.col].push(t); });
-  var colNames = ['todo', 'inprog', 'review', 'done'];
+  ts.forEach(function(t) {
+    if (t.col === 'done') { cols.done.push(t); return; }
+    var overdue = t.due && (new Date(t.due) - now) / 864e5 < 0;
+    var critical = t.pri === 'Critical';
+    if (overdue)       cols.review.push(t);   // OVERDUE column
+    else if (critical) cols.inprog.push(t);   // CRITICAL column
+    else               cols.todo.push(t);     // TO DO column
+  });
+
+  var colNames = ['todo','inprog','review','done'];
   colNames.forEach(function(cn) {
     var el = document.getElementById('col-' + cn);
+    if (!el) return;
     el.innerHTML = '';
     if (cols[cn].length === 0) {
-      el.innerHTML = '<div style="text-align:center;padding:20px 10px;color:var(--text3);font-size:13px;font-family:\'Prompt\',sans-serif;">ไม่มีงาน</div>';
+      el.innerHTML = '<div style="text-align:center;padding:20px 10px;color:var(--text3);font-size:12px;font-family:\'Prompt\',sans-serif;">ไม่มีงาน</div>';
     }
     cols[cn].forEach(function(t) {
       var avRow = '';
@@ -876,13 +838,13 @@ function renderKanban(ts) {
       card.innerHTML =
         '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:4px;">' +
           '<div class="kcard-t" style="flex:1;">' + t.title + '</div>' +
-          '<button onclick="deleteTask(\'' + t.id + '\')" title="ลบงานนี้" style="background:none;border:none;cursor:pointer;color:#b0bec5;font-size:16px;padding:0;line-height:1;flex-shrink:0;" onmouseover="this.style.color=\'#b00020\'" onmouseout="this.style.color=\'#b0bec5\'">&#10005;</button>' +
+          '<button onclick="deleteTask(\'' + t.id + '\')" title="ลบงาน" style="background:none;border:none;cursor:pointer;color:#b0bec5;font-size:16px;padding:0;line-height:1;flex-shrink:0;" onmouseover="this.style.color=\'#b00020\'" onmouseout="this.style.color=\'#b0bec5\'">&#10005;</button>' +
         '</div>' +
         '<div class="kcard-m">' +
           '<span class="mtag" style="background:' + t.c + '22;color:' + t.c + ';">' + t.pri + '</span>' +
           '<div style="display:flex;gap:2px;">' + avRow + '</div>' +
         '</div>' +
-        (t.due ? '<div class="kcard-d" style="color:' + dc + ';">Due: ' + fmtDate(t.due) + '</div>' : '');
+        (t.due ? '<div class="kcard-d" style="color:' + dc + ';">DUE: ' + fmtDate(t.due) + '</div>' : '');
       el.appendChild(card);
     });
     document.getElementById('cnt-' + cn).textContent = cols[cn].length;
@@ -911,40 +873,96 @@ document.addEventListener('dragover', function(e) {
 });
 
 /* ───────────────────────────────────────────────
-   GANTT — สร้างจาก tasks จริง
+   UPDATE งาน — MATRIX (Task × AVP checkbox)
 ─────────────────────────────────────────────── */
 function buildGantt() {
-  var bd = document.getElementById('gbd');
-  var hd = document.getElementById('ghd');
-  hd.innerHTML = '<th style="min-width:160px;">Task</th><th style="min-width:50px;">AVP</th><th style="min-width:100px;">Due Date</th><th style="min-width:80px;">Priority</th><th style="min-width:100px;">Status</th>';
-  bd.innerHTML = '';
+  var hd = document.getElementById('update-head');
+  var bd = document.getElementById('update-body');
+  var empty = document.getElementById('update-empty');
+  var tbl = document.getElementById('update-table');
+  if (!hd || !bd) return;
 
-  var activeTasks = tasks.filter(function(t) { return t.col !== 'done'; });
+  var thS = 'background:#e3edf8;color:#1565c0;padding:8px 11px;font-size:11px;font-weight:700;text-align:center;white-space:nowrap;font-family:\'Prompt\',sans-serif;';
+  var thL = thS + 'text-align:left;border-radius:8px 0 0 8px;min-width:160px;';
+  var thR = thS + 'border-radius:0 8px 8px 0;min-width:80px;';
 
-  if (activeTasks.length === 0) {
-    bd.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text3);font-family:\'Prompt\',sans-serif;font-size:14px;">ยังไม่มีงาน — สร้างงานใหม่ด้านซ้ายได้เลย</td></tr>';
+  hd.innerHTML =
+    '<th style="' + thL + '">TASK</th>' +
+    '<th style="' + thS + 'min-width:90px;">DUE DATE</th>';
+  avps.forEach(function(a) {
+    hd.innerHTML += '<th style="' + thS + 'min-width:90px;">' +
+      '<span style="background:' + a.c + ';color:#fff;padding:2px 8px;border-radius:20px;font-size:10px;display:inline-block;">' + a.role + '</span>' +
+      '</th>';
+  });
+  hd.innerHTML += '<th style="' + thR + '">STATUS</th>';
+
+  if (tasks.length === 0) {
+    if (tbl) tbl.style.display = 'none';
+    if (empty) empty.style.display = 'block';
     return;
   }
+  if (tbl) tbl.style.display = '';
+  if (empty) empty.style.display = 'none';
 
-  var colMap = { todo:'#b0bec5', inprog:'#1565c0', review:'#e65100', done:'#2e7d32' };
-  var colLabel = { todo:'To Do', inprog:'In Progress', review:'Review', done:'Done' };
+  var colMap = { todo:'#b0bec5', inprog:'#b00020', review:'#e65100', done:'#2e7d32' };
+  var colLbl = { todo:'TO DO', inprog:'CRITICAL', review:'OVERDUE', done:'DONE' };
+  var tdS = 'background:#fff;padding:8px 10px;font-size:12px;text-align:center;vertical-align:middle;border-bottom:1px solid #f1f5f9;font-family:\'Prompt\',sans-serif;';
+  var tdL = 'background:#fff;padding:8px 12px;font-size:12px;font-weight:600;vertical-align:middle;border-bottom:1px solid #f1f5f9;border-radius:8px 0 0 8px;font-family:\'Prompt\',sans-serif;color:var(--text);';
+  var tdR = tdS + 'border-radius:0 8px 8px 0;';
 
-  activeTasks.forEach(function(t) {
-    var avRow = '';
-    t.avps.forEach(function(aid) {
-      var a = getAvp(aid);
-      if (a) avRow += '<span style="background:' + a.c + ';color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-right:2px;">' + a.ini + '</span>';
-    });
+  bd.innerHTML = '';
+  tasks.forEach(function(t) {
+    var now = new Date();
     var dc = t.due ? dueColor(t.due) : 'var(--text3)';
+    var html = '<td style="' + tdL + '">' + t.title + '</td>';
+    html += '<td style="' + tdS + 'font-weight:600;color:' + dc + ';">' + (t.due ? fmtDate(t.due) : '—') + '</td>';
+
+    avps.forEach(function(a) {
+      var isAssigned = t.avps.indexOf(a.id) >= 0;
+      var key = 'mx_' + t.id + '_' + a.id;
+      var isDone = localStorage.getItem(key) === '1';
+      if (isAssigned) {
+        html += '<td style="' + tdS + '">' +
+          '<div onclick="toggleMx(\'' + t.id + '\',\'' + a.id + '\',this)"' +
+          ' style="width:28px;height:28px;border-radius:50%;border:2.5px solid ' + a.c + ';' +
+          'background:' + (isDone ? a.c : 'transparent') + ';' +
+          'display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;margin:0 auto;">' +
+          (isDone ? '<i class="ti ti-check" style="color:#fff;font-size:13px;"></i>' : '') +
+          '</div></td>';
+      } else {
+        html += '<td style="' + tdS + 'color:#e0e2ec;">—</td>';
+      }
+    });
+
+    // Status
+    var now2 = new Date();
+    var overdue = t.due && (new Date(t.due) - now2) / 864e5 < 0 && t.col !== 'done';
+    var statusCol = overdue ? '#e65100' : colMap[t.col] || '#b0bec5';
+    var statusLbl = overdue ? 'OVERDUE' : (colLbl[t.col] || t.col.toUpperCase());
+    html += '<td style="' + tdR + '">' +
+      '<span style="background:' + statusCol + '22;color:' + statusCol + ';font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;">' + statusLbl + '</span>' +
+      '</td>';
+
     var tr = document.createElement('tr');
-    tr.innerHTML =
-      '<td style="font-size:14px;font-weight:500;font-family:\'Prompt\',sans-serif;">' + t.title + '</td>' +
-      '<td>' + avRow + '</td>' +
-      '<td style="font-size:13px;color:' + dc + ';font-weight:600;font-family:\'Prompt\',sans-serif;">' + (t.due ? fmtDate(t.due) : '—') + '</td>' +
-      '<td><span style="background:' + t.c + '22;color:' + t.c + ';font-size:12px;font-weight:700;padding:3px 9px;border-radius:20px;font-family:\'Prompt\',sans-serif;">' + t.pri + '</span></td>' +
-      '<td><span style="background:' + colMap[t.col] + '22;color:' + colMap[t.col] + ';font-size:12px;font-weight:600;padding:3px 9px;border-radius:20px;font-family:\'Prompt\',sans-serif;">' + colLabel[t.col] + '</span></td>';
+    tr.innerHTML = html;
     bd.appendChild(tr);
   });
+}
+
+function toggleMx(tid, avpId, el) {
+  var key = 'mx_' + tid + '_' + avpId;
+  var isDone = localStorage.getItem(key) === '1';
+  var a = getAvp(avpId); if (!a) return;
+  if (isDone) {
+    localStorage.removeItem(key);
+    el.style.background = 'transparent';
+    el.innerHTML = '';
+  } else {
+    localStorage.setItem(key, '1');
+    el.style.background = a.c;
+    el.innerHTML = '<i class="ti ti-check" style="color:#fff;font-size:13px;"></i>';
+    toast(a.role + ' — DONE ✓');
+  }
 }
 
 /* ───────────────────────────────────────────────
@@ -1052,6 +1070,7 @@ function buildAlerts() {
 ─────────────────────────────────────────────── */
 function renderRecent() {
   var el = document.getElementById('rec-list');
+  if (!el) return;
   el.innerHTML = '';
   tasks.slice(0, 6).forEach(function(t) {
     var avRow = '';
