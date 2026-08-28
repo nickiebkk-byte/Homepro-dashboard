@@ -6,6 +6,9 @@
 <title>HomePro Team Task Dashboard — Kitchen & Home Division</title>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" rel="stylesheet">
+<!-- Firebase SDK v9 compat -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
 /* ───────────────────────────────────────────────
    RESET & ROOT
@@ -778,72 +781,83 @@ var tasks = [];
 var priColors = { Critical:'#b00020', High:'#e65100', Medium:'#e6a817', Low:'#2e7d32' };
 
 /* ───────────────────────────────────────────────
-   FIREBASE CONFIG — work-11e8b
+   FIREBASE SDK — work-11e8b
 ─────────────────────────────────────────────── */
-var FB_URL = 'https://work-11e8b-default-rtdb.asia-southeast1.firebasedatabase.app/task_dashboard';
-var fbReady = false;
+var firebaseConfig = {
+  apiKey: "AIzaSyD-placeholder",
+  databaseURL: "https://work-11e8b-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "work-11e8b"
+};
+
+// Init Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+var db = firebase.database();
+var dbRef = db.ref('task_dashboard');
+var mxRef = db.ref('task_dashboard_mx');
 
 function fbGet(cb) {
-  fetch(FB_URL + '.json')
-    .then(function(r){ return r.json(); })
-    .then(function(data) {
+  var done = false;
+  var timer = setTimeout(function() {
+    if (!done) { done = true; tasks = []; cb(); }
+  }, 8000);
+
+  dbRef.once('value')
+    .then(function(snap) {
+      if (done) return;
+      done = true; clearTimeout(timer);
+      var data = snap.val();
       if (data && data.tasks) {
         try { tasks = JSON.parse(data.tasks); } catch(e){ tasks=[]; }
-      } else { tasks = []; }
+      } else { tasks=[]; }
       if (data && data.tid) taskIdCounter = parseInt(data.tid);
       cb();
     })
-    .catch(function(e){ console.warn('FB get error', e); cb(); });
+    .catch(function(e) {
+      if (done) return;
+      done = true; clearTimeout(timer);
+      console.warn('FB get error', e);
+      var bk = localStorage.getItem('homepro_tasks_bk');
+      if (bk) { try { tasks = JSON.parse(bk); } catch(e2){ tasks=[]; } }
+      cb();
+    });
 }
 
 function fbSet() {
-  fetch(FB_URL + '.json', {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ tasks: JSON.stringify(tasks), tid: taskIdCounter })
-  }).catch(function(e){ console.warn('FB set error', e); });
-  // ยัง save localStorage เป็น backup
+  dbRef.update({ tasks: JSON.stringify(tasks), tid: taskIdCounter })
+    .catch(function(e){ console.warn('FB set error', e); });
   localStorage.setItem('homepro_tasks_bk', JSON.stringify(tasks));
   localStorage.setItem('homepro_tid_bk', taskIdCounter);
 }
 
 function fbSaveMx(key, val) {
-  var mxKey = key.replace(/[.#$/\[\]]/g,'_');
-  fetch(FB_URL + '/mx/' + mxKey + '.json', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(val ? '1' : null)
-  }).catch(function(e){ console.warn('FB mx error', e); });
+  var mxKey = key.replace(/[.#$\[\]]/g,'_');
+  mxRef.child(mxKey).set(val ? '1' : null)
+    .catch(function(e){ console.warn('FB mx error', e); });
   if (val) localStorage.setItem(key, '1');
   else localStorage.removeItem(key);
 }
 
-function fbGetMx(key, cb) {
-  var mxKey = key.replace(/[.#$/\[\]]/g,'_');
-  fetch(FB_URL + '/mx/' + mxKey + '.json')
-    .then(function(r){ return r.json(); })
-    .then(function(v){ cb(v === '1'); })
-    .catch(function(){ cb(localStorage.getItem(key) === '1'); });
-}
-
-// alias เดิมให้ยังใช้ได้
 function saveTasks() { fbSet(); }
 function loadTasks(cb) { fbGet(cb || function(){}); }
 
-// Real-time listener — poll ทุก 5 วินาที ถ้า Firebase เปลี่ยน → refresh
-var _fbLastHash = '';
+// Real-time listener — Firebase onValue
 function fbStartListen() {
-  setInterval(function() {
-    fetch(FB_URL + '/tasks.json')
-      .then(function(r){ return r.text(); })
-      .then(function(raw) {
-        if (raw !== _fbLastHash) {
-          _fbLastHash = raw;
-          try { tasks = JSON.parse(JSON.parse(raw)); } catch(e){}
-          refreshAll();
-        }
-      }).catch(function(){});
-  }, 5000);
+  dbRef.on('value', function(snap) {
+    var data = snap.val();
+    if (!data) return;
+    var newTasks = [];
+    if (data.tasks) {
+      try { newTasks = JSON.parse(data.tasks); } catch(e){ return; }
+    }
+    // เช็คว่าข้อมูลเปลี่ยนจริงก่อน refresh
+    if (JSON.stringify(newTasks) !== JSON.stringify(tasks)) {
+      tasks = newTasks;
+      if (data.tid) taskIdCounter = parseInt(data.tid);
+      refreshAll();
+    }
+  });
 }
 
 function clearAllTasks() {
