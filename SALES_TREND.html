@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Trend Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bd:#0D2B6B;--bm:#1A4DB8;--bl:#3B7DD8;--bp:#E8F0FB;
+  --or:#F47920;--od:#D4611A;--ol:#FFB366;
+  --g1:#F5F7FA;--g2:#E2E8F0;--g4:#94A3B8;--g7:#334155;
+  --sh1:0 2px 8px rgba(13,43,107,.08);--sh2:0 4px 24px rgba(13,43,107,.14);--r:12px
+}
+body{font-family:'Prompt',sans-serif;background:var(--g1);color:var(--g7);
+  display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* ══ TAB-TOPBAR ══ */
+.tab-topbar{background:var(--bd);display:flex;align-items:stretch;
+  padding:0 16px 0 0;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.22);z-index:20;min-height:52px}
+.tab-logo{display:flex;align-items:center;gap:9px;padding:0 16px;
+  border-right:1px solid rgba(255,255,255,.12);margin-right:4px;flex-shrink:0}
+.tab-logo-icon{width:32px;height:32px;background:var(--or);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;flex-shrink:0}
+.tab-logo-text{font-size:14px;font-weight:800;color:#fff;white-space:nowrap}
+.tab-list{display:flex;align-items:flex-end;gap:0;flex:1;overflow-x:auto;min-width:0}
+.tab-list::-webkit-scrollbar{height:3px}
+.tab-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:2px}
+.tab-item{display:flex;align-items:center;gap:7px;padding:14px 18px 10px;
+  font-size:12px;font-weight:500;color:rgba(255,255,255,.5);
+  cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;
+  transition:all .18s;flex-shrink:0;position:relative}
+.tab-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.07)}
+.tab-item.active{color:#fff;font-weight:700;border-bottom-color:var(--or);
+  background:rgba(255,255,255,.12)}
+.tab-item .tab-emoji{font-size:14px}
+.tab-add{display:flex;align-items:center;gap:4px;padding:14px 12px 10px;
+  font-size:12px;color:rgba(255,255,255,.35);cursor:pointer;flex-shrink:0;
+  border-bottom:3px solid transparent;transition:all .18s}
+.tab-add:hover{color:rgba(255,255,255,.7)}
+.tab-topbar-right{display:flex;align-items:center;gap:6px;padding:0 0 0 12px;
+  border-left:1px solid rgba(255,255,255,.12);margin-left:6px;flex-shrink:0}
+.btn-export{display:flex;align-items:center;gap:4px;padding:5px 11px;border-radius:6px;border:none;
+  font-family:'Prompt',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-pptx{background:var(--or);color:#fff}.btn-pptx:hover{background:var(--od)}
+.btn-png{background:var(--bm);color:#fff}.btn-png:hover{background:var(--bl)}
+.btn-pdf{background:#E53E3E;color:#fff}.btn-pdf:hover{background:#C53030}
+.btn-save{background:#276749;color:#fff}.btn-save:hover{background:#22543D}
+.btn-save.saved{background:#C6F6D5;color:#276749}
+
+/* ══ PAGE HEADER ══ */
+.page-header{background:linear-gradient(135deg,var(--bm) 0%,var(--bd) 100%);
+  padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.page-header-left{display:flex;flex-direction:column;gap:1px}
+.page-title-input{font-family:'Prompt',sans-serif;font-size:20px;font-weight:800;color:#fff;
+  border:none;background:transparent;border-bottom:2px solid transparent;padding:1px 4px;
+  transition:border-color .15s;min-width:200px}
+.page-title-input:hover{border-bottom-color:rgba(255,255,255,.35)}
+.page-title-input:focus{outline:none;border-bottom-color:var(--or)}
+.page-subtitle-input{font-family:'Prompt',sans-serif;font-size:12px;color:rgba(255,255,255,.6);
+  border:none;background:transparent;border-bottom:1.5px solid transparent;padding:1px 4px;
+  transition:border-color .15s;min-width:260px;font-weight:300}
+.page-subtitle-input:hover{border-bottom-color:rgba(255,255,255,.25)}
+.page-subtitle-input:focus{outline:none;border-bottom-color:var(--or)}
+.page-header-right{display:flex;align-items:center;gap:8px}
+.page-header-badge{font-size:10px;color:rgba(255,255,255,.45);background:rgba(255,255,255,.1);
+  padding:3px 9px;border-radius:5px;white-space:nowrap}
+.btn-del-page{font-size:10px;color:#FC8181;background:rgba(255,0,0,.12);border:1px solid rgba(255,100,100,.3);
+  padding:4px 10px;border-radius:5px;cursor:pointer;font-family:'Prompt',sans-serif;
+  font-weight:600;transition:all .15s;white-space:nowrap}
+.btn-del-page:hover{background:rgba(255,0,0,.2)}
+
+/* ══ CONTROL BAR ══ */
+.control-bar{background:#fff;border-bottom:2px solid var(--g2);padding:0 20px;
+  height:46px;flex-shrink:0;display:flex;align-items:center;gap:0;overflow-x:auto;z-index:9}
+.ctrl-group{display:flex;align-items:center;gap:7px;padding:0 14px;flex-shrink:0}
+.ctrl-group:first-child{padding-left:0}
+.ctrl-sep{width:1px;height:26px;background:var(--g2);flex-shrink:0}
+.ctrl-label{font-size:10px;font-weight:700;color:var(--g4);text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.ctrl-input{padding:5px 9px;border:1.5px solid var(--g2);border-radius:6px;
+  font-family:'Prompt',sans-serif;font-size:12px;background:#fff;color:var(--g7);transition:border-color .15s}
+.ctrl-input:focus{outline:none;border-color:var(--bm)}
+.ctrl-input.w85{width:85px}
+.cbtn{width:27px;height:27px;border:1.5px solid var(--g2);border-radius:6px;background:#fff;
+  font-family:'Prompt',sans-serif;font-size:12px;font-weight:700;cursor:pointer;color:var(--bd);
+  display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.cbtn:hover{background:var(--bp);border-color:var(--bm)}
+.cbtn.active{background:var(--bm);color:#fff;border-color:var(--bm)}
+.btn-build{display:flex;align-items:center;gap:5px;padding:6px 15px;border:none;border-radius:6px;
+  background:linear-gradient(135deg,var(--bm),var(--bd));color:#fff;
+  font-family:'Prompt',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap}
+.btn-build:hover{opacity:.88;transform:translateY(-1px)}
+.parse-status{font-size:10px;padding:3px 8px;border-radius:5px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.parse-status.ok{background:#C6F6D5;color:#276749}
+.parse-status.err{background:#FED7D7;color:#C53030}
+.parse-status.idle{background:var(--g2);color:var(--g4)}
+
+/* ══ PASTE BAR ══ */
+.paste-bar{background:#fff;border-bottom:2px solid var(--g2);padding:7px 20px;
+  flex-shrink:0;display:flex;align-items:flex-start;gap:10px;overflow-x:auto;z-index:8}
+.paste-slot{display:flex;flex-direction:column;gap:3px;flex-shrink:0;width:215px}
+.paste-slot-top{display:flex;align-items:center;gap:6px}
+.slot-num{width:18px;height:18px;background:var(--bd);color:#fff;border-radius:50%;
+  font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slot-label-input{font-family:'Prompt',sans-serif;font-size:10.5px;font-weight:700;color:var(--bd);
+  border:none;border-bottom:1.5px dashed transparent;background:transparent;
+  padding:1px 2px;width:100%;cursor:text;transition:border-color .15s}
+.slot-label-input:hover{border-bottom-color:var(--g4)}
+.slot-label-input:focus{outline:none;border-bottom-color:var(--or);background:var(--bp)}
+.paste-area{width:100%;height:58px;padding:5px 8px;border:2px dashed var(--g2);border-radius:7px;
+  font-family:'Courier New',monospace;font-size:10px;color:var(--g7);background:#fff;
+  resize:none;transition:border-color .2s;line-height:1.45}
+.paste-area:focus{outline:none;border-color:var(--or);border-style:solid}
+.paste-area::placeholder{color:var(--g4);font-size:9px}
+.paste-hint{font-size:9px;color:var(--g4)}.paste-ok{font-size:9px;color:#276749;font-weight:600}
+.paste-err{font-size:9px;color:#C53030;font-weight:600}
+.paste-vsep{width:1px;background:var(--g2);height:58px;flex-shrink:0;margin-top:20px}
+
+/* ══ DASHBOARD AREA ══ */
+.dashboard{flex:1;padding:18px 22px;overflow-y:auto;background:var(--g1)}
+
+/* ══ PAIR ROW ══ */
+.pair-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px}
+.pair-row.single{grid-template-columns:1fr}
+
+/* ══ BLOCK ══ */
+.db-block{display:flex;flex-direction:column;gap:10px;min-width:0}
+.block-title-wrap{display:flex;align-items:center;gap:8px;padding:9px 13px;
+  background:var(--bd);border-radius:var(--r) var(--r) 0 0}
+.block-title-input{font-family:'Prompt',sans-serif;font-size:14px;font-weight:700;color:#fff;
+  border:none;border-bottom:2px solid transparent;background:transparent;
+  padding:1px 3px;flex:1;cursor:text;transition:border-color .15s;min-width:60px}
+.block-title-input:hover{border-bottom-color:rgba(255,255,255,.35)}
+.block-title-input:focus{outline:none;border-bottom-color:var(--or)}
+.block-title-years{font-size:11px;color:rgba(255,255,255,.45);white-space:nowrap}
+
+/* BANNER */
+.growth-banner{background:linear-gradient(135deg,var(--bm),var(--bl));
+  border-radius:0 0 9px 9px;padding:10px 16px;display:flex;align-items:center;
+  justify-content:space-between;box-shadow:var(--sh1);margin-bottom:0}
+.gb-metrics{display:flex;gap:16px}
+.gb-metric .gm-label{font-size:8.5px;color:rgba(255,255,255,.6);margin-bottom:1px}
+.gb-metric .gm-val{font-size:19px;font-weight:800;color:var(--ol);line-height:1}
+.gb-metric .gm-val.neg{color:#FC8181}.gb-metric .gm-val.sm{font-size:14px;color:rgba(255,255,255,.9)}
+.gb-metric .gm-sub{font-size:8.5px;color:rgba(255,255,255,.45);margin-top:1px}
+
+/* CARDS */
+.summary-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.s-card{background:#fff;border-radius:9px;padding:11px 12px;box-shadow:var(--sh1);border-top:3px solid transparent}
+.s-card.c1{border-color:var(--bm)}.s-card.c2{border-color:var(--or)}
+.s-card.c3{border-color:#38A169}.s-card.c4{border-color:#805AD5}
+.sc-label{font-size:9px;color:var(--g4);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.sc-val{font-size:16px;font-weight:700;margin:3px 0 1px;color:var(--bd)}
+.sc-val.growth-pos{color:#276749}.sc-val.growth-neg{color:#C53030}
+.sc-sub{font-size:9px;color:var(--g4)}
+
+/* CHART */
+.chart-card{background:#fff;border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh1)}
+.chart-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.chart-title{font-size:12px;font-weight:700;color:var(--bd)}
+.chart-sub{font-size:10px;color:var(--g4);margin-top:1px}
+.legend{display:flex;gap:10px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--g7)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.growth-row-wrap{display:flex;align-items:center;background:#F0F7F3;
+  border:1.5px solid #C6E8D5;border-radius:7px;padding:4px 8px;gap:6px;margin-bottom:8px}
+.growth-row-label{font-size:9px;font-weight:700;color:#276749;white-space:nowrap;min-width:54px}
+.growth-row-cells{display:flex;flex:1;justify-content:space-around}
+.growth-cell{flex:1;text-align:center;font-size:9px;font-weight:700}
+.growth-cell.pos{color:#276749}.growth-cell.neg{color:#C53030}.growth-cell.zero{color:var(--g4)}
+.chart-canvas-wrap{position:relative;height:230px}
+
+/* TABLE TOGGLE */
+.month-table-card{background:#fff;border-radius:var(--r);box-shadow:var(--sh1);overflow:hidden}
+.month-table-head{background:var(--bd);padding:8px 13px;display:flex;align-items:center}
+.month-table-head h3{font-size:11px;font-weight:600;color:#fff}
+.table-toggle-btn{display:flex;align-items:center;gap:4px;padding:4px 10px;border:none;border-radius:5px;
+  background:rgba(255,255,255,.15);color:#fff;font-family:'Prompt',sans-serif;font-size:10px;
+  font-weight:500;cursor:pointer;transition:all .18s;margin-left:auto}
+.table-toggle-btn:hover{background:rgba(255,255,255,.25)}
+.table-body-wrap{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.table-body-wrap.open{max-height:600px}
+table.result-table{width:100%;border-collapse:collapse;font-size:11px}
+table.result-table th{background:var(--bp);color:var(--bd);padding:7px 11px;
+  font-weight:600;text-align:right;font-size:10px}
+table.result-table th:first-child{text-align:left}
+table.result-table td{padding:7px 11px;border-bottom:1px solid var(--g2);text-align:right}
+table.result-table td:first-child{text-align:left;font-weight:500}
+table.result-table tr:last-child td{border-bottom:none}
+table.result-table tr:hover td{background:var(--g1)}
+.growth-pos{color:#276749;font-weight:600}.growth-neg{color:#C53030;font-weight:600}
+.growth-zero{color:var(--g4)}
+
+/* EMPTY */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;gap:12px;color:var(--g4);text-align:center;padding:40px}
+.empty-state h2{font-size:17px;font-weight:600;color:var(--bd)}
+.empty-state p{font-size:12px;max-width:380px;line-height:1.7}
+
+/* TOAST */
+.toast{position:fixed;bottom:18px;right:18px;background:var(--bd);color:#fff;
+  padding:9px 16px;border-radius:8px;font-size:12px;font-weight:500;
+  box-shadow:var(--sh2);z-index:999;display:none}
+.toast.show{display:block}
+
+/* PAGE HIDDEN */
+.page-content{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0}
+.page-content.active{display:flex}
+</style>
+</head>
+<body>
+
+<!-- ══ TAB TOPBAR ══ -->
+<div class="tab-topbar">
+  <div class="tab-logo">
+    <div class="tab-logo-icon">S</div>
+    <div class="tab-logo-text">Sales Dashboard</div>
+  </div>
+  <div class="tab-list" id="tab-list">
+    <!-- tabs rendered by JS -->
+  </div>
+  <div class="tab-add" id="tab-add-btn" onclick="addPage()">
+    <span style="font-size:18px;line-height:1">+</span> เพิ่มหน้า
+  </div>
+  <div class="tab-topbar-right">
+    <button class="btn-export btn-pptx" onclick="exportPPTX()">PPTX</button>
+    <button class="btn-export btn-png"  onclick="exportPNG()">PNG</button>
+    <button class="btn-export btn-pdf"  onclick="exportPDF()">PDF</button>
+    <button class="btn-export btn-save" id="btn-save" onclick="saveData()">💾 บันทึก</button>
+  </div>
+</div>
+
+<!-- ══ PAGE CONTENTS (one per page, shown/hidden) ══ -->
+<div id="pages-container" style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MONTHS_TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const MONTHS_EN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const STORAGE_KEY='sales_dash_v2';
+const EMOJIS=['📊','🏷️','🏠','📈','🔑','💡','🛒','📦','🌟','🎯'];
+
+// ── STATE ──
+let pages=[];       // [{id,title,subtitle,emoji,unit,numDash,slotLabels[],pasteData[]}]
+let activePage=0;
+let chartInstances={};   // {pageId_blockIdx: chartObj}
+let pageIdCounter=0;
+
+function newPage(title='หน้าใหม่',subtitle='Sales Trend Analysis',emoji='📊'){
+  return {
+    id: ++pageIdCounter,
+    title, subtitle, emoji,
+    unit:'ล้านบาท',
+    numDash:1,
+    slotLabels:['ชุดที่ 1','ชุดที่ 2','ชุดที่ 3','ชุดที่ 4','ชุดที่ 5','ชุดที่ 6'],
+    pasteData:['','','','','','']
+  };
+}
+
+// ── INIT ──
+function init(){
+  if(!loadData()){
+    pages=[newPage('Private Brand','Sales Trend Analysis','🏷️')];
+    activePage=0;
+  }
+  renderAll();
+}
+
+// ── RENDER ALL ──
+function renderAll(){
+  renderTabs();
+  renderPagesContainer();
+  showPage(activePage);
+}
+
+// ── TABS ──
+function renderTabs(){
+  const list=document.getElementById('tab-list');
+  list.innerHTML='';
+  pages.forEach((p,i)=>{
+    const tab=document.createElement('div');
+    tab.className='tab-item'+(i===activePage?' active':'');
+    tab.innerHTML=`<span class="tab-emoji">${p.emoji}</span><span>${p.title}</span>`;
+    tab.onclick=()=>switchPage(i);
+    list.appendChild(tab);
+  });
+}
+
+// ── PAGES CONTAINER ──
+function renderPagesContainer(){
+  const cont=document.getElementById('pages-container');
+  // destroy removed charts
+  cont.innerHTML='';
+  pages.forEach((p,pi)=>{
+    const pc=document.createElement('div');
+    pc.className='page-content';
+    pc.id='page-content-'+p.id;
+    pc.innerHTML=buildPageHTML(p,pi);
+    cont.appendChild(pc);
+  });
+  // re-attach paste input listeners after DOM insert
+  pages.forEach((p,pi)=>{
+    for(let i=0;i<6;i++){
+      const el=document.getElementById(`paste-${p.id}-${i}`);
+      if(el){
+        if(p.pasteData[i]) el.value=p.pasteData[i];
+        el.addEventListener('input',()=>{
+          pages[pi].pasteData[i]=el.value;
+          onPasteInput(p.id,pi,i);
+        });
+      }
+      const sl=document.getElementById(`slot-label-${p.id}-${i}`);
+      if(sl){
+        sl.addEventListener('input',()=>{ pages[pi].slotLabels[i]=sl.value; });
+      }
+    }
+    // title / subtitle
+    const ti=document.getElementById(`page-title-${p.id}`);
+    const si=document.getElementById(`page-sub-${p.id}`);
+    if(ti) ti.addEventListener('input',()=>{
+      pages[pi].title=ti.value||'หน้าใหม่';
+      renderTabs();
+    });
+    if(si) si.addEventListener('input',()=>{ pages[pi].subtitle=si.value; });
+    // unit
+    const ui=document.getElementById(`unit-${p.id}`);
+    if(ui) ui.addEventListener('input',()=>{ pages[pi].unit=ui.value; });
+    // re-trigger hints
+    for(let i=0;i<p.numDash;i++) if(p.pasteData[i]) onPasteInput(p.id,pi,i);
+  });
+}
+
+function buildPageHTML(p,pi){
+  // paste slots
+  let pasteSlots='';
+  for(let i=0;i<p.numDash;i++){
+    if(i>0) pasteSlots+=`<div class="paste-vsep"></div>`;
+    pasteSlots+=`
+      <div class="paste-slot">
+        <div class="paste-slot-top">
+          <div class="slot-num">${i+1}</div>
+          <input class="slot-label-input" id="slot-label-${p.id}-${i}" value="${p.slotLabels[i]||'ชุดที่ '+(i+1)}" placeholder="ชื่อชุด">
+        </div>
+        <textarea class="paste-area" id="paste-${p.id}-${i}"
+          placeholder="YEAR&#9;JAN&#9;FEB&#9;...&#9;DEC&#10;2025&#9;100&#9;110&#9;...&#10;2026&#9;115&#9;125&#9;..."></textarea>
+        <div id="paste-hint-${p.id}-${i}" class="paste-hint">วาง Tab-separated จาก Excel</div>
+      </div>`;
+  }
+
+  // count buttons
+  let cbtns='';
+  for(let n=1;n<=6;n++){
+    cbtns+=`<button class="cbtn${p.numDash===n?' active':''}" onclick="setNumDash(${pi},${n})">${n}</button>`;
+  }
+
+  return `
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-header-left">
+        <input class="page-title-input" id="page-title-${p.id}" value="${p.title}" placeholder="ชื่อหน้า">
+        <input class="page-subtitle-input" id="page-sub-${p.id}" value="${p.subtitle}" placeholder="คำอธิบาย">
+      </div>
+      <div class="page-header-right">
+        ${pages.length>1?`<button class="btn-del-page" onclick="deletePage(${pi})">🗑 ลบหน้านี้</button>`:''}
+      </div>
+    </div>
+    <!-- CONTROL BAR -->
+    <div class="control-bar">
+      <div class="ctrl-group">
+        <span class="ctrl-label">หน่วย</span>
+        <input class="ctrl-input w85" id="unit-${p.id}" value="${p.unit}" placeholder="ล้านบาท">
+      </div>
+      <div class="ctrl-sep"></div>
+      <div class="ctrl-group">
+        <span class="ctrl-label">จำนวนชุด</span>
+        <div style="display:flex;gap:4px" id="cbtns-${p.id}">${cbtns}</div>
+      </div>
+      <div class="ctrl-sep"></div>
+      <div class="ctrl-group" style="gap:8px">
+        <span id="parse-status-${p.id}" class="parse-status idle">รอข้อมูล...</span>
+        <button class="btn-build" onclick="buildPage(${pi})">
+          <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          สร้าง Dashboard
+        </button>
+      </div>
+    </div>
+    <!-- PASTE BAR -->
+    <div class="paste-bar" id="paste-bar-${p.id}">${pasteSlots}</div>
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dash-${p.id}">
+      <div class="empty-state" id="empty-${p.id}">
+        <svg width="52" height="52" fill="none" stroke="#94A3B8" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+        <h2>${p.title}</h2>
+        <p>วางข้อมูลในช่องด้านบน แล้วกด <strong>"สร้าง Dashboard"</strong><br>ชุดที่ 1+2 จะแสดงเคียงกัน, 3+4, 5+6</p>
+      </div>
+      <div id="dash-capture-${p.id}"></div>
+    </div>
+  `;
+}
+
+// ── SWITCH PAGE ──
+function switchPage(i){
+  activePage=i;
+  document.querySelectorAll('.page-content').forEach(el=>el.classList.remove('active'));
+  const target=document.getElementById('page-content-'+pages[i].id);
+  if(target) target.classList.add('active');
+  renderTabs();
+}
+
+function showPage(i){
+  switchPage(i);
+}
+
+// ── ADD / DELETE PAGE ──
+function addPage(){
+  const n=pages.length+1;
+  const emoji=EMOJIS[(pages.length)%EMOJIS.length];
+  pages.push(newPage('หน้าที่ '+n,'Sales Trend Analysis',emoji));
+  activePage=pages.length-1;
+  renderAll();
+}
+
+function deletePage(pi){
+  if(pages.length<=1){showToast('❌ ต้องมีอย่างน้อย 1 หน้า');setTimeout(hideToast,1800);return;}
+  // destroy charts for this page
+  const pid=pages[pi].id;
+  Object.keys(chartInstances).forEach(k=>{
+    if(k.startsWith(pid+'_')){chartInstances[k].destroy();delete chartInstances[k];}
+  });
+  pages.splice(pi,1);
+  activePage=Math.min(activePage,pages.length-1);
+  renderAll();
+}
+
+// ── SET NUM DASH ──
+function setNumDash(pi,n){
+  pages[pi].numDash=n;
+  // re-render just the paste bar and count buttons
+  const p=pages[pi];
+  // rebuild paste bar
+  let pasteSlots='';
+  for(let i=0;i<n;i++){
+    if(i>0) pasteSlots+=`<div class="paste-vsep"></div>`;
+    pasteSlots+=`
+      <div class="paste-slot">
+        <div class="paste-slot-top">
+          <div class="slot-num">${i+1}</div>
+          <input class="slot-label-input" id="slot-label-${p.id}-${i}" value="${p.slotLabels[i]||'ชุดที่ '+(i+1)}" placeholder="ชื่อชุด">
+        </div>
+        <textarea class="paste-area" id="paste-${p.id}-${i}"
+          placeholder="YEAR&#9;JAN&#9;FEB&#9;...&#9;DEC&#10;2025&#9;100&#9;110&#9;...&#10;2026&#9;115&#9;125&#9;..."></textarea>
+        <div id="paste-hint-${p.id}-${i}" class="paste-hint">วาง Tab-separated จาก Excel</div>
+      </div>`;
+  }
+  document.getElementById('paste-bar-'+p.id).innerHTML=pasteSlots;
+  // update cbtn active
+  document.getElementById('cbtns-'+p.id).querySelectorAll('.cbtn').forEach(b=>{
+    b.classList.toggle('active',parseInt(b.textContent)===n);
+  });
+  // re-attach
+  for(let i=0;i<6;i++){
+    const el=document.getElementById(`paste-${p.id}-${i}`);
+    if(el){
+      if(p.pasteData[i]) el.value=p.pasteData[i];
+      el.addEventListener('input',()=>{p.pasteData[i]=el.value;onPasteInput(p.id,pi,i);});
+    }
+    const sl=document.getElementById(`slot-label-${p.id}-${i}`);
+    if(sl) sl.addEventListener('input',()=>{p.slotLabels[i]=sl.value;});
+  }
+  for(let i=0;i<n;i++) if(p.pasteData[i]) onPasteInput(p.id,pi,i);
+  updatePageStatus(p);
+}
+
+// ── PARSE ──
+function parsePaste(text){
+  const rows=text.trim().split(/\r?\n/).filter(r=>r.trim());
+  if(!rows.length) return null;
+  const datasets=[];
+  for(const row of rows){
+    const cols=row.trim().split(/\t+/).map(c=>c.trim());
+    const yr=parseInt(cols[0]);
+    if(isNaN(yr)||yr<1900||yr>2100) continue;
+    const vals=[];
+    for(let m=1;m<=12;m++){
+      const v=cols[m]!==undefined?cols[m].replace(/,/g,'').trim():'';
+      vals.push(v===''||v==='-'?null:parseFloat(v));
+    }
+    datasets.push({year:yr,values:vals});
+  }
+  return datasets.length>=1?datasets:null;
+}
+
+function onPasteInput(pid,pi,i){
+  const el=document.getElementById(`paste-${pid}-${i}`); if(!el) return;
+  const hint=document.getElementById(`paste-hint-${pid}-${i}`);
+  if(!el.value.trim()){hint.className='paste-hint';hint.textContent='วาง Tab-separated จาก Excel';updatePageStatus(pages[pi]);return;}
+  const sets=parsePaste(el.value);
+  if(!sets){hint.className='paste-err';hint.textContent='❌ รูปแบบไม่ถูกต้อง';}
+  else{hint.className='paste-ok';hint.textContent=`✅ ${sets.length} ปี: ${sets.map(s=>s.year).join(', ')}`;}
+  updatePageStatus(pages[pi]);
+}
+
+function updatePageStatus(p){
+  let ok=0,err=0;
+  for(let i=0;i<p.numDash;i++){
+    const el=document.getElementById(`paste-${p.id}-${i}`);
+    if(!el||!el.value.trim()) continue;
+    parsePaste(el.value)?ok++:err++;
+  }
+  const s=document.getElementById(`parse-status-${p.id}`);
+  if(!s) return;
+  if(!ok&&!err){s.className='parse-status idle';s.textContent='รอข้อมูล...';}
+  else if(err){s.className='parse-status err';s.textContent=`⚠️ ${ok} ok / ${err} err`;}
+  else{s.className='parse-status ok';s.textContent=`✅ ${ok} ชุดพร้อม`;}
+}
+
+// ── CALCS ──
+function calcG(v1,v2){if(v1===null||v2===null||v1===0)return null;return((v2-v1)/v1)*100;}
+function fmt(n,d=1){if(n===null||n===undefined)return'—';return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d});}
+
+// ── BUILD PAGE ──
+function buildPage(pi){
+  const p=pages[pi];
+  // destroy old charts for this page
+  Object.keys(chartInstances).forEach(k=>{
+    if(k.startsWith(p.id+'_')){chartInstances[k].destroy();delete chartInstances[k];}
+  });
+  const unit=document.getElementById(`unit-${p.id}`)?.value||p.unit||'ล้านบาท';
+  const capture=document.getElementById(`dash-capture-${p.id}`);
+  capture.innerHTML='';
+  const valid=[];
+  for(let i=0;i<p.numDash;i++){
+    const el=document.getElementById(`paste-${p.id}-${i}`);
+    const sets=parsePaste(el?el.value:'');
+    if(sets) valid.push({sets,idx:i,label:p.slotLabels[i]||'ชุดที่ '+(i+1)});
+  }
+  if(!valid.length){
+    document.getElementById(`empty-${p.id}`).style.display='flex';
+    const s=document.getElementById(`parse-status-${p.id}`);
+    if(s){s.className='parse-status err';s.textContent='❌ ไม่มีข้อมูล';}
+    return;
+  }
+  document.getElementById(`empty-${p.id}`).style.display='none';
+  for(let pp=0;pp<valid.length;pp+=2){
+    const left=valid[pp], right=valid[pp+1]||null;
+    const pairRow=document.createElement('div');
+    pairRow.className='pair-row'+(right?'':' single');
+    pairRow.appendChild(makeBlock(p,left.sets,left.idx,left.label,unit));
+    if(right) pairRow.appendChild(makeBlock(p,right.sets,right.idx,right.label,unit));
+    capture.appendChild(pairRow);
+    setTimeout(()=>{
+      renderChart(p,left.sets,left.idx);
+      if(right) renderChart(p,right.sets,right.idx);
+    },60);
+  }
+  const s=document.getElementById(`parse-status-${p.id}`);
+  if(s){s.className='parse-status ok';s.textContent=`✅ สร้าง ${valid.length} Dashboard`;}
+}
+
+function toggleTable(pid,idx){
+  const wrap=document.getElementById(`tbl-wrap-${pid}-${idx}`);
+  const btn=document.getElementById(`tbl-btn-${pid}-${idx}`);
+  if(!wrap||!btn) return;
+  const isOpen=wrap.classList.toggle('open');
+  btn.classList.toggle('open',isOpen);
+  btn.textContent=isOpen?'▲ ซ่อนตาราง':'▼ แสดงตาราง';
+}
+
+// ── MAKE BLOCK ──
+function makeBlock(p,sets,idx,label,unit){
+  const d1=sets[0],d2=sets[1]||null;
+  const yr1=d1.year,yr2=d2?d2.year:'—';
+  const y1=d1.values,y2=d2?d2.values:new Array(12).fill(null);
+  const growths=y1.map((v,i)=>calcG(v,y2[i]));
+  const validG=growths.filter(g=>g!==null);
+  const avgG=validG.length?validG.reduce((a,b)=>a+b,0)/validG.length:null;
+  let lastM=-1;
+  for(let i=11;i>=0;i--){if(y2[i]!==null){lastM=i;break;}}
+  const ytd1=lastM>=0?y1.slice(0,lastM+1).reduce((a,v)=>a+(v??0),0):y1.reduce((a,v)=>a+(v??0),0);
+  const ytd2=lastM>=0?y2.slice(0,lastM+1).reduce((a,v)=>a+(v??0),0):y2.reduce((a,v)=>a+(v??0),0);
+  const ytdDiff=ytd2-ytd1,ytdLbl=lastM>=0?`ม.ค.–${MONTHS_TH[lastM]}`:'ทั้งปี';
+  const totalG=calcG(ytd1||null,ytd2||null);
+  const diffCls=ytdDiff>=0?'growth-pos':'growth-neg';
+  const gcells=growths.map(g=>{
+    const cls=g===null?'zero':g>0?'pos':g<0?'neg':'zero';
+    return`<div class="growth-cell ${cls}">${g===null?'':((g>=0?'+':'')+g.toFixed(1)+'%')}</div>`;
+  }).join('');
+  let trows='';
+  for(let i=0;i<12;i++){
+    const g=growths[i],diff=(y2[i]??0)-(y1[i]??0);
+    const gc=g===null?'growth-zero':g>0?'growth-pos':'growth-neg';
+    trows+=`<tr><td>${MONTHS_TH[i]}</td><td>${y1[i]===null?'—':fmt(y1[i])}</td><td>${y2[i]===null?'—':fmt(y2[i])}</td><td class="${gc}">${g===null?'—':(g>=0?'+':'')+fmt(g)+'%'}</td><td class="${gc}">${(diff>=0?'+':'')+fmt(diff)}</td></tr>`;
+  }
+  const tot1=y1.reduce((a,v)=>a+(v??0),0),tot2=y2.reduce((a,v)=>a+(v??0),0);
+  const totD=tot2-tot1,totG=calcG(tot1||null,tot2||null);
+  const totC=totG===null?'growth-zero':totG>0?'growth-pos':'growth-neg';
+  trows+=`<tr style="background:var(--bp);font-weight:700"><td style="color:var(--bd)">รวม</td><td style="color:var(--bd)">${fmt(tot1)}</td><td style="color:var(--bd)">${fmt(tot2)}</td><td class="${totC}">${totG!==null?(totG>=0?'+':'')+fmt(totG)+'%':'—'}</td><td class="${totC}">${(totD>=0?'+':'')+fmt(totD)}</td></tr>`;
+
+  const block=document.createElement('div');
+  block.className='db-block';block.id=`db-${p.id}-${idx}`;
+  block.innerHTML=`
+    <div class="block-title-wrap">
+      <input class="block-title-input" id="block-title-${p.id}-${idx}" value="${label}" placeholder="ชื่อ Dashboard"
+        oninput="pages.find(x=>x.id===${p.id}).slotLabels[${idx}]=this.value">
+      <span class="block-title-years">${yr1} vs ${yr2}</span>
+    </div>
+    <div class="growth-banner">
+      <div class="gb-metrics">
+        <div class="gb-metric"><div class="gm-label">YoY Growth</div><div class="gm-val${totalG!==null&&totalG<0?' neg':''}">${totalG!==null?(totalG>=0?'+':'')+fmt(totalG)+'%':'—'}</div><div class="gm-sub">เติบโตจากปีก่อน</div></div>
+        <div class="gb-metric"><div class="gm-label">YTD ${yr1} (${ytdLbl})</div><div class="gm-val sm">${fmt(ytd1)}</div><div class="gm-sub">${unit}</div></div>
+        <div class="gb-metric"><div class="gm-label">YTD ${yr2} (${ytdLbl})</div><div class="gm-val sm">${fmt(ytd2)}</div><div class="gm-sub">${unit}</div></div>
+      </div>
+    </div>
+    <div class="summary-cards">
+      <div class="s-card c1"><div class="sc-label">YTD ${yr1}</div><div class="sc-val">${fmt(ytd1)}</div><div class="sc-sub">${ytdLbl}</div></div>
+      <div class="s-card c2"><div class="sc-label">YTD ${yr2}</div><div class="sc-val">${fmt(ytd2)}</div><div class="sc-sub">${ytdLbl}</div></div>
+      <div class="s-card c3"><div class="sc-label">ส่วนต่าง YTD</div><div class="sc-val ${diffCls}">${(ytdDiff>=0?'+':'')+fmt(ytdDiff)}</div><div class="sc-sub">YTD ${yr2} vs ${yr1}</div></div>
+      <div class="s-card c4"><div class="sc-label">Growth เฉลี่ย/เดือน</div><div class="sc-val">${avgG!==null?(avgG>=0?'+':'')+fmt(avgG)+'%':'—'}</div><div class="sc-sub">เฉลี่ยทุกเดือน</div></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div><div class="chart-title">${yr1} vs ${yr2}</div><div class="chart-sub">รายเดือน + % Growth</div></div>
+        <div class="legend">
+          <div class="legend-item"><div style="width:18px;height:0;border-top:2px dashed #1A4DB8"></div><span>${yr1}</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#F47920"></div><span>${yr2}</span></div>
+        </div>
+      </div>
+      <div class="growth-row-wrap"><div class="growth-row-label">% Growth</div><div class="growth-row-cells">${gcells}</div></div>
+      <div class="chart-canvas-wrap"><canvas id="chart-${p.id}-${idx}"></canvas></div>
+    </div>
+    <div class="month-table-card">
+      <div class="month-table-head">
+        <h3>${yr1} vs ${yr2} — รายเดือน</h3>
+        <button class="table-toggle-btn" id="tbl-btn-${p.id}-${idx}" onclick="toggleTable(${p.id},${idx})">▼ แสดงตาราง</button>
+      </div>
+      <div class="table-body-wrap" id="tbl-wrap-${p.id}-${idx}">
+        <table class="result-table">
+          <thead><tr><th>เดือน</th><th>${yr1}</th><th>${yr2}</th><th>% Growth</th><th>ผลต่าง</th></tr></thead>
+          <tbody>${trows}</tbody>
+        </table>
+      </div>
+    </div>`;
+  block._data={y1,y2,growths,yr1,yr2};
+  return block;
+}
+
+// ── CHART PLUGIN ──
+const noOverlapLabels={
+  id:'noOverlapLabels',
+  afterDatasetsDraw(chart){
+    const ctx=chart.ctx;ctx.save();ctx.font='bold 10px Prompt, sans-serif';
+    const GAP=11,H=13,MIN_SEP=H+2;
+    const{top,bottom}=chart.chartArea;
+    const byCol={};
+    chart.data.datasets.forEach((ds,dsIdx)=>{
+      const meta=chart.getDatasetMeta(dsIdx);if(meta.hidden)return;
+      meta.data.forEach((pt,colIdx)=>{
+        const raw=ds.data[colIdx];if(raw===null||raw===undefined)return;
+        const txt=raw.toLocaleString('th-TH',{minimumFractionDigits:0,maximumFractionDigits:1});
+        if(!byCol[colIdx])byCol[colIdx]=[];
+        byCol[colIdx].push({x:pt.x,y:pt.y,raw,txt,color:ds.borderColor,dsIdx});
+      });
+    });
+    Object.values(byCol).forEach(group=>{
+      if(!group.length)return;
+      if(group.length===1){group[0].py=group[0].y-GAP;}
+      else{
+        group.sort((a,b)=>b.raw-a.raw);
+        const hi=group[0],lo=group[1];
+        hi.py=hi.y-GAP;lo.py=lo.y+GAP;
+        const tl=hi.py<lo.py?hi:lo,bl=hi.py<lo.py?lo:hi;
+        if(bl.py-tl.py<MIN_SEP){const push=(MIN_SEP-(bl.py-tl.py))/2;tl.py-=push;bl.py+=push;}
+      }
+      group.forEach(lb=>{lb.py=Math.max(top+7,Math.min(bottom-5,lb.py));});
+      group.forEach(lb=>{
+        ctx.font='bold 10px Prompt, sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.lineWidth=3;ctx.strokeStyle='rgba(255,255,255,0.92)';ctx.fillStyle=lb.color;
+        ctx.strokeText(lb.txt,lb.x,lb.py);ctx.fillText(lb.txt,lb.x,lb.py);
+      });
+    });
+    ctx.restore();
+  }
+};
+
+// ── RENDER CHART ──
+function renderChart(p,sets,idx){
+  const block=document.getElementById(`db-${p.id}-${idx}`);if(!block)return;
+  const{y1,y2,growths,yr1,yr2}=block._data;
+  const ctx=document.getElementById(`chart-${p.id}-${idx}`);if(!ctx)return;
+  const key=`${p.id}_${idx}`;
+  if(chartInstances[key])chartInstances[key].destroy();
+  chartInstances[key]=new Chart(ctx,{
+    type:'line',
+    data:{labels:MONTHS_TH,datasets:[
+      {label:String(yr1),data:y1,borderColor:'#1A4DB8',backgroundColor:'rgba(26,77,184,0.07)',
+        borderWidth:2,borderDash:[5,3],pointRadius:4,pointBackgroundColor:'#1A4DB8',
+        pointBorderColor:'#fff',pointBorderWidth:1.5,tension:.35,fill:false,spanGaps:false},
+      {label:String(yr2),data:y2,borderColor:'#F47920',backgroundColor:'rgba(244,121,32,0.07)',
+        borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#F47920',
+        pointBorderColor:'#fff',pointBorderWidth:2,tension:.35,fill:false,spanGaps:false}
+    ]},
+    plugins:[noOverlapLabels],
+    options:{
+      layout:{padding:{top:18,bottom:4}},
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{
+        backgroundColor:'#0D2B6B',titleFont:{family:'Prompt',size:11,weight:'600'},
+        bodyFont:{family:'Prompt',size:10},padding:10,cornerRadius:7,
+        callbacks:{label:c=>{
+          const v=c.raw,i=c.dataIndex,g=growths[i];
+          const gs=g!==null?(g>=0?'+':'')+g.toFixed(2)+'%':'—';
+          if(c.datasetIndex===1)return[` ${c.dataset.label}: ${v!==null?v.toLocaleString('th-TH'):'—'}`,` Growth: ${gs}`];
+          return` ${c.dataset.label}: ${v!==null?v.toLocaleString('th-TH'):'—'}`;
+        }}
+      }},
+      scales:{
+        x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{family:'Prompt',size:10},color:'#334155'}},
+        y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{family:'Prompt',size:10},color:'#334155',
+          callback:v=>v.toLocaleString('th-TH')}}
+      }
+    }
+  });
+}
+
+// ── SAVE / LOAD ──
+function saveData(){
+  const state={pageIdCounter,activePage,pages:pages.map(p=>({...p}))};
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    const btn=document.getElementById('btn-save');
+    btn.classList.add('saved');btn.textContent='✅ บันทึกแล้ว';
+    showToast('💾 บันทึกทุกหน้าสำเร็จ');
+    setTimeout(()=>{btn.classList.remove('saved');btn.innerHTML='💾 บันทึก';hideToast();},2000);
+  }catch(e){showToast('❌ บันทึกไม่สำเร็จ');setTimeout(hideToast,2000);}
+}
+
+function loadData(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;
+    const state=JSON.parse(raw);
+    pageIdCounter=state.pageIdCounter||0;
+    pages=state.pages||[];
+    activePage=state.activePage||0;
+    if(!pages.length)return false;
+    showToast('✅ โหลดข้อมูลที่บันทึกไว้แล้ว');
+    setTimeout(hideToast,2000);
+    return true;
+  }catch(e){return false;}
+}
+
+// ── EXPORT ──
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show')}
+function hideToast(){document.getElementById('toast').classList.remove('show')}
+
+async function exportPNG(){
+  showToast('กำลัง Export PNG...');
+  const pid=pages[activePage].id;
+  const el=document.getElementById('dash-capture-'+pid);
+  const c=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#F5F7FA'});
+  const a=document.createElement('a');a.download=`${pages[activePage].title}-dashboard.png`;
+  a.href=c.toDataURL('image/png');a.click();hideToast();
+}
+async function exportPDF(){
+  showToast('กำลัง Export PDF...');
+  const{jsPDF}=window.jspdf;
+  const pid=pages[activePage].id;
+  const el=document.getElementById('dash-capture-'+pid);
+  const c=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#F5F7FA'});
+  const img=c.toDataURL('image/png');
+  const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[c.width/2,c.height/2]});
+  pdf.addImage(img,'PNG',0,0,c.width/2,c.height/2);
+  pdf.save(`${pages[activePage].title}-dashboard.pdf`);hideToast();
+}
+async function exportPPTX(){
+  showToast('กำลัง Export PowerPoint...');
+  const pres=new PptxGenJS();pres.layout='LAYOUT_WIDE';
+  const p=pages[activePage];
+  const BD='0D2B6B',BM='1A4DB8',OR='F47920',WH='FFFFFF',BP='E8F0FB';
+  const s0=pres.addSlide();s0.background={color:BD};
+  s0.addShape(pres.ShapeType.rect,{x:0,y:0,w:.35,h:7.5,fill:{color:OR}});
+  s0.addText(p.title,{x:.6,y:2.6,w:12,h:1,fontSize:36,bold:true,color:WH,fontFace:'Arial'});
+  s0.addText(p.subtitle||'',{x:.6,y:3.8,w:10,h:.6,fontSize:16,color:'A0B4D6',fontFace:'Arial'});
+  for(let i=0;i<p.numDash;i++){
+    const el=document.getElementById(`paste-${p.id}-${i}`);
+    const sets=parsePaste(el?el.value:'');if(!sets)continue;
+    const lbl=p.slotLabels[i]||'ชุดที่ '+(i+1);
+    const d1=sets[0],d2=sets[1]||null;
+    const yr1=d1.year,yr2=d2?d2.year:'—';
+    const y1=d1.values,y2=d2?d2.values:new Array(12).fill(null);
+    const tot1=y1.reduce((a,v)=>a+(v??0),0),tot2=y2.reduce((a,v)=>a+(v??0),0);
+    const totG=tot1?((tot2-tot1)/tot1*100):null;
+    const s=pres.addSlide();s.background={color:'F5F7FA'};
+    s.addShape(pres.ShapeType.rect,{x:0,y:0,w:13.3,h:.85,fill:{color:BD}});
+    s.addText(`${lbl}: ${yr1} vs ${yr2}`,{x:.35,y:.15,w:9,h:.55,fontSize:17,bold:true,color:WH,fontFace:'Arial'});
+    if(totG!==null)s.addText(`Growth: ${totG>=0?'+':''}${totG.toFixed(1)}%`,
+      {x:9.5,y:.15,w:3.5,h:.55,fontSize:14,bold:true,color:OR,fontFace:'Arial',align:'right'});
+    const rows=[{cells:[
+      {text:'เดือน',options:{bold:true,color:WH,fill:{color:BD},fontSize:9,fontFace:'Arial'}},
+      {text:String(yr1),options:{bold:true,color:WH,fill:{color:BD},fontSize:9,align:'right',fontFace:'Arial'}},
+      {text:String(yr2),options:{bold:true,color:WH,fill:{color:BD},fontSize:9,align:'right',fontFace:'Arial'}},
+      {text:'% Growth',options:{bold:true,color:WH,fill:{color:BD},fontSize:9,align:'right',fontFace:'Arial'}},
+    ]}];
+    for(let m=0;m<12;m++){
+      const g=y1[m]!==null&&y2[m]!==null&&y1[m]!==0?((y2[m]-y1[m])/y1[m]*100):null;
+      const bg=m%2===0?WH:BP,gc=g!==null?(g>0?'276749':g<0?'C53030':'334155'):'334155';
+      rows.push({cells:[
+        {text:MONTHS_EN[m],options:{color:BM,bold:true,fill:{color:bg},fontSize:9,fontFace:'Arial'}},
+        {text:y1[m]!==null?y1[m].toFixed(1):'—',options:{color:'334155',fill:{color:bg},fontSize:9,align:'right',fontFace:'Arial'}},
+        {text:y2[m]!==null?y2[m].toFixed(1):'—',options:{color:'334155',fill:{color:bg},fontSize:9,align:'right',fontFace:'Arial'}},
+        {text:g!==null?(g>=0?'+':'')+g.toFixed(1)+'%':'—',options:{color:gc,bold:true,fill:{color:bg},fontSize:9,align:'right',fontFace:'Arial'}},
+      ]});
+    }
+    rows.push({cells:[
+      {text:'รวม',options:{bold:true,color:WH,fill:{color:BM},fontSize:9,fontFace:'Arial'}},
+      {text:tot1.toFixed(1),options:{bold:true,color:WH,fill:{color:BM},fontSize:9,align:'right',fontFace:'Arial'}},
+      {text:tot2.toFixed(1),options:{bold:true,color:WH,fill:{color:BM},fontSize:9,align:'right',fontFace:'Arial'}},
+      {text:totG!==null?(totG>=0?'+':'')+totG.toFixed(1)+'%':'—',options:{bold:true,color:WH,fill:{color:BM},fontSize:9,align:'right',fontFace:'Arial'}},
+    ]});
+    s.addTable(rows,{x:.3,y:.93,w:5.6,rowH:.31,border:{type:'solid',pt:.3,color:'E2E8F0'}});
+    s.addChart(pres.ChartType.line,[
+      {name:String(yr1),labels:MONTHS_EN,values:y1.map(v=>v??0)},
+      {name:String(yr2),labels:MONTHS_EN,values:y2.map(v=>v??0)},
+    ],{x:6.2,y:.93,w:6.8,h:6.3,showLegend:true,legendPos:'t',
+      showValue:true,dataLabelFontSize:7,chartColors:[BM,OR],lineSmooth:true});
+  }
+  await pres.writeFile({fileName:`${p.title}-dashboard.pptx`});hideToast();
+}
+
+// ── START ──
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Problem & Solution — Team Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" crossorigin="anonymous">
+<style>
+/* Prompt font loaded via link tag for export compatibility */
+
+:root {
+  --orange:    #D47C3A;
+  --orange-lt: #E8A96A;
+  --orange-bg: #FDF3E8;
+  --blue:      #4A7FA5;
+  --blue-lt:   #7AADC8;
+  --blue-bg:   #EBF4FA;
+  --cream:     #C4A882;
+  --cream-lt:  #D9C4A6;
+  --cream-bg:  #FAF5EE;
+  --dark:      #2D2D2D;
+  --mid:       #777;
+  --light:     #F5F7FA;
+  --white:     #FFFFFF;
+  --border:    rgba(0,0,0,0.08);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.07);
+  --shadow-md: 0 6px 24px rgba(0,0,0,0.10);
+  --radius:    14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Prompt', sans-serif; background: #ECEEF2; min-height: 100vh; color: var(--dark); }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--white); border-bottom: 1px solid var(--border);
+  padding: 0 28px; height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: var(--shadow-sm);
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--orange), var(--blue));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+}
+.brand-icon svg { width: 16px; height: 16px; fill: none; stroke: white; stroke-width: 2.2; }
+.brand-name { font-size: 14px; font-weight: 800; color: var(--dark); }
+.brand-name em { color: var(--orange); font-style: normal; }
+
+.tabs {
+  display: flex; gap: 3px;
+  background: #ECEEF2; border-radius: 10px; padding: 4px;
+}
+.tab {
+  padding: 7px 18px; border: none; background: transparent;
+  border-radius: 7px; font-family: inherit; font-size: 14px;
+  font-weight: 600; color: var(--mid); cursor: pointer;
+  display: flex; align-items: center; gap: 6px; transition: all .15s;
+}
+.tab svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; }
+.tab.active { background: var(--white); color: var(--dark); box-shadow: var(--shadow-sm); }
+
+/* ── PAGES ── */
+.page { display: none; max-width: 1080px; margin: 0 auto; padding: 28px 24px 60px; }
+.page.active { display: block; }
+
+/* ── SECTION HEADING ── */
+.section-head { margin-bottom: 20px; }
+.section-head h2 { font-size: 20px; font-weight: 800; }
+.section-head p  { font-size: 16px; color: var(--mid); margin-top: 3px; }
+
+/* ── META ROW ── */
+.meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.field-card { background: var(--white); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-sm); }
+
+/* ── COL FORM GRID ── */
+.cols-form { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+.col-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; border: 1.5px solid transparent; transition: border-color .2s, transform .18s; }
+.col-card:focus-within { transform: translateY(-2px); }
+.col-card.t-orange:focus-within { border-color: var(--orange-lt); }
+.col-card.t-blue:focus-within   { border-color: var(--blue-lt); }
+.col-card.t-cream:focus-within  { border-color: var(--cream-lt); }
+
+.col-head { padding: 12px 14px; display: flex; align-items: center; gap: 9px; }
+.t-orange .col-head { background: var(--orange); }
+.t-blue   .col-head { background: var(--blue); }
+.t-cream  .col-head { background: var(--cream); }
+.col-badge { width: 26px; height: 26px; border-radius: 50%; background: rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: white; flex-shrink: 0; }
+.col-head h3 { font-size: 16px; font-weight: 700; color: white; line-height: 1.3; }
+
+.col-body { padding: 18px 16px 20px; }
+
+/* form fields */
+.field { margin-bottom: 16px; }
+.field:last-child { margin-bottom: 0; }
+label { display: block; font-size: 13px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: rgba(45,45,45,.5); margin-bottom: 7px; }
+input[type="text"], textarea {
+  width: 100%; border: 1.5px solid #E5EAF0; border-radius: 8px; padding: 14px 16px;
+  font-family: inherit; font-size: 25px; color: var(--dark); background: #FAFBFC;
+  outline: none; resize: vertical; transition: border-color .18s, box-shadow .18s;
+}
+input[type="text"]:focus, textarea:focus {
+  background: white; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(74,127,165,.10);
+}
+textarea { min-height: 140px; line-height: 1.8; }
+.hint { font-size: 13px; color: rgba(45,45,45,.36); margin-top: 4px; }
+
+/* ── UPLOAD AREA ── */
+.upload-area {
+  border: 1.5px dashed #D0D8E4; border-radius: 8px;
+  padding: 12px; text-align: center; cursor: pointer;
+  background: #F8FAFC; transition: all .18s;
+  position: relative; overflow: hidden;
+}
+.upload-area:hover { border-color: var(--blue); background: var(--blue-bg); }
+.upload-area input[type="file"] { display: none; }
+.upload-area .upload-placeholder { pointer-events: none; }
+.upload-icon { font-size: 20px; margin-bottom: 4px; }
+.upload-text { font-size: 14px; color: var(--mid); }
+.upload-preview {
+  width: 100%; border-radius: 6px; display: none;
+  /* key: keep original aspect ratio, no distortion */
+  max-height: 120px; object-fit: contain; background: #F0F0F0;
+}
+.upload-clear {
+  position: absolute; top: 5px; right: 6px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(0,0,0,0.55); color: white; border: none;
+  font-size: 11px; cursor: pointer; display: none;
+  align-items: center; justify-content: center; line-height: 1;
+  z-index: 5;
+}
+
+/* ── ACTION BAR ── */
+.action-bar {
+  background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow-sm); padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+}
+.btn-row { display: flex; gap: 8px; }
+.btn {
+  border: none; border-radius: 9px; padding: 10px 22px;
+  font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 7px; transition: all .15s; white-space: nowrap;
+}
+.btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+.btn-primary { background: linear-gradient(135deg,var(--orange),#C06B28); color:white; box-shadow: 0 4px 12px rgba(212,124,58,.28); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(212,124,58,.38); }
+.btn-secondary { background: var(--blue-bg); color: var(--blue); border: 1.5px solid rgba(74,127,165,.18); }
+.btn-secondary:hover { background: var(--blue); color: white; }
+.btn-ghost { background: #ECEEF2; color: var(--mid); }
+.btn-ghost:hover { background: #E0E3E8; color: var(--dark); }
+.btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
+
+/* ── DASHBOARD ── */
+.dash-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.dash-header h2 { font-size: 35px; font-weight: 800; }
+.dash-header p  { font-size: 35px; color: var(--mid); margin-top: 2px; }
+.export-row { display: flex; gap: 8px; font-size: 35px; }
+
+/* Stats */
+.stats-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(--white); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow-sm); border-left: 4px solid transparent; }
+.stat-card.s-orange { border-color: var(--orange); }
+.stat-card.s-blue   { border-color: var(--blue); }
+.stat-card.s-cream  { border-color: var(--cream); }
+.stat-lbl { font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--mid); margin-bottom: 4px; }
+.stat-val { font-size: 18px; font-weight: 800; line-height: 1; }
+.stat-sub { font-size: 18px; color: var(--mid); margin-top: 4px; }
+
+/* ── SLIDE PREVIEW WRAPPER ── */
+.slide-wrapper { background: var(--white); border-radius: 18px; padding: 20px; box-shadow: var(--shadow-md); margin-bottom: 20px; }
+.slide-lbl { font-size: 35px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(45,45,45,.38); margin-bottom: 12px; }
+
+/* ── SLIDE CANVAS — fixed 16:9 ── */
+#slide-canvas {
+  width: 100%; aspect-ratio: 16/9;
+  background: #EEF1F6;
+  border-radius: 12px; overflow: hidden; position: relative;
+  font-family: 'Prompt', sans-serif;
+}
+
+/* Decorative background */
+.s-bg-tr { position:absolute; top:-24px; right:-24px; width:160px; height:160px; background:rgba(74,127,165,.07); border-radius:36px; transform:rotate(18deg); }
+.s-bg-br { position:absolute; bottom:-28px; right:72px; width:120px; height:120px; background:rgba(212,124,58,.06); border-radius:28px; transform:rotate(-14deg); }
+.s-bg-bl { position:absolute; bottom:-18px; left:-18px; width:110px; height:110px; background:rgba(74,127,165,.05); border-radius:24px; transform:rotate(10deg); }
+.s-corner { position:absolute; top:0; right:0; width:68px; height:88px; background:var(--orange); clip-path:polygon(100% 0,0 0,100% 100%); }
+
+.s-inner { position:absolute; inset:0; padding:4% 5% 3%; display:flex; flex-direction:column; }
+
+/* Slide title */
+.s-title { margin-bottom: 4%; flex-shrink: 0; }
+.s-title h1 { font-size: 35px; font-weight: 800; line-height: 1.1; letter-spacing: -.3px; }
+.t-or  { color: var(--orange); }
+.t-bl  { color: var(--blue); }
+.t-dk  { color: var(--dark); }
+
+/* Slide columns */
+.s-cols { display:grid; grid-template-columns:repeat(4,1fr); gap:1.4%; flex:1; min-height:0; }
+
+.s-col { border-radius:10px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 3px 12px rgba(0,0,0,0.10); }
+
+.s-col-head { padding:5% 7% 4%; flex-shrink:0; }
+.s-col.c-or .s-col-head { background: var(--orange); }
+.s-col.c-bl .s-col-head { background: var(--blue); }
+.s-col.c-cr .s-col-head { background: var(--cream); }
+
+.s-col-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3%; }
+.s-num { font-size:35px; font-weight:900; color:white; line-height:1; }
+.s-icon { width:clamp(20px,3.5vw,36px); height:clamp(20px,3.5vw,36px); flex-shrink:0; opacity:.88; }
+.s-th  { font-size:30px; font-weight:700; color:white; line-height:1.2; }
+
+/* BODY — strict overflow control */
+.s-col-body {
+  flex: 1;
+  background: white;
+  padding: 5% 7%;
+  /* prevent text from overflowing */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+}
+
+/* Image inside slide body */
+.s-col-img {
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 5%;
+  flex-shrink: 0;
+  /* CRITICAL: preserve original aspect ratio */
+  object-fit: contain;
+  object-position: center;
+  background: #F5F5F5;
+  max-height: 35%;
+  display: block;
+}
+
+/* Bullets — no overflow */
+.s-bullets { flex: 1; overflow: hidden; min-height: 0; }
+.s-bullet {
+  display: flex; gap: 4px; align-items: flex-start;
+  /* clamp font so it never overflows */
+  font-size: 22px;
+  line-height: 1.4;
+  color: var(--dark);
+  margin-bottom: 3%;
+}
+.s-bullet:last-child { margin-bottom: 0; }
+.s-dot { flex-shrink: 0; font-weight: 700; margin-top: 0; }
+.c-or .s-dot { color: var(--orange); }
+.c-bl .s-dot { color: var(--blue); }
+.c-cr .s-dot { color: var(--cream); }
+.s-bullet span { 
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  /* truncate at 3 lines max to avoid overflow */
+  -webkit-line-clamp: 3;
+  word-break: break-word;
+}
+
+/* Footer */
+.s-footer { display:flex; align-items:center; justify-content:space-between; margin-top:2.5%; flex-shrink:0; }
+.s-pg  { font-size:14px; color:var(--mid); font-weight:600; }
+.s-co  { font-size:14px; font-weight:700; color:var(--mid); display:flex; align-items:center; gap:4px; }
+.s-dot-co { width:clamp(8px,1.3vw,13px); height:clamp(8px,1.3vw,13px); border-radius:50%; background:linear-gradient(135deg,var(--orange),var(--blue)); flex-shrink:0; }
+
+/* Status bar */
+.status-bar { display:none; align-items:center; gap:10px; margin-top:14px; border-radius:10px; padding:11px 16px; font-size:35px; font-weight:600; }
+.status-bar.loading { display:flex; background:#EBF4FA; color:var(--blue); }
+.status-bar.success { display:flex; background:#EDFBF2; color:#1B7A43; }
+.status-bar.error   { display:flex; background:#FEF2F2; color:#C0392B; }
+.spin { width:14px; height:14px; border-radius:50%; flex-shrink:0; border:2px solid rgba(74,127,165,.2); border-top-color:var(--blue); animation:spin .65s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+@media(max-width:768px){
+  .cols-form,.s-cols,.stats-strip { grid-template-columns:repeat(2,1fr); }
+  .meta-row { grid-template-columns:1fr; }
+  .page { padding:18px 14px 60px; }
+}
+@media(max-width:480px){
+  .cols-form,.stats-strip { grid-template-columns:1fr; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <div class="brand-name"><em>Problem</em> &amp; Solution</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('form')" id="tab-form">
+      <svg viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      กรอกข้อมูล
+    </button>
+    <button class="tab" onclick="switchTab('dashboard')" id="tab-dashboard">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+  </div>
+
+  <div style="width:160px"></div>
+</div>
+
+<!-- ═══ FORM PAGE ═══ -->
+<div class="page active" id="page-form">
+  <div class="section-head">
+    <h2>กรอกข้อมูลทีม</h2>
+    <p>กรอกรายละเอียดแต่ละช่อง และอัปโหลดรูปภาพประกอบ (ถ้ามี)</p>
+  </div>
+
+  <div class="meta-row">
+    <div class="field-card">
+      <div class="field">
+        <label>ชื่อโปรเจกต์ / หัวข้อหลัก</label>
+        <input type="text" id="f-title" value="PROBLEM & SOLUTION" placeholder="เช่น PROBLEM & SOLUTION Q3">
+        <div class="hint">คำหน้า & = สีส้ม / คำหลัง & = สีน้ำเงิน</div>
+      </div>
+    </div>
+    <div class="field-card">
+      <div class="field">
+        <label>ชื่อบริษัท / แผนก</label>
+        <input type="text" id="f-company" value="COMPANY LOGO" placeholder="เช่น HomePro Marketing">
+      </div>
+      <div class="field">
+        <label>โลโก้บริษัท (ไม่บังคับ)</label>
+        <div class="upload-area" onclick="triggerLogoUpload()" ondragover="onDragOver(event)" ondrop="onDropLogo(event)"
+             style="display:flex;align-items:center;gap:12px;text-align:left;padding:10px 14px;">
+          <input type="file" id="fi-logo" accept="image/*" onchange="onLogoChange(event)">
+          <div id="logo-placeholder" style="display:flex;align-items:center;gap:8px;pointer-events:none;">
+            <span style="font-size:20px;">🏢</span>
+            <span class="upload-text">คลิกหรือลากโลโก้มาวาง</span>
+          </div>
+          <img id="logo-preview" alt="logo"
+               style="display:none;max-height:48px;max-width:140px;object-fit:contain;object-position:left center;border-radius:4px;background:transparent;">
+          <button class="upload-clear" id="logo-clear" onclick="clearLogo(event)"
+                  style="position:static;display:none;margin-left:auto;flex-shrink:0;">✕</button>
+        </div>
+        <div class="hint">รูปจะแสดงใน footer ของสไลด์ — สัดส่วนไม่เปลี่ยน</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 Column Cards -->
+  <div class="cols-form" id="cols-form"></div>
+
+  <div class="action-bar">
+    <div style="font-size:16px;color:var(--mid)"><strong style="color:var(--dark)">พร้อมแล้ว</strong> — กดปุ่มเพื่อดู Dashboard</div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="clearAll()">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+        ล้างทั้งหมด
+      </button>
+      <button class="btn btn-primary" onclick="updateDashboard()">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        อัปเดต Dashboard
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD PAGE ═══ -->
+<div class="page" id="page-dashboard">
+
+  <div class="dash-header">
+    <div>
+      <h2 id="d-title">—</h2>
+      <p>Dashboard · Problem &amp; Solution</p>
+    </div>
+    <div class="export-row">
+      <button class="btn btn-ghost" onclick="exportPNG()" id="btn-png">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        Export PNG
+      </button>
+      <button class="btn btn-secondary" onclick="exportPDF()" id="btn-pdf">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        Export PDF
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-strip" id="stats-strip"></div>
+
+  <!-- Slide Preview -->
+  <div class="slide-wrapper">
+    <div class="slide-lbl">ตัวอย่างสไลด์ — Export เพื่อบันทึก</div>
+    <div id="slide-canvas">
+      <div class="s-bg-tr"></div>
+      <div class="s-bg-br"></div>
+      <div class="s-bg-bl"></div>
+      <div class="s-corner"></div>
+      <div class="s-inner">
+        <div class="s-title">
+          <h1>
+            <span class="t-or" id="s-t-a">PROBLEM</span>
+            <span class="t-dk"> &amp; </span>
+            <span class="t-bl" id="s-t-b">SOLUTION</span>
+          </h1>
+        </div>
+        <div class="s-cols" id="s-cols"></div>
+        <div class="s-footer">
+          <div class="s-pg">2</div>
+          <div class="s-co" id="s-co-wrap">
+            <div class="s-dot-co" id="s-dot-co"></div>
+            <img id="s-logo-img" alt="logo"
+                 style="display:none; max-height:clamp(12px,2vw,22px); max-width:clamp(40px,8vw,100px);
+                        object-fit:contain; object-position:center; background:transparent;">
+            <span id="s-company">COMPANY LOGO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar" id="exp-status">
+    <div class="spin" id="exp-spin"></div>
+    <span id="exp-msg">กำลัง Export...</span>
+  </div>
+</div>
+
+<script>
+
+// ═══ CONFIG ═══
+const COLS_CONFIG = [
+  { num:'01', label:'ปัญหา',          sub:'PROBLEM',   theme:'t-orange', sc:'c-or', stat:'s-orange', iconId:'icon-problem'  },
+  { num:'02', label:'แนวทางแก้ไข',  sub:'SOLUTION',  theme:'t-blue',   sc:'c-bl', stat:'s-blue',   iconId:'icon-solution' },
+  { num:'03', label:'รายละเอียด',    sub:'DETAILS',   theme:'t-blue',   sc:'c-bl', stat:'s-blue',   iconId:'icon-details'  },
+  { num:'04', label:'ระยะเวลา',      sub:'TIMEFRAME', theme:'t-cream',  sc:'c-cr', stat:'s-cream',  iconId:'icon-timeframe'},
+];
+
+const ICONS = {
+  'icon-problem': `<svg class="s-icon" viewBox="0 0 64 64" fill="none">
+    <circle cx="32" cy="26" r="15" stroke="white" stroke-width="3.5"/>
+    <line x1="32" y1="18" x2="32" y2="26" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="32" cy="30" r="2" fill="white"/>
+    <rect x="26" y="40" width="12" height="3" rx="1.5" fill="white"/>
+    <rect x="28" y="44.5" width="8" height="3" rx="1.5" fill="white"/>
+    <line x1="15" y1="14" x2="20" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <line x1="49" y1="14" x2="44" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </svg>`,
+  'icon-solution': `<svg class="s-icon" viewBox="0 0 64 64" fill="none">
+    <circle cx="30" cy="26" r="14" stroke="white" stroke-width="3.5"/>
+    <rect x="26" y="40" width="10" height="3" rx="1.5" fill="white"/>
+    <rect x="28" y="44.5" width="6" height="2.5" rx="1.2" fill="white"/>
+    <circle cx="30" cy="26" r="5" stroke="white" stroke-width="2.5"/>
+    <line x1="30" y1="16" x2="30" y2="13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <line x1="22" y1="26" x2="19" y2="26" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <line x1="41" y1="26" x2="38" y2="26" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <line x1="24" y1="20" x2="22" y2="18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <line x1="36" y1="20" x2="38" y2="18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </svg>`,
+  'icon-details': `<svg class="s-icon" viewBox="0 0 64 64" fill="none">
+    <rect x="10" y="8" width="30" height="38" rx="3" stroke="white" stroke-width="3"/>
+    <line x1="17" y1="18" x2="33" y2="18" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="17" y1="25" x2="30" y2="25" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="17" y1="32" x2="27" y2="32" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="42" cy="38" r="10" stroke="white" stroke-width="3"/>
+    <line x1="49" y1="45" x2="56" y2="52" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+  </svg>`,
+  'icon-timeframe': `<svg class="s-icon" viewBox="0 0 64 64" fill="none">
+    <circle cx="24" cy="30" r="14" stroke="white" stroke-width="3"/>
+    <line x1="24" y1="22" x2="24" y2="30" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="24" y1="30" x2="30" y2="34" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <rect x="34" y="22" width="22" height="20" rx="2" stroke="white" stroke-width="2.5"/>
+    <line x1="34" y1="28" x2="56" y2="28" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <line x1="40" y1="19" x2="40" y2="25" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="50" y1="19" x2="50" y2="25" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <rect x="37" y="31" width="4" height="4" rx="1" fill="white"/>
+    <rect x="43" y="31" width="4" height="4" rx="1" fill="white"/>
+    <rect x="49" y="31" width="4" height="4" rx="1" fill="white"/>
+  </svg>`,
+};
+
+// Store image data URLs per column
+const imgData = { 0: null, 1: null, 2: null, 3: null };
+let logoData = null; // Company logo
+
+function triggerLogoUpload() { document.getElementById('fi-logo').click(); }
+function onDropLogo(e) { e.preventDefault(); const f = e.dataTransfer.files[0]; if(f) loadLogo(f); }
+function onLogoChange(e) { const f = e.target.files[0]; if(f) loadLogo(f); }
+function loadLogo(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    logoData = ev.target.result;
+    document.getElementById('logo-preview').src = ev.target.result;
+    document.getElementById('logo-preview').style.display = 'block';
+    document.getElementById('logo-placeholder').style.display = 'none';
+    document.getElementById('logo-clear').style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+}
+function clearLogo(e) {
+  e.stopPropagation();
+  logoData = null;
+  document.getElementById('logo-preview').style.display = 'none';
+  document.getElementById('logo-preview').src = '';
+  document.getElementById('logo-placeholder').style.display = 'flex';
+  document.getElementById('logo-clear').style.display = 'none';
+  document.getElementById('fi-logo').value = '';
+}
+
+// ═══ BUILD FORM ═══
+function buildForm() {
+  const grid = document.getElementById('cols-form');
+  grid.innerHTML = COLS_CONFIG.map((c, i) => `
+    <div class="col-card ${c.theme}">
+      <div class="col-head">
+        <div class="col-badge">${c.num}</div>
+        <h3>${c.label}<br><span style="font-weight:400;font-size:10px;opacity:.8">${c.sub}</span></h3>
+      </div>
+      <div class="col-body">
+        <div class="field">
+          <label>ชื่อหัวข้อ</label>
+          <input type="text" id="ft-${i}" value="${c.label}">
+        </div>
+        <div class="field">
+          <label>รายละเอียด (Enter = bullet ใหม่)</label>
+          <textarea id="fb-${i}" placeholder="รายละเอียดที่ 1&#10;รายละเอียดที่ 2&#10;รายละเอียดที่ 3"></textarea>
+        </div>
+        <div class="field">
+          <label>รูปภาพประกอบ (ไม่บังคับ)</label>
+          <div class="upload-area" onclick="triggerUpload(${i})" ondragover="onDragOver(event)" ondrop="onDrop(event,${i})">
+            <input type="file" id="fi-${i}" accept="image/*" onchange="onFileChange(event,${i})">
+            <div class="upload-placeholder" id="fup-${i}">
+              <div class="upload-icon">🖼</div>
+              <div class="upload-text">คลิกหรือลากรูปมาวาง</div>
+            </div>
+            <img id="fprev-${i}" class="upload-preview" alt="preview">
+            <button class="upload-clear" id="fclr-${i}" onclick="clearImg(event,${i})">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function triggerUpload(i) {
+  document.getElementById('fi-' + i).click();
+}
+function onDragOver(e) { e.preventDefault(); }
+function onDrop(e, i) { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) loadImg(f, i); }
+function onFileChange(e, i) { const f = e.target.files[0]; if (f) loadImg(f, i); }
+
+function loadImg(file, i) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    imgData[i] = ev.target.result;
+    const prev = document.getElementById('fprev-' + i);
+    const ph   = document.getElementById('fup-' + i);
+    const clr  = document.getElementById('fclr-' + i);
+    prev.src = ev.target.result;
+    prev.style.display = 'block';
+    ph.style.display   = 'none';
+    clr.style.display  = 'flex';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearImg(e, i) {
+  e.stopPropagation();
+  imgData[i] = null;
+  document.getElementById('fprev-' + i).style.display = 'none';
+  document.getElementById('fprev-' + i).src = '';
+  document.getElementById('fup-' + i).style.display = 'block';
+  document.getElementById('fclr-' + i).style.display = 'none';
+  document.getElementById('fi-' + i).value = '';
+}
+
+// ═══ UPDATE DASHBOARD ═══
+function updateDashboard() {
+  const title   = v('f-title')   || 'PROBLEM & SOLUTION';
+  const company = v('f-company') || 'COMPANY LOGO';
+
+  // Title split on &
+  const amp = title.indexOf('&');
+  const tA  = amp >= 0 ? title.slice(0, amp).trim() : title;
+  const tB  = amp >= 0 ? title.slice(amp+1).trim()  : '';
+  document.getElementById('d-title').textContent    = title;
+  document.getElementById('s-t-a').textContent      = tA;
+  document.getElementById('s-t-b').textContent      = tB;
+  document.getElementById('s-company').textContent  = company;
+  // Logo image in footer
+  const sLogoImg = document.getElementById('s-logo-img');
+  const sDot     = document.getElementById('s-dot-co');
+  const sTxt     = document.getElementById('s-company');
+  if (logoData) {
+    sLogoImg.src = logoData;
+    sLogoImg.style.display = 'block';
+    sDot.style.display = 'none';
+    sTxt.style.display  = 'none';
+  } else {
+    sLogoImg.style.display = 'none';
+    sDot.style.display = 'block';
+    sTxt.style.display  = 'inline';
+  }
+
+  // Stats strip
+  const statsEl = document.getElementById('stats-strip');
+  statsEl.innerHTML = COLS_CONFIG.map((c,i) => {
+    const cnt = getBullets(i).length;
+    return `<div class="stat-card ${c.stat}">
+      <div class="stat-lbl">${v('ft-'+i) || c.label}</div>
+      <div class="stat-val">${cnt}</div>
+      <div class="stat-sub">bullet points${imgData[i] ? ' · มีรูปภาพ' : ''}</div>
+    </div>`;
+  }).join('');
+
+  // Slide columns
+  const sCols = document.getElementById('s-cols');
+  sCols.innerHTML = COLS_CONFIG.map((c,i) => {
+    const th  = v('ft-'+i) || c.label;
+    const bls = getBullets(i);
+    const img = imgData[i];
+
+    const imgTag = img
+      ? `<img class="s-col-img" src="${img}" alt=""
+              style="object-fit:contain;object-position:center;background:#F0F0F0;">`
+      : '';
+
+    const bulletsHtml = bls.map(b =>
+      `<div class="s-bullet"><span class="s-dot">•</span><span>${b}</span></div>`
+    ).join('');
+
+    return `
+      <div class="s-col ${c.sc}">
+        <div class="s-col-head">
+          <div class="s-col-top">
+            <div class="s-num">${c.num}</div>
+            ${ICONS[c.iconId]}
+          </div>
+          <div class="s-th">${th}</div>
+        </div>
+        <div class="s-col-body">
+          ${imgTag}
+          <div class="s-bullets">${bulletsHtml}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  switchTab('dashboard');
+}
+
+// ═══ HELPERS ═══
+function v(id) { const el=document.getElementById(id); return el ? el.value.trim() : ''; }
+function getBullets(i) {
+  return (v('fb-'+i)||'').split('\n').map(s=>s.trim()).filter(Boolean);
+}
+function clearAll() {
+  COLS_CONFIG.forEach((c,i) => {
+    const ti = document.getElementById('ft-'+i);
+    const bi = document.getElementById('fb-'+i);
+    if(ti) ti.value = c.label;
+    if(bi) bi.value = '';
+    clearImg({stopPropagation:()=>{}}, i);
+  });
+  const t = document.getElementById('f-title');
+  const co= document.getElementById('f-company');
+  if(t)  t.value  = 'PROBLEM & SOLUTION';
+  if(co) co.value = 'COMPANY LOGO';
+  clearLogo({stopPropagation:()=>{}});
+}
+
+// ═══ TAB SWITCH ═══
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('page-'+tab).classList.add('active');
+}
+
+
+
+// ═══ EXPORT STATUS ═══
+function setStatus(type, msg) {
+  const bar = document.getElementById('exp-status');
+  bar.className = 'status-bar ' + type;
+  document.getElementById('exp-msg').textContent = msg;
+  document.getElementById('exp-spin').style.display = type==='loading'?'block':'none';
+  if (type!=='loading') setTimeout(()=>{ bar.className='status-bar'; }, 3500);
+}
+
+// ═══ EXPORT — Print-based (works offline, no CDN needed) ═══
+// ═══ EXPORT PNG — เปิดหน้าต่าง 16:9 พร้อม Print to Image ═══
+async function exportPNG() {
+  const btn = document.getElementById('btn-png');
+  btn.disabled = true;
+  setStatus('loading', 'กำลังสร้างภาพ PNG...');
+  try {
+    const el = document.getElementById('slide-canvas');
+    let styles = '';
+    document.querySelectorAll('style').forEach(s => { styles += s.textContent + '\n'; });
+
+    const title = (document.getElementById('f-title').value || 'slide').replace(/\s+/g, '-');
+
+    // Open at exactly 1920x1080 (16:9) — user saves with Ctrl+S or right-click
+    const printHTML = '<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8">'
+      + '<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">'
+      + '<title>' + title + '</title>'
+      + '<style>' + styles
+      + '* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box; margin:0; padding:0; }'
+      + 'html, body { width: 1920px; height: 1080px; overflow: hidden; background: #EEF1F6; }'
+      + '#slide-canvas { width: 1920px !important; height: 1080px !important; aspect-ratio: unset !important; border-radius: 0 !important; position: relative !important; }'
+      + '@media print { @page { size: 1920px 1080px; margin:0; } }'
+      + '<\/style></head><body>'
+      + el.outerHTML
+      + '<script>'
+      + 'window.addEventListener("load", function() {'
+      + '  // Auto-download as PNG via print to image'
+      + '  setTimeout(function() {'
+      + '    var canvas = document.createElement("canvas");'
+      + '    canvas.width = 1920; canvas.height = 1080;'
+      + '    var ctx = canvas.getContext("2d");'
+      + '    ctx.fillStyle = "#EEF1F6"; ctx.fillRect(0,0,1920,1080);'
+      + '    var el = document.getElementById("slide-canvas");'
+      + '    var data = "data:image/svg+xml;charset=utf-8," + encodeURIComponent('
+      + '      "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1920\" height=\"1080\">"'
+      + '      + "<foreignObject width=\"1920\" height=\"1080\">" + el.outerHTML + "<\/foreignObject><\/svg>"'
+      + '    );'
+      + '    var img = new Image();'
+      + '    img.crossOrigin = "anonymous";'
+      + '    img.onload = function() {'
+      + '      try {'
+      + '        ctx.drawImage(img, 0, 0);'
+      + '        var a = document.createElement("a");'
+      + '        a.download = "' + title + '.png";'
+      + '        a.href = canvas.toDataURL("image/png");'
+      + '        document.body.appendChild(a); a.click(); document.body.removeChild(a);'
+      + '      } catch(e) { window.print(); }'
+      + '    };'
+      + '    img.onerror = function() { window.print(); };'
+      + '    img.src = data;'
+      + '  }, 800);'
+      + '});'
+      + '<\/script>'
+      + '</body></html>';
+
+    const win = window.open('', '_blank', 'width=1920,height=1080');
+    if (!win) { setStatus('error', '❌ กรุณาอนุญาต Pop-up แล้วลองใหม่'); btn.disabled=false; return; }
+    win.document.open();
+    win.document.write(printHTML);
+    win.document.close();
+    setStatus('success', '✅ กำลังดาวน์โหลด PNG... (หากไม่ดาวน์โหลด กด Ctrl+P แล้วเลือก Print to Image)');
+  } catch(e) {
+    setStatus('error', '❌ ' + e.message);
+  }
+  btn.disabled = false;
+}
+
+// ═══ EXPORT PDF — 16:9 พอดี ═══
+async function exportPDF() {
+  const btn = document.getElementById('btn-pdf');
+  btn.disabled = true;
+  setStatus('loading', 'กำลังสร้าง PDF...');
+  try {
+    const el = document.getElementById('slide-canvas');
+    let styles = '';
+    document.querySelectorAll('style').forEach(s => { styles += s.textContent + '\n'; });
+
+    // 16:9 size in mm: 338.67 x 190.5 mm (common widescreen)
+    // Or use px-based: 1920x1080 equivalent
+    const slideHTML = el.outerHTML;
+
+    const printHTML = '<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8">'
+      + '<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">'
+      + '<style>' + styles
+      + '@page { size: 338.67mm 190.5mm; margin: 0; }'
+      + '* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box; }'
+      + 'html, body { margin: 0; padding: 0; width: 338.67mm; height: 190.5mm; background: #EEF1F6; overflow: hidden; }'
+      + '#slide-canvas { width: 338.67mm !important; height: 190.5mm !important; aspect-ratio: unset !important; border-radius: 0 !important; position: relative !important; }'
+      + '<\/style></head><body>'
+      + slideHTML
+      + '<script>window.addEventListener("load",function(){setTimeout(function(){window.print();},600);});<\/script>'
+      + '</body></html>';
+
+    const win = window.open('', '_blank', 'width=1400,height=800');
+    if (!win) { setStatus('error', '❌ กรุณาอนุญาต Pop-up แล้วลองใหม่'); btn.disabled=false; return; }
+    win.document.open();
+    win.document.write(printHTML);
+    win.document.close();
+    setStatus('success', '✅ เปิด Print dialog แล้ว — เลือก "Save as PDF" ครับ (ขนาด 16:9)');
+  } catch(e) {
+    setStatus('error', '❌ ' + e.message);
+  }
+  btn.disabled = false;
+}
+
+
+
+// ═══ EXPORT STATUS ═══
+function setStatus(type, msg) {
+  const bar = document.getElementById('exp-status');
+  bar.className = 'status-bar ' + type;
+  document.getElementById('exp-msg').textContent = msg;
+  document.getElementById('exp-spin').style.display = type==='loading'?'block':'none';
+  if (type!=='loading') setTimeout(()=>{ bar.className='status-bar'; }, 3500);
+}
+
+// ═══ EXPORT CORE ═══
+// ═══ INIT ═══
+buildForm();
+updateDashboard();
+switchTab('form');
+</script>
+</body>
+</html>
