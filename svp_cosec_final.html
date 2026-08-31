@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KH Organizing — SVP / CO-SVP Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Prompt',sans-serif;background:#eef1f8;min-height:100vh;}
+.screen{display:none;}.screen.active{display:block;}
+
+/* TOPBAR */
+.topbar{background:#fff;padding:10px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,0.07);position:sticky;top:0;z-index:100;}
+.tb-left{display:flex;align-items:center;gap:12px;}
+.tb-logo{width:44px;height:44px;background:#1d4ed8;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;box-shadow:0 3px 12px rgba(29,78,216,0.4);flex-shrink:0;}
+.tb-main{font-size:16px;font-weight:900;color:#475569;}.tb-main span{color:#1d4ed8;}
+.tb-sub{font-size:11px;font-weight:700;color:#f97316;letter-spacing:.3px;}
+.tb-right{display:flex;gap:7px;align-items:center;}
+.tbbtn{display:flex;align-items:center;gap:4px;padding:6px 13px;border-radius:20px;font-size:10px;font-family:'Prompt',sans-serif;font-weight:700;cursor:pointer;border:none;}
+.btn-logout{background:#fee2e2;color:#991b1b;}
+.btn-sw-b{background:#dbeafe;color:#1e40af;}
+.btn-sw-o{background:#ffedd5;color:#c2410c;}
+.btn-back{background:#f1f5f9;color:#475569;}
+
+/* HERO */
+.hero{padding:22px 22px 18px;display:flex;align-items:flex-end;justify-content:space-between;}
+.hero.svp-bg{background:linear-gradient(135deg,#0f172a,#1e3a8a);}
+.hero.cosec-bg{background:linear-gradient(135deg,#1e1b4b,#4c1d95);}
+.greet-small{font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);margin-bottom:4px;}
+.greet-big{font-size:46px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1.5px;}
+.greet-big .accent{color:#f97316;}
+.greet-role{font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);margin-top:7px;letter-spacing:.3px;}
+.hero-right{text-align:right;}
+.hero-date{font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:10px;}
+.kpi-strip{display:flex;gap:8px;justify-content:flex-end;}
+.kpi-pill{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:8px 14px;text-align:center;}
+.kpi-val{font-size:21px;font-weight:800;color:#fff;}
+.kpi-lbl{font-size:8px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:.5px;margin-top:1px;}
+
+/* MAIN */
+.main{padding:14px 18px;display:flex;flex-direction:column;gap:12px;}
+
+/* SECTION CARD */
+.scard{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);}
+.scard-head{padding:12px 18px 10px;display:flex;align-items:center;justify-content:space-between;position:relative;border-bottom:1px solid #f1f5f9;}
+.bnum{font-size:58px;font-weight:900;line-height:1;position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:0.055;color:#0f172a;pointer-events:none;letter-spacing:-3px;}
+.sc-wrap{margin-left:48px;}
+.sc-name{font-size:12px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:.5px;}
+.sc-sub{font-size:9px;color:#94a3b8;letter-spacing:.3px;margin-top:1px;}
+.sc-link{font-size:10px;color:#1d4ed8;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;white-space:nowrap;text-transform:uppercase;}
+.scard-body{padding:14px 18px 16px;}
+
+/* COMPOSE FORM */
+.compose-form{display:flex;flex-direction:column;}
+.cf-row{display:grid;gap:14px;padding:13px 18px;border-bottom:1px solid #f1f5f9;align-items:end;}
+.cf-row:last-child{border-bottom:none;}
+.cf-row.r1{grid-template-columns:2.2fr 1.6fr 1fr 1fr;}
+.cf-row.r2{grid-template-columns:1fr auto;gap:20px;align-items:center;}
+.cf-row.r3{grid-template-columns:1fr;}
+.flbl{font-size:9px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.req{color:#ef4444;}
+.finput{width:100%;background:#f8faff;border:1.5px solid #e2e8f0;border-radius:9px;padding:8px 12px;font-size:11px;font-family:'Prompt',sans-serif;color:#475569;outline:none;transition:border-color .15s;}
+.finput:focus{border-color:#1d4ed8;background:#fff;}
+textarea.finput{height:72px;resize:none;line-height:1.65;}
+.prio-row{display:flex;gap:6px;flex-wrap:wrap;}
+.pchip{padding:7px 12px;border-radius:20px;font-size:9px;font-weight:700;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Prompt',sans-serif;transition:all .12s;}
+.pchip:hover{border-color:#94a3b8;}
+.pchip.pn{border-color:#1d4ed8;background:#dbeafe;color:#1e40af;}
+.pchip.pu{border-color:#ef4444;background:#fee2e2;color:#991b1b;}
+.pchip.pi{border-color:#059669;background:#dcfce7;color:#166634;}
+.rec-box{background:#f8faff;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.rec-divider{width:1px;height:34px;background:#e2e8f0;flex-shrink:0;}
+.rec-gl{font-size:8px;font-weight:700;color:#94a3b8;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px;}
+.chips-row{display:flex;flex-wrap:wrap;gap:5px;}
+.achip{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:9px;font-weight:700;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;font-family:'Prompt',sans-serif;transition:all .12s;}
+.achip:hover{border-color:#1d4ed8;color:#1d4ed8;}
+.achip.sel{border-color:#1d4ed8;background:#1d4ed8;color:#fff;}
+.achip.sel-o{border-color:#7c3aed;background:#7c3aed;color:#fff;}
+.cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sel-all-btn{font-size:9px;font-weight:700;color:#1d4ed8;cursor:pointer;padding:3px 9px;border-radius:6px;background:#eff6ff;border:none;font-family:'Prompt',sans-serif;white-space:nowrap;}
+.cf-btns{display:flex;flex-direction:column;gap:7px;align-items:flex-end;flex-shrink:0;}
+.cf-note{font-size:8px;color:#94a3b8;text-align:right;max-width:160px;line-height:1.5;}
+.bclear{padding:7px 14px;border-radius:20px;font-size:9px;font-family:'Prompt',sans-serif;font-weight:700;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;white-space:nowrap;}
+.bsend{padding:8px 20px;border-radius:20px;font-size:10px;font-family:'Prompt',sans-serif;font-weight:700;cursor:pointer;border:none;background:#1d4ed8;color:#fff;box-shadow:0 3px 10px rgba(29,78,216,0.3);display:flex;align-items:center;gap:5px;white-space:nowrap;}
+
+/* AVP OVERVIEW */
+.avp-overview{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;}
+.acard{background:#f8faff;border-radius:12px;padding:11px;cursor:pointer;transition:all .14s;border:2px solid transparent;}
+.acard:hover{background:#eff6ff;border-color:#bfdbfe;}
+.acard.sel{border-color:#1d4ed8;background:#eff6ff;}
+.acard-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.aava{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;line-height:1.2;text-align:center;}
+.aname{font-size:10px;font-weight:800;color:#475569;}
+.arole{font-size:8px;color:#94a3b8;margin-top:1px;}
+.astats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;}
+.astat{text-align:center;background:#fff;border-radius:5px;padding:4px 2px;box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+.astat-val{font-size:13px;font-weight:800;color:#94a3b8;}
+.astat-lbl{font-size:6px;color:#94a3b8;font-weight:600;letter-spacing:.3px;}
+.abar{height:3px;background:#e2e8f0;border-radius:2px;overflow:hidden;margin-top:7px;}
+.abar-fill{height:100%;border-radius:2px;}
+
+/* TASKS */
+.tasks-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.tcol-title{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:5px;}
+.trow{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid #f1f5f9;}
+.trow:last-child{border-bottom:none;padding-bottom:0;}
+.tico{width:27px;height:27px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.ti-r{background:#fee2e2;color:#ef4444;}.ti-o{background:#ffedd5;color:#f97316;}
+.ti-b{background:#dbeafe;color:#1d4ed8;}.ti-g{background:#dcfce7;color:#059669;}
+.ttxt{font-size:11px;font-weight:600;color:#475569;line-height:1.35;}
+.tdue{font-size:9px;color:#94a3b8;margin-top:2px;}
+.ttag{font-size:8px;padding:2px 7px;border-radius:5px;font-weight:700;flex-shrink:0;}
+.tt-r{background:#fee2e2;color:#991b1b;}.tt-o{background:#ffedd5;color:#c2410c;}
+.tt-b{background:#dbeafe;color:#1e40af;}.tt-g{background:#dcfce7;color:#166634;}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:7px;}
+.empty-icon{font-size:28px;opacity:.2;}
+.empty-text{font-size:11px;color:#94a3b8;font-weight:600;}
+.empty-sub{font-size:9px;color:#cbd5e1;text-align:center;line-height:1.5;}
+
+/* DASHBOARD SUMMARY */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.dash-sub-title{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;display:flex;align-items:center;gap:5px;}
+.prog-item{margin-bottom:10px;}.prog-item:last-child{margin-bottom:0;}
+.prog-hd{display:flex;justify-content:space-between;margin-bottom:4px;}
+.prog-name{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.3px;}
+.prog-pct{font-size:12px;font-weight:800;}
+.prog-bar{height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:4px;}
+.pb-b{background:#1d4ed8;}.pb-r{background:#ef4444;}.pb-g{background:#059669;}.pb-o{background:#f97316;}.pb-c{background:#0891b2;}
+.quick-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
+.ql{display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:9px;font-family:'Prompt',sans-serif;font-weight:700;cursor:pointer;border:none;}
+.msg-row{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid #f1f5f9;align-items:flex-start;}
+.msg-row:last-child{border-bottom:none;padding-bottom:0;}
+.udot{width:7px;height:7px;border-radius:50%;background:#f97316;flex-shrink:0;margin-top:5px;}
+.rdot{width:7px;flex-shrink:0;}
+.mava{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;}
+.mfrom{font-size:11px;font-weight:700;color:#374151;}
+.mtag{font-size:8px;padding:1px 6px;border-radius:4px;font-weight:700;margin-left:5px;}
+.mtxt{font-size:10px;color:#64748b;margin-top:2px;line-height:1.5;}
+.mtime{font-size:8px;color:#cbd5e1;margin-top:2px;}
+
+/* HUB */
+.hub-mini{display:flex;flex-wrap:wrap;gap:7px;}
+.hmbtn{display:flex;align-items:center;gap:6px;padding:8px 13px;border-radius:10px;background:#f8faff;font-size:10px;font-family:'Prompt',sans-serif;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.3px;box-shadow:0 2px 8px rgba(0,0,0,0.07);border:none;cursor:pointer;transition:all .13s;}
+.hmbtn:hover{background:#eff6ff;color:#1d4ed8;transform:translateY(-1px);}
+
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:8px;}
+.cal-dl{font-size:8px;font-weight:700;color:#94a3b8;text-align:center;padding-bottom:3px;}
+.cal-d{width:100%;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:8px;font-weight:500;color:#64748b;border-radius:5px;cursor:pointer;gap:2px;}
+.cal-d:hover{background:#f1f5f9;}.cal-d.td{background:#1d4ed8;color:#fff;font-weight:700;border-radius:7px;}
+.evt-dot{width:3px;height:3px;border-radius:50%;background:#f97316;}
+.ce{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:7px;background:#f8faff;margin-bottom:5px;}
+.ce:last-child{margin-bottom:0;}
+.cedot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.cetime{font-size:8px;font-weight:700;color:#1d4ed8;flex-shrink:0;min-width:44px;}
+.cetxt{font-size:9px;color:#475569;font-weight:500;}
+.ceavp{font-size:8px;color:#94a3b8;margin-left:auto;}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════
+     SVP DASHBOARD
+════════════════════════════ -->
+<div id="svpScreen" class="screen active">
+
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">KH</div>
+      <div>
+        <div class="tb-main">KITCHEN &amp; HOME <span>ORGANIZING</span></div>
+        <div class="tb-sub">SVP EXECUTIVE DASHBOARD</div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <button class="tbbtn btn-sw-b" onclick="sw('cosec')"><i class="ti ti-switch-horizontal"></i> CO-SVP VIEW</button>
+      <button class="tbbtn btn-back" onclick="window.location.href='kh_dashboard_full.html'"><i class="ti ti-arrow-left"></i> หน้าหลัก</button>
+      <button class="tbbtn btn-logout"><i class="ti ti-logout"></i> ออกจากระบบ</button>
+    </div>
+  </div>
+
+  <div class="hero svp-bg">
+    <div>
+      <div class="greet-small">สวัสดีครับ,</div>
+      <div class="greet-big">SVP <span class="accent">NICK</span></div>
+      <div class="greet-role">SVP · Kitchen &amp; Home Division · ภาพรวมทั้งหมด 6 AVP</div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-date" id="svpDate"></div>
+      <div class="kpi-strip">
+        <div class="kpi-pill"><div class="kpi-val" id="svpKpiTotal">—</div><div class="kpi-lbl">TOTAL TASKS</div></div>
+        <div class="kpi-pill"><div class="kpi-val" style="color:#f87171;" id="svpKpiOver">—</div><div class="kpi-lbl">OVERDUE</div></div>
+        <div class="kpi-pill"><div class="kpi-val" style="color:#34d399;" id="svpKpiDone">—</div><div class="kpi-lbl">COMPLETED</div></div>
+        <div class="kpi-pill"><div class="kpi-val" style="color:#60a5fa;">6</div><div class="kpi-lbl">DIVISIONS</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- ▌1: COMPOSE ▌ -->
+    <div class="scard">
+      <div class="scard-head">
+        <div class="bnum" style="font-size:44px;letter-spacing:-1px;">✉</div>
+        <div class="sc-wrap"><div class="sc-name">ส่งข้อความถึง AVP / CO-SVP</div><div class="sc-sub">COMPOSE &amp; BROADCAST · SVP ONLY</div></div>
+      </div>
+      <div class="compose-form">
+        <div class="cf-row r1">
+          <div>
+            <div class="flbl"><span class="req">★</span> หัวข้อเรื่อง (SUBJECT)</div>
+            <input class="finput" id="svpSubj" type="text" placeholder="ระบุหัวข้อข้อความ...">
+          </div>
+          <div>
+            <div class="flbl">ระดับความสำคัญ (PRIORITY)</div>
+            <div class="prio-row">
+              <button class="pchip pn" onclick="setPrio(this,'pn','svp')">📋 ปกติ</button>
+              <button class="pchip" onclick="setPrio(this,'pu','svp')">🔴 ด่วน</button>
+              <button class="pchip" onclick="setPrio(this,'pi','svp')">✅ แจ้งทราบ</button>
+            </div>
+          </div>
+          <div>
+            <div class="flbl">วันเริ่มต้น (FROM)</div>
+            <input class="finput" type="date" id="svpFrom">
+          </div>
+          <div>
+            <div class="flbl">วันสิ้นสุด (UNTIL)</div>
+            <input class="finput" type="date" id="svpUntil">
+          </div>
+        </div>
+        <div class="cf-row r2">
+          <div>
+            <div class="flbl"><span><span class="req">★</span> ผู้รับ (RECIPIENTS)</span><button class="sel-all-btn" onclick="selAll('svp')">เลือกทั้งหมด</button></div>
+            <div class="rec-box">
+              <div>
+                <div class="rec-gl">EXECUTIVE</div>
+                <div class="chips-row">
+                  <div class="achip sel-o" data-g="svp" onclick="tog(this)"><div class="cdot" style="background:#7c3aed;"></div>CO-SVP / เลขา</div>
+                </div>
+              </div>
+              <div class="rec-divider"></div>
+              <div style="flex:1;">
+                <div class="rec-gl">AVP CATEGORY MANAGEMENT</div>
+                <div class="chips-row">
+                  <div class="achip" data-g="svp" onclick="tog(this)"><div class="cdot" style="background:#1d4ed8;"></div>AVP SA</div>
+                  <div class="achip" data-g="svp" onclick="tog(this)"><div class="cdot" style="background:#0891b2;"></div>AVP KC</div>
+                  <div class="achip" data-g="svp" onclick="tog(this)"><div class="cdot" style="background:#7c3aed;"></div>AVP HO1</div>
+                  <div class="achip" data-g="svp" onclick="tog(this)"><div class="cdot" style="background:#059669;"></div>AVP HO2</div>
+                  <div class="achip" data-g="svp" onclick="tog(this)"><div class="cdot" style="background:#dc2626;"></div>AVP PRO SA</div>
+                  <div class="achip" data-g="svp" onclick="tog(this)"><div class="cdot" style="background:#b45309;"></div>AVP PRO KC &amp; HO</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cf-btns">
+            <div class="cf-note"><i class="ti ti-info-circle"></i> ข้อความแสดงตลอดช่วงเวลาที่กำหนด และหายไปอัตโนมัติ</div>
+            <button class="bclear" onclick="clearForm('svp')">ล้างฟอร์ม</button>
+            <button class="bsend"><i class="ti ti-send"></i> ส่งข้อความ</button>
+          </div>
+        </div>
+        <div class="cf-row r3">
+          <div>
+            <div class="flbl"><span class="req">★</span> เนื้อหาข้อความ (MESSAGE BODY)</div>
+            <textarea class="finput" id="svpBody" placeholder="พิมพ์รายละเอียดข้อความ..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ▌2: TASKS — iframe Team Task Dashboard ▌ -->
+    <div class="scard">
+      <div class="scard-head">
+        <div class="bnum">2</div>
+        <div class="sc-wrap"><div class="sc-name">Tasks ที่มอบหมาย — ทุก AVP</div><div class="sc-sub">ASSIGNED TASKS · LIVE FROM TEAM TASK DASHBOARD</div></div>
+        <div class="sc-link" onclick="window.open('https://nickiebkk-byte.github.io/Homepro-dashboard/HOMEPRO_TEAM_DASHBOARD.html','_blank')"><i class="ti ti-external-link"></i> เปิดเต็มหน้าจอ</div>
+      </div>
+      <div style="padding:0;overflow:hidden;border-radius:0 0 16px 16px;">
+        <iframe
+          src="https://nickiebkk-byte.github.io/Homepro-dashboard/HOMEPRO_TEAM_DASHBOARD.html"
+          style="width:100%;height:620px;border:none;display:block;"
+          title="Team Task Dashboard"
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+
+    <!-- ▌3: DASHBOARD SUMMARY — iframe Team Dashboard ▌ -->
+    <div class="scard">
+      <div class="scard-head">
+        <div class="bnum">3</div>
+        <div class="sc-wrap"><div class="sc-name">Dashboard สรุปทีม — ทุก Division</div><div class="sc-sub">TEAM PROGRESS OVERVIEW · LIVE FROM TEAM DASHBOARD</div></div>
+        <div class="sc-link" onclick="window.open('https://nickiebkk-byte.github.io/Homepro-dashboard/','_blank')"><i class="ti ti-external-link"></i> เปิดเต็มหน้าจอ</div>
+      </div>
+      <div style="padding:0;overflow:hidden;border-radius:0 0 16px 16px;">
+        <iframe
+          src="https://nickiebkk-byte.github.io/Homepro-dashboard/"
+          style="width:100%;height:560px;border:none;display:block;"
+          title="Team Dashboard"
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+
+    <!-- ▌5: HUB TOOLS ▌ -->
+    <div class="scard">
+      <div class="scard-head">
+        <div class="bnum">5</div>
+        <div class="sc-wrap"><div class="sc-name">เอกสาร &amp; Tools ใน HUB</div><div class="sc-sub">QUICK ACCESS · ALL TOOLS</div></div>
+        <div class="sc-link"><i class="ti ti-home"></i> HUB หลัก</div>
+      </div>
+      <div class="scard-body">
+        <div class="hub-mini">
+          <button class="hmbtn"><i class="ti ti-layout-kanban" style="font-size:15px;color:#1d4ed8;"></i> TASK BOARD</button>
+          <button class="hmbtn"><i class="ti ti-speakerphone" style="font-size:15px;color:#f97316;"></i> PROMO PLANNER</button>
+          <button class="hmbtn"><i class="ti ti-target" style="font-size:15px;color:#7c3aed;"></i> BP2027 SUITE</button>
+          <button class="hmbtn"><i class="ti ti-package" style="font-size:15px;color:#0891b2;"></i> INVENTORY</button>
+          <button class="hmbtn"><i class="ti ti-chart-line" style="font-size:15px;color:#059669;"></i> SALES TREND</button>
+          <button class="hmbtn"><i class="ti ti-bulb" style="font-size:15px;color:#f59e0b;"></i> BIGIDEA WORKSHOP</button>
+          <button class="hmbtn"><i class="ti ti-file-analytics" style="font-size:15px;color:#dc2626;"></i> PROBLEM &amp; SOLUTION</button>
+          <button class="hmbtn"><i class="ti ti-brand-databricks" style="font-size:15px;color:#b45309;"></i> PRIVATE BRAND</button>
+          <button class="hmbtn"><i class="ti ti-grid-dots" style="font-size:15px;color:#64748b;"></i> ALL TOOLS</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     CO-SVP DASHBOARD
+════════════════════════════ -->
+<div id="cosecScreen" class="screen">
+
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">KH</div>
+      <div>
+        <div class="tb-main">KITCHEN &amp; HOME <span>ORGANIZING</span></div>
+        <div class="tb-sub">CO-SVP / SECRETARY DASHBOARD</div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <button class="tbbtn btn-sw-o" onclick="sw('svp')"><i class="ti ti-switch-horizontal"></i> SVP VIEW</button>
+      <button class="tbbtn btn-back" onclick="window.location.href='kh_dashboard_full.html'"><i class="ti ti-arrow-left"></i> หน้าหลัก</button>
+      <button class="tbbtn btn-logout"><i class="ti ti-logout"></i> ออกจากระบบ</button>
+    </div>
+  </div>
+
+  <div class="hero cosec-bg">
+    <div>
+      <div class="greet-small">สวัสดีครับ,</div>
+      <div class="greet-big">CO-SVP / <span class="accent">เลขา</span></div>
+      <div class="greet-role">Co-SVP &amp; Secretary · Kitchen &amp; Home Division</div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-date" id="cosecDate"></div>
+      <div class="kpi-strip">
+        <div class="kpi-pill"><div class="kpi-val" id="cosecKpiTotal">—</div><div class="kpi-lbl">TOTAL TASKS</div></div>
+        <div class="kpi-pill"><div class="kpi-val" style="color:#f87171;" id="cosecKpiOver">—</div><div class="kpi-lbl">OVERDUE</div></div>
+        <div class="kpi-pill"><div class="kpi-val" style="color:#34d399;" id="cosecKpiRate">—</div><div class="kpi-lbl">DONE RATE</div></div>
+        <div class="kpi-pill"><div class="kpi-val" id="cosecKpiMeet">—</div><div class="kpi-lbl">MEETINGS</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- ▌1: COMPOSE ▌ -->
+    <div class="scard">
+      <div class="scard-head">
+        <div class="bnum" style="font-size:44px;letter-spacing:-1px;">✉</div>
+        <div class="sc-wrap"><div class="sc-name">ส่งข้อความถึง AVP / SVP</div><div class="sc-sub">COMPOSE MESSAGE · CO-SVP &amp; SECRETARY</div></div>
+      </div>
+      <div class="compose-form">
+        <div class="cf-row r1">
+          <div>
+            <div class="flbl"><span class="req">★</span> หัวข้อเรื่อง (SUBJECT)</div>
+            <input class="finput" id="cosecSubj" type="text" placeholder="ระบุหัวข้อข้อความ...">
+          </div>
+          <div>
+            <div class="flbl">ระดับความสำคัญ (PRIORITY)</div>
+            <div class="prio-row">
+              <button class="pchip pn" onclick="setPrio(this,'pn','cosec')">📋 ปกติ</button>
+              <button class="pchip" onclick="setPrio(this,'pu','cosec')">🔴 ด่วน</button>
+              <button class="pchip" onclick="setPrio(this,'pi','cosec')">✅ แจ้งทราบ</button>
+            </div>
+          </div>
+          <div>
+            <div class="flbl">วันเริ่มต้น (FROM)</div>
+            <input class="finput" type="date" id="cosecFrom">
+          </div>
+          <div>
+            <div class="flbl">วันสิ้นสุด (UNTIL)</div>
+            <input class="finput" type="date" id="cosecUntil">
+          </div>
+        </div>
+        <div class="cf-row r2">
+          <div>
+            <div class="flbl"><span><span class="req">★</span> ผู้รับ (RECIPIENTS)</span><button class="sel-all-btn" onclick="selAll('cosec')">เลือกทั้งหมด</button></div>
+            <div class="rec-box">
+              <div>
+                <div class="rec-gl">EXECUTIVE</div>
+                <div class="chips-row">
+                  <div class="achip sel-o" data-g="cosec" onclick="tog(this)"><div class="cdot" style="background:#f97316;"></div>SVP Nick</div>
+                </div>
+              </div>
+              <div class="rec-divider"></div>
+              <div style="flex:1;">
+                <div class="rec-gl">AVP CATEGORY MANAGEMENT</div>
+                <div class="chips-row">
+                  <div class="achip" data-g="cosec" onclick="tog(this)"><div class="cdot" style="background:#1d4ed8;"></div>AVP SA</div>
+                  <div class="achip" data-g="cosec" onclick="tog(this)"><div class="cdot" style="background:#0891b2;"></div>AVP KC</div>
+                  <div class="achip" data-g="cosec" onclick="tog(this)"><div class="cdot" style="background:#7c3aed;"></div>AVP HO1</div>
+                  <div class="achip" data-g="cosec" onclick="tog(this)"><div class="cdot" style="background:#059669;"></div>AVP HO2</div>
+                  <div class="achip" data-g="cosec" onclick="tog(this)"><div class="cdot" style="background:#dc2626;"></div>AVP PRO SA</div>
+                  <div class="achip" data-g="cosec" onclick="tog(this)"><div class="cdot" style="background:#b45309;"></div>AVP PRO KC &amp; HO</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cf-btns">
+            <div class="cf-note"><i class="ti ti-info-circle"></i> ข้อความแสดงตลอดช่วงเวลาที่กำหนด และหายไปอัตโนมัติ</div>
+            <button class="bclear" onclick="clearForm('cosec')">ล้างฟอร์ม</button>
+            <button class="bsend"><i class="ti ti-send"></i> ส่งข้อความ</button>
+          </div>
+        </div>
+        <div class="cf-row r3">
+          <div>
+            <div class="flbl"><span class="req">★</span> เนื้อหาข้อความ (MESSAGE BODY)</div>
+            <textarea class="finput" id="cosecBody" placeholder="พิมพ์รายละเอียดข้อความ..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ▌2: AVP OVERVIEW ▌ -->
+    <div class="scard">
+      <div class="scard-head">
+        <div class="bnum">2</div>
+        <div class="sc-wrap"><div class="sc-name">Tasks ที่มอบหมาย — ทุก AVP</div><div class="sc-sub">ASSIGNED TASKS · LIVE FROM TEAM TASK DASHBOARD</div></div>
+        <div class="sc-link" onclick="window.open('https://nickiebkk-byte.github.io/Homepro-dashboard/HOMEPRO_TEAM_DASHBOARD.html','_blank')"><i class="ti ti-external-link"></i> เปิดเต็มหน้าจอ</div>
+      </div>
+      <div style="padding:0;overflow:hidden;border-radius:0 0 16px 16px;">
+        <iframe
+          src="https://nickiebkk-byte.github.io/Homepro-dashboard/HOMEPRO_TEAM_DASHBOARD.html"
+          style="width:100%;height:620px;border:none;display:block;"
+          title="Team Task Dashboard"
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+
+    <!-- ▌3: DASHBOARD SUMMARY — iframe Team Dashboard ▌ -->
+    <div class="scard">
+      <div class="scard-head">
+        <div class="bnum">3</div>
+        <div class="sc-wrap"><div class="sc-name">Dashboard สรุปทีม — CO-SVP VIEW</div><div class="sc-sub">TEAM PROGRESS OVERVIEW · LIVE FROM TEAM DASHBOARD</div></div>
+        <div class="sc-link" onclick="window.open('https://nickiebkk-byte.github.io/Homepro-dashboard/','_blank')"><i class="ti ti-external-link"></i> เปิดเต็มหน้าจอ</div>
+      </div>
+      <div style="padding:0;overflow:hidden;border-radius:0 0 16px 16px;">
+        <iframe
+          src="https://nickiebkk-byte.github.io/Homepro-dashboard/"
+          style="width:100%;height:560px;border:none;display:block;"
+          title="Team Dashboard"
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+
+    <!-- ▌4: CALENDAR ▌ -->
+    <div class="scard">
+      <div class="scard-head">
+        <div class="bnum">4</div>
+        <div class="sc-wrap"><div class="sc-name">ปฏิทินประชุม</div><div class="sc-sub">CALENDAR · CURRENT MONTH</div></div>
+        <div class="sc-link"><i class="ti ti-calendar"></i> ดูทั้งหมด</div>
+      </div>
+      <div class="scard-body">
+        <div class="cal-grid" id="calGrid"></div>
+        <div id="calEvents">
+          <div class="empty-state" style="padding:12px 0 0;">
+            <div class="empty-icon"><i class="ti ti-calendar-off"></i></div>
+            <div class="empty-text">ยังไม่มีกำหนดการในเดือนนี้</div>
+            <div class="empty-sub">เพิ่มการประชุมผ่าน Calendar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ▌5: HUB TOOLS ▌ -->
+    <div class="scard">
+      <div class="scard-head">
+        <div class="bnum">5</div>
+        <div class="sc-wrap"><div class="sc-name">เอกสาร &amp; Tools ใน HUB</div><div class="sc-sub">QUICK ACCESS · ALL TOOLS</div></div>
+        <div class="sc-link"><i class="ti ti-home"></i> HUB หลัก</div>
+      </div>
+      <div class="scard-body">
+        <div class="hub-mini">
+          <button class="hmbtn"><i class="ti ti-layout-kanban" style="font-size:15px;color:#1d4ed8;"></i> TASK BOARD</button>
+          <button class="hmbtn"><i class="ti ti-speakerphone" style="font-size:15px;color:#f97316;"></i> PROMO PLANNER</button>
+          <button class="hmbtn"><i class="ti ti-target" style="font-size:15px;color:#7c3aed;"></i> BP2027 SUITE</button>
+          <button class="hmbtn"><i class="ti ti-package" style="font-size:15px;color:#0891b2;"></i> INVENTORY</button>
+          <button class="hmbtn"><i class="ti ti-calendar" style="font-size:15px;color:#059669;"></i> CALENDAR</button>
+          <button class="hmbtn"><i class="ti ti-bulb" style="font-size:15px;color:#f59e0b;"></i> BIGIDEA WORKSHOP</button>
+          <button class="hmbtn"><i class="ti ti-file-analytics" style="font-size:15px;color:#dc2626;"></i> PROBLEM &amp; SOLUTION</button>
+          <button class="hmbtn"><i class="ti ti-grid-dots" style="font-size:15px;color:#64748b;"></i> ALL TOOLS</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── utils ── */
+function sw(s){
+  document.querySelectorAll('.screen').forEach(function(x){x.classList.remove('active');});
+  var el=document.getElementById(s+'Screen');
+  if(el){el.classList.add('active');window.scrollTo(0,0);}
+}
+function tog(el){
+  if(el.classList.contains('sel')||el.classList.contains('sel-o')){el.classList.remove('sel','sel-o');}
+  else{el.classList.add('sel');}
+}
+function selAll(g){
+  document.querySelectorAll('[data-g="'+g+'"]').forEach(function(c){c.classList.add('sel');});
+}
+function selAVP(el,n){
+  document.querySelectorAll('#svpScreen .acard').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+  document.getElementById('svpTaskTitle').textContent='Tasks ที่มอบหมาย — '+n;
+}
+function setPrio(btn,p,g){
+  document.querySelectorAll('#'+g+'Screen .pchip').forEach(function(c){c.className='pchip';});
+  btn.classList.add(p);
+}
+function clearForm(g){
+  var scr=document.getElementById(g+'Screen');
+  scr.querySelectorAll('.finput').forEach(function(f){
+    if(f.tagName==='TEXTAREA'||f.type==='text')f.value='';
+  });
+  scr.querySelectorAll('[data-g="'+g+'"]').forEach(function(c){c.classList.remove('sel','sel-o');});
+  scr.querySelectorAll('.pchip').forEach(function(c){c.className='pchip';});
+  var first=scr.querySelector('.pchip');if(first)first.classList.add('pn');
+}
+
+/* ── date helper ── */
+function thaiDate(){
+  var now=new Date();
+  var days=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+  var months=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  return days[now.getDay()]+'ที่ '+now.getDate()+' '+months[now.getMonth()]+' '+(now.getFullYear()+543);
+}
+
+/* ── init ── */
+function init(){
+  var d=thaiDate();
+  var sd=document.getElementById('svpDate');if(sd)sd.textContent=d;
+  var cd=document.getElementById('cosecDate');if(cd)cd.textContent=d;
+
+  /* set today's date as default for date inputs */
+  var today=new Date().toISOString().split('T')[0];
+  ['svpFrom','svpUntil','cosecFrom','cosecUntil'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.value=today;
+  });
+
+  /* build simple calendar for current month */
+  buildCalendar();
+
+  /* check hash for co-sec */
+  if(window.location.hash==='#cosec')sw('cosec');
+}
+
+function buildCalendar(){
+  var grid=document.getElementById('calGrid');
+  if(!grid)return;
+  var now=new Date();
+  var y=now.getFullYear(),m=now.getMonth();
+  var first=new Date(y,m,1).getDay();
+  var days=new Date(y,m+1,0).getDate();
+  var offset=(first===0)?6:first-1;
+  var dlbls=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  var html='';
+  dlbls.forEach(function(d){html+='<div class="cal-dl">'+d+'</div>';});
+  for(var i=0;i<offset;i++)html+='<div class="cal-d"></div>';
+  for(var d=1;d<=days;d++){
+    var cls=(d===now.getDate()?'cal-d td':'cal-d');
+    html+='<div class="'+cls+'">'+d+'</div>';
+  }
+  grid.innerHTML=html;
+}
+
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
