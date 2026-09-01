@@ -129,6 +129,10 @@ textarea.form-control{resize:vertical;min-height:88px}
 .prog-fill{height:100%;border-radius:4px;transition:width .5s}
 .icon-btn{background:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.9);cursor:pointer;color:var(--s600);padding:6px 9px;border-radius:8px;font-size:14px;transition:all .15s;box-shadow:var(--shadow-sm);}
 .icon-btn:hover{background:#fff;color:var(--navy);box-shadow:var(--shadow)}
+.del-btn{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.28);border-radius:8px;cursor:pointer;color:#FF4757;padding:5px 13px;font-size:12px;font-weight:800;text-transform:uppercase;font-family:'Prompt',sans-serif;transition:all .18s;white-space:nowrap}
+.del-btn:hover{background:rgba(255,71,87,0.26);border-color:#FF4757}
+.del-btn-sm{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.28);border-radius:7px;cursor:pointer;color:#FF4757;padding:4px 9px;font-size:13px;transition:all .18s;flex-shrink:0;line-height:1}
+.del-btn-sm:hover{background:rgba(255,71,87,0.26)}
 .msg-layout{display:grid;grid-template-columns:310px 1fr;border-radius:18px;overflow:hidden;border:1.5px solid var(--glass-border);box-shadow:var(--shadow);min-height:500px}
 .msg-list-panel{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-right:1px solid rgba(255,255,255,0.7);display:flex;flex-direction:column;}
 .msg-panel-hdr{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
@@ -1063,18 +1067,20 @@ function renderInboxList() {
     var f = M(m.from);
     var toR = m.tos ? m.tos.map(function(uid){ return M(uid).role; }).join(', ') : '';
     var isU = m.unread && currentMsgTab === 'inbox';
-    html += '<div class="msg-item' + (isU ? ' unread' : '') + (selectedMsgId === m._key ? ' selected' : '') + '" onclick="openMsg(\'' + m._key + '\')">';
+    var key = m._key;
+    html += '<div class="msg-item' + (isU ? ' unread' : '') + (selectedMsgId === key ? ' selected' : '') + '" onclick="openMsg(\''+key+'\')" style="position:relative">';
     html += '<div class="msg-av" style="background:' + f.color + ';font-size:8px">' + f.initial + '</div>';
-    html += '<div class="msg-meta"><div class="msg-from-row"><span class="msg-from-name">' + f.role + '</span><span class="msg-time-tag">' + m.time + '</span></div>';
+    html += '<div class="msg-meta">';
+    html += '<div class="msg-from-row"><span class="msg-from-name">' + f.role + '</span><span class="msg-time-tag">' + m.time + '</span></div>';
     html += '<div class="msg-subject">' + (m.subject || '') + '</div>';
-    html += '<div class="msg-preview">' + (currentMsgTab === 'sent' ? 'TO: ' + toR + ' - ' : '') + (m.body || '').substring(0, 45) + '</div></div>';
-    html += (isU ? '<div class="unread-dot"></div>' : '');
-  html += '<button onclick="event.stopPropagation();deleteMessage(\'' + m._key + '\')" style="background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.3);border-radius:8px;cursor:pointer;color:#FF4757;padding:4px 8px;font-size:13px;flex-shrink:0;align-self:center;margin-left:4px;transition:all .15s" onmouseover="this.style.background='rgba(255,71,87,0.25)'" onmouseout="this.style.background='rgba(255,71,87,0.12)'">&#128465;</button>';
-  html += '</div>';
+    html += '<div class="msg-preview">' + (currentMsgTab === 'sent' ? 'TO: ' + toR + ' - ' : '') + (m.body || '').substring(0, 45) + '</div>';
+    html += '</div>';
+    if (isU) html += '<div class="unread-dot"></div>';
+    html += '<button class="del-btn-sm" onclick="event.stopPropagation();deleteMessage(\''+key+'\')" title="DELETE">&#128465;</button>';
+    html += '</div>';
   }
   container.innerHTML = html;
 }
-
 function switchMsgTab(tab) {
   currentMsgTab = tab;
   selectedMsgId = null;
@@ -1266,7 +1272,6 @@ function renderUpdates() {
   if (!currentUser) return;
   var typeBg = {announce:'rgba(201,168,76,0.1)', progress:'rgba(36,85,160,0.08)', info:'rgba(45,212,191,0.08)'};
   var typeBorder = {announce:'rgba(201,168,76,0.35)', progress:'rgba(36,85,160,0.25)', info:'rgba(45,212,191,0.25)'};
-  var typeIcon = {announce:'[A]', progress:'[P]', info:'[I]'};
   var typeLabel = {announce:'ANNOUNCEMENT', progress:'PROGRESS', info:'INFO'};
   var list = document.getElementById('update-list');
   var updArr = objToArr(updates).reverse();
@@ -1284,6 +1289,7 @@ function renderUpdates() {
   var html = '';
   for (var i = 0; i < updArr.length; i++) {
     var u = updArr[i];
+    var ukey = u._key;
     var usr = M(u.uid);
     var linkedTask = u.linkedTaskId ? tasks[u.linkedTaskId] : null;
     var linkedMsg = u.linkedMsgId ? messages[u.linkedMsgId] : null;
@@ -1299,7 +1305,7 @@ function renderUpdates() {
     html += '<div style="font-size:11.5px;color:var(--s400);text-transform:uppercase">' + u.time + '</div></div></div>';
     html += '<div style="display:flex;align-items:center;gap:8px">';
     html += '<div style="background:' + bg + ';border:1.5px solid ' + brd + ';border-radius:20px;padding:4px 12px;font-size:11px;font-weight:800;white-space:nowrap;text-transform:uppercase">' + lbl + '</div>';
-    html += '<button onclick="deleteUpdate(\'' + u._key + '\')" style="background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.3);border-radius:8px;cursor:pointer;color:#FF4757;padding:4px 10px;font-size:12px;font-weight:800;text-transform:uppercase;font-family:Prompt,sans-serif;transition:all .15s" onmouseover="this.style.background=\'rgba(255,71,87,0.25)\'" onmouseout="this.style.background=\'rgba(255,71,87,0.12)\'">DELETE</button>';
+    html += '<button class="del-btn" onclick="deleteUpdate(\''+ukey+'\')" >DELETE</button>';
     html += '</div></div>';
     html += '<div style="font-size:16px;font-weight:800;margin-bottom:8px;text-transform:uppercase;color:var(--navy)">' + u.subject + '</div>';
     html += '<div style="font-size:14px;color:var(--s600);line-height:1.7;margin-bottom:' + (u.pct != null || linkedTask || linkedMsg ? '12px' : '0') + ';white-space:pre-line">' + u.body + '</div>';
@@ -1311,13 +1317,12 @@ function renderUpdates() {
       html += '<div class="linked-badge" onclick="nav(\'tasks\',document.getElementById(\'nav-tasks\'))">TASK: ' + linkedTask.title + ' (' + sLabel(linkedTask.status) + ')</div>';
     }
     if (linkedMsg) {
-      html += '<div class="linked-badge" style="margin-top:6px" onclick="nav(\'inbox\',document.getElementById(\'nav-inbox\'));setTimeout(function(){openMsg(\'' + linkedMsg._key + '\')},120)">MSG: ' + (linkedMsg.subject || '') + '</div>';
+      html += '<div class="linked-badge" style="margin-top:6px" onclick="nav(\'inbox\',document.getElementById(\'nav-inbox\'));setTimeout(function(){openMsg(\''+linkedMsg._key+'\')},120)">MSG: ' + (linkedMsg.subject || '') + '</div>';
     }
     html += '</div>';
   }
   list.innerHTML = html;
 }
-
 function postUpdate() {
   var subject = document.getElementById('u-subject').value.trim();
   var body = document.getElementById('u-body').value.trim();
