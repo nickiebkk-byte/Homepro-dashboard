@@ -903,6 +903,27 @@ function renderTasks() {
   tbody.innerHTML = html;
 }
 
+function deleteMessage(key) {
+  if (!confirm('DELETE THIS MESSAGE?')) return;
+  db.ref('messages/' + key).remove().then(function() {
+    selectedMsgId = null;
+    document.getElementById('msg-right-panel').innerHTML = '<div class="empty" style="height:100%;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center"><div class="empty-icon">&#128233;</div><div class="empty-text">SELECT A MESSAGE</div></div>';
+    showToast('!', 'MESSAGE DELETED');
+  });
+}
+function deleteChatMsg(key) {
+  if (!confirm('DELETE THIS MESSAGE?')) return;
+  db.ref('chat/' + key).remove().then(function() {
+    showToast('!', 'CHAT MESSAGE DELETED');
+  });
+}
+function deleteUpdate(key) {
+  if (!confirm('DELETE THIS UPDATE?')) return;
+  db.ref('updates/' + key).remove().then(function() {
+    showToast('!', 'UPDATE DELETED');
+  });
+}
+
 function filterTasks(s, btn) {
   filterStatus = s;
   var btns = document.querySelectorAll('.tab-btn');
@@ -1047,7 +1068,9 @@ function renderInboxList() {
     html += '<div class="msg-meta"><div class="msg-from-row"><span class="msg-from-name">' + f.role + '</span><span class="msg-time-tag">' + m.time + '</span></div>';
     html += '<div class="msg-subject">' + (m.subject || '') + '</div>';
     html += '<div class="msg-preview">' + (currentMsgTab === 'sent' ? 'TO: ' + toR + ' - ' : '') + (m.body || '').substring(0, 45) + '</div></div>';
-    html += (isU ? '<div class="unread-dot"></div>' : '') + '</div>';
+    html += (isU ? '<div class="unread-dot"></div>' : '');
+  html += '<button onclick="event.stopPropagation();deleteMessage(\'' + m._key + '\')" style="background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.3);border-radius:8px;cursor:pointer;color:#FF4757;padding:4px 8px;font-size:13px;flex-shrink:0;align-self:center;margin-left:4px;transition:all .15s" onmouseover="this.style.background='rgba(255,71,87,0.25)'" onmouseout="this.style.background='rgba(255,71,87,0.12)'">&#128465;</button>';
+  html += '</div>';
   }
   container.innerHTML = html;
 }
@@ -1093,7 +1116,7 @@ function openMsg(key) {
     linkedHtml += '</div>';
   }
   document.getElementById('msg-right-panel').innerHTML =
-    '<div class="conv-header"><div class="conv-subject">' + (m.subject || '') + '</div><div class="conv-meta"><span>FROM: ' + frm.role + '</span><span>TO: ' + toR + '</span><span>' + (m.date || '') + ' ' + m.time + '</span></div></div>' +
+    '<div class="conv-header"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div><div class="conv-subject">' + (m.subject || '') + '</div><div class="conv-meta"><span>FROM: ' + frm.role + '</span><span>TO: ' + toR + '</span><span>' + (m.date || '') + ' ' + m.time + '</span></div></div><button onclick="deleteMessage(\'' + key + '\')" style="background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.3);border-radius:9px;cursor:pointer;color:#FF4757;padding:6px 12px;font-size:12px;font-weight:800;white-space:nowrap;flex-shrink:0;text-transform:uppercase;font-family:Prompt,sans-serif" onmouseover="this.style.background=\'rgba(255,71,87,0.25)\'" onmouseout="this.style.background=\'rgba(255,71,87,0.12)\'">DELETE</button></div></div>' +
     '<div class="conv-body" id="conv-body">' + thread + '</div>' + linkedHtml +
     '<div class="reply-bar"><div style="font-size:11px;font-weight:800;color:var(--s600);margin-bottom:8px;text-transform:uppercase;letter-spacing:1.5px">REPLY</div>' +
     '<textarea class="reply-input" id="reply-input-' + key + '" placeholder="Type your reply..."></textarea>' +
@@ -1212,6 +1235,7 @@ function renderChat() {
     }
     html += '">' + (m.msg || '') + '</div>';
     html += '<div style="font-size:11px;color:var(--s400);margin-top:4px;text-transform:uppercase;' + (mine ? 'text-align:right' : '') + '">' + m.time + '</div>';
+    html += '<button onclick="deleteChatMsg(\'' + chatArr[i]._key + '\')" style="background:rgba(255,71,87,0.1);border:none;border-radius:6px;cursor:pointer;color:#FF4757;padding:2px 7px;font-size:12px;margin-top:4px;' + (mine ? 'align-self:flex-end' : 'align-self:flex-start') + ';transition:all .15s" onmouseover="this.style.background=\'rgba(255,71,87,0.25)\'" onmouseout="this.style.background=\'rgba(255,71,87,0.1)\'">&#128465;</button>';
     html += '</div></div></div>';
   }
   c.innerHTML = html;
@@ -1273,7 +1297,10 @@ function renderUpdates() {
     html += '<div style="width:44px;height:44px;border-radius:50%;background:' + usr.color + ';display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,0.2)">' + usr.initial + '</div>';
     html += '<div><div style="font-size:16px;font-weight:800;text-transform:uppercase;color:var(--navy);display:flex;align-items:center;gap:8px">' + usr.role + ' ' + autoTag + '</div>';
     html += '<div style="font-size:11.5px;color:var(--s400);text-transform:uppercase">' + u.time + '</div></div></div>';
-    html += '<div style="background:' + bg + ';border:1.5px solid ' + brd + ';border-radius:20px;padding:4px 12px;font-size:11px;font-weight:800;white-space:nowrap;text-transform:uppercase">' + lbl + '</div></div>';
+    html += '<div style="display:flex;align-items:center;gap:8px">';
+    html += '<div style="background:' + bg + ';border:1.5px solid ' + brd + ';border-radius:20px;padding:4px 12px;font-size:11px;font-weight:800;white-space:nowrap;text-transform:uppercase">' + lbl + '</div>';
+    html += '<button onclick="deleteUpdate(\'' + u._key + '\')" style="background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.3);border-radius:8px;cursor:pointer;color:#FF4757;padding:4px 10px;font-size:12px;font-weight:800;text-transform:uppercase;font-family:Prompt,sans-serif;transition:all .15s" onmouseover="this.style.background=\'rgba(255,71,87,0.25)\'" onmouseout="this.style.background=\'rgba(255,71,87,0.12)\'">DELETE</button>';
+    html += '</div></div>';
     html += '<div style="font-size:16px;font-weight:800;margin-bottom:8px;text-transform:uppercase;color:var(--navy)">' + u.subject + '</div>';
     html += '<div style="font-size:14px;color:var(--s600);line-height:1.7;margin-bottom:' + (u.pct != null || linkedTask || linkedMsg ? '12px' : '0') + ';white-space:pre-line">' + u.body + '</div>';
     if (u.pct != null) {
