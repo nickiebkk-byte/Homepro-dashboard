@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>EXECLINK</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -39,7 +39,8 @@
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', 'Prompt', sans-serif;
+  font-family: 'Prompt', sans-serif;
+  text-transform: uppercase;
   background-color: var(--bg-frame);
   color: var(--text-main);
   min-height: 100vh;
@@ -232,7 +233,7 @@ body {
 }
 .sidebar-brand-text {
   color: #FFFFFF;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 800;
 }
 .user-card {
@@ -257,7 +258,7 @@ body {
 }
 .user-name {
   color: #FFFFFF;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
 }
 .user-role-tag {
@@ -288,7 +289,7 @@ body {
   border-radius: var(--radius-full);
   cursor: pointer;
   color: #9CA3AF;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 600;
   transition: all .18s;
   margin-bottom: 4px;
@@ -378,7 +379,7 @@ body {
   font-size: 16px;
 }
 .topbar-title {
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 800;
   color: var(--text-main);
 }
@@ -426,8 +427,8 @@ body {
 .page { display: none; }
 .page.active { display: block; }
 .page-header { margin-bottom: 20px; }
-.page-title { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
-.page-sub { font-size: 12.5px; color: var(--text-muted); font-weight: 600; }
+.page-title { font-size: 48px; font-weight: 800; margin-bottom: 4px; }
+.page-sub { font-size: 25px; color: var(--text-muted); font-weight: 600; }
 
 /* GOODBOARD DARK & LIGHT BENTO CARDS */
 .stats-row {
@@ -445,6 +446,15 @@ body {
   overflow: hidden;
   box-shadow: var(--shadow-card);
 }
+.stat-card.lime-card {
+  background: var(--lime);
+  color: var(--lime-dark);
+}
+.stat-card.lime-card .stat-label { color: var(--lime-dark); opacity: 0.7; }
+.stat-card.lime-card .stat-value { color: var(--lime-dark) !important; }
+.stat-card.lime-card .stat-note { color: var(--lime-dark); opacity: 0.6; }
+.stat-card.lime-card .stat-icon { background: rgba(0,0,0,0.1); border-radius: 12px; }
+
 .stat-card:nth-child(4) {
   background: var(--lime);
   color: var(--lime-dark);
@@ -516,7 +526,7 @@ body {
   gap: 8px;
 }
 .card-title {
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 800;
   color: var(--text-main);
 }
@@ -566,6 +576,7 @@ body {
   font-family: inherit;
   color: var(--text-main);
 }
+input.form-control, textarea.form-control { text-transform: none; }
 .form-control:focus {
   outline: none;
   border-color: var(--sidebar-dark);
@@ -848,8 +859,8 @@ textarea.form-control { resize: vertical; min-height: 80px; }
       <div class="login-logo-icon">🔗</div>
       <div><div class="login-logo-text">EXECLINK</div><div class="login-logo-sub">EXECUTIVE PLATFORM</div></div>
     </div>
-    <div class="login-title">Sign in</div>
-    <div class="login-sub">Select your position to continue</div>
+    <div class="login-title">SIGN IN</div>
+    <div class="login-sub">SELECT YOUR POSITION TO CONTINUE</div>
     <div class="role-label">YOUR POSITION</div>
     <div class="role-grid" id="role-grid">
       <div class="role-btn selected" data-uid="svp1" onclick="selectRole(this)"><div class="role-btn-name">SVP</div></div>
@@ -861,8 +872,8 @@ textarea.form-control { resize: vertical; min-height: 80px; }
       <div class="role-btn" data-uid="avp_pro_sa" onclick="selectRole(this)"><div class="role-btn-name">AVP PRO SA</div></div>
       <div class="role-btn" data-uid="avp_pro_kcho" onclick="selectRole(this)"><div class="role-btn-name">AVP PRO KCHO</div></div>
     </div>
-    <input class="login-input" type="password" id="pass-input" placeholder="Password">
-    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <input class="login-input" type="password" id="pass-input" placeholder="PASSWORD">
+    <button class="login-btn" onclick="doLogin()">SIGN IN →</button>
     <div class="login-error" id="login-error">Incorrect password — please try again</div>
   </div>
 </div>
@@ -880,18 +891,18 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">MAIN</div>
-      <div class="nav-item active" onclick="nav('dashboard',this)"><span class="nav-icon">📊</span>Dashboard</div>
-      <div class="nav-item" id="nav-tasks" onclick="nav('tasks',this)"><span class="nav-icon">📋</span>Assign Task<span class="nav-badge" id="badge-tasks" style="display:none">0</span></div>
+      <div class="nav-item active" onclick="nav('dashboard',this)"><span class="nav-icon">📊</span>DASHBOARD</div>
+      <div class="nav-item" id="nav-tasks" onclick="nav('tasks',this)"><span class="nav-icon">📋</span>ASSIGN TASK<span class="nav-badge" id="badge-tasks" style="display:none">0</span></div>
       <div class="nav-section">COMMUNICATION</div>
-      <div class="nav-item" id="nav-inbox" onclick="nav('inbox',this)"><span class="nav-icon">📨</span>Messages<span class="nav-badge" id="badge-inbox" style="display:none">0</span></div>
-      <div class="nav-item" onclick="nav('chat',this)"><span class="nav-icon">🗨️</span>Group Chat</div>
-      <div class="nav-item" id="nav-updates" onclick="nav('updates',this)"><span class="nav-icon">📢</span>Updates<span class="nav-badge" id="badge-updates" style="display:none">0</span></div>
+      <div class="nav-item" id="nav-inbox" onclick="nav('inbox',this)"><span class="nav-icon">📨</span>MESSAGES<span class="nav-badge" id="badge-inbox" style="display:none">0</span></div>
+      <div class="nav-item" onclick="nav('chat',this)"><span class="nav-icon">🗨️</span>GROUP CHAT</div>
+      <div class="nav-item" id="nav-updates" onclick="nav('updates',this)"><span class="nav-icon">📢</span>UPDATES<span class="nav-badge" id="badge-updates" style="display:none">0</span></div>
       <div class="nav-section">TEAM</div>
-      <div class="nav-item" onclick="nav('team',this)"><span class="nav-icon">👥</span>Members</div>
+      <div class="nav-item" onclick="nav('team',this)"><span class="nav-icon">👥</span>MEMBERS</div>
     </nav>
     <div class="sidebar-footer">
       <div style="padding:0 8px 10px;display:flex;justify-content:center"><div class="rt-badge"><div class="rt-dot"></div>Realtime Sync</div></div>
-      <button class="logout-btn" onclick="doLogout()"><span>🚪</span>Sign Out</button>
+      <button class="logout-btn" onclick="doLogout()"><span>🚪</span>SIGN OUT</button>
     </div>
   </aside>
 
@@ -899,10 +910,10 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <div class="topbar">
       <div class="topbar-left">
         <button class="hamburger" onclick="toggleSidebar()">☰</button>
-        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-title" id="topbar-title">DASHBOARD</div>
       </div>
       <div class="topbar-actions">
-        <button class="btn btn-glass btn-sm" onclick="nav('inbox',document.getElementById('nav-inbox'));setTimeout(showCompose,80)">✉️ Message</button>
+        <button class="btn btn-glass btn-sm" onclick="nav('inbox',document.getElementById('nav-inbox'));setTimeout(showCOMPOSE,80)">✉️ Message</button>
         <button class="btn btn-orange btn-sm" onclick="nav('tasks',document.getElementById('nav-tasks'))">📋 Assign</button>
       </div>
     </div>
@@ -912,7 +923,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
       <div class="page active" id="page-dashboard">
         <div class="page-header"><div class="page-title">Executive Summary</div><div class="page-sub" id="dash-date"></div></div>
         <div class="stats-row">
-          <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">TOTAL TASKS</div><div class="stat-value" id="st-total">0</div><div class="stat-note" id="st-n1">0 Task(s)</div></div>
+          <div class="stat-card lime-card"><div class="stat-icon" style="display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;background:rgba(0,0,0,0.1);border-radius:12px;font-size:20px;margin-bottom:13px">📋</div><div class="stat-label">TOTAL TASKS</div><div class="stat-value" id="st-total">0</div><div class="stat-note" id="st-n1">0 Task(s)</div></div>
           <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">COMPLETED</div><div class="stat-value" id="st-done">0</div><div class="stat-note" id="st-n2">-</div></div>
           <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">IN PROGRESS</div><div class="stat-value" id="st-doing">0</div><div class="stat-note" id="st-n3">0 Running</div></div>
           <div class="stat-card"><div class="stat-icon">📨</div><div class="stat-label">NEW MESSAGES</div><div class="stat-value" id="st-msgs">0</div><div class="stat-note" id="st-n4">0 Unread</div></div>
@@ -920,25 +931,25 @@ textarea.form-control { resize: vertical; min-height: 80px; }
         <div class="dash-grid">
           <div>
             <div class="card" style="margin-bottom:18px">
-              <div class="card-header"><div class="card-title">Recent Tasks</div><button class="btn btn-glass btn-sm" onclick="nav('tasks',document.getElementById('nav-tasks'))">View All</button></div>
+              <div class="card-header"><div class="card-title">RECENT TASKS</div><button class="btn btn-glass btn-sm" onclick="nav('tasks',document.getElementById('nav-tasks'))">VIEW ALL</button></div>
               <div class="card-body" id="dash-tasks-list"><div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No tasks yet</div></div></div>
             </div>
-            <div class="card"><div class="card-header"><div class="card-title">Activity Log</div></div><div class="card-body" id="dash-activity"><div class="empty"><div class="empty-icon">📝</div><div class="empty-text">No activity</div></div></div></div>
+            <div class="card"><div class="card-header"><div class="card-title">ACTIVITY LOG</div></div><div class="card-body" id="dash-activity"><div class="empty"><div class="empty-icon">📝</div><div class="empty-text">No activity</div></div></div></div>
           </div>
           <div>
-            <div class="card" style="margin-bottom:18px"><div class="card-header"><div class="card-title">Team Status</div></div><div class="card-body" id="dash-members"></div></div>
-            <div class="card"><div class="card-header"><div class="card-title">Latest Messages</div></div><div id="dash-msgs-preview" style="padding:10px 14px"><div class="empty"><div class="empty-icon">📭</div><div class="empty-text">No messages</div></div></div></div>
+            <div class="card" style="margin-bottom:18px"><div class="card-header"><div class="card-title">TEAM STATUS</div></div><div class="card-body" id="dash-members"></div></div>
+            <div class="card"><div class="card-header"><div class="card-title">LATEST MESSAGES</div></div><div id="dash-msgs-preview" style="padding:10px 14px"><div class="empty"><div class="empty-icon">📭</div><div class="empty-text">No messages</div></div></div></div>
           </div>
         </div>
       </div>
 
       <!-- TASKS -->
       <div class="page" id="page-tasks">
-        <div class="page-header"><div class="page-title">Assign Task</div><div class="page-sub">Create · Track · Update Status</div></div>
+        <div class="page-header"><div class="page-title">ASSIGN TASK</div><div class="page-sub">Create · Track · UPDATE STATUS</div></div>
         <div id="task-create-section">
           <div class="form-box">
             <div class="form-box-title">📋 Create New Task</div>
-            <div class="fg g1"><div><label class="form-label">TASK NAME *</label><input class="form-control" id="t-title" placeholder="Enter task name..."></div></div>
+            <div class="fg g1"><div><label class="form-label">TASK NAME *</label><input class="form-control" id="t-title" placeholder="ENTER TASK NAME..."></div></div>
             <div class="fg g1">
               <div>
                 <label class="form-label">ASSIGN TO * <span style="color:var(--text-muted);font-size:11px;font-weight:500">(MULTI-SELECT)</span></label>
@@ -946,23 +957,23 @@ textarea.form-control { resize: vertical; min-height: 80px; }
               </div>
             </div>
             <div class="fg g3">
-              <div><label class="form-label">PRIORITY</label><select class="form-control" id="t-priority"><option value="high">🔴 Urgent</option><option value="mid" selected>🟡 Normal</option><option value="low">🟢 Low</option></select></div>
+              <div><label class="form-label">PRIORITY</label><select class="form-control" id="t-priority"><option value="high">🔴 URGENT</option><option value="mid" selected>🟡 NORMAL</option><option value="low">🟢 LOW</option></select></div>
               <div><label class="form-label">DUE DATE</label><input class="form-control" id="t-due" type="date"></div>
-              <div><label class="form-label">CATEGORY</label><select class="form-control" id="t-category"><option value="">— Select —</option><option>Report</option><option>Budget</option><option>Strategy</option><option>Analysis</option><option>Meeting</option><option>Other</option></select></div>
+              <div><label class="form-label">CATEGORY</label><select class="form-control" id="t-category"><option value="">— SELECT —</option><option>REPORT</option><option>BUDGET</option><option>STRATEGY</option><option>ANALYSIS</option><option>MEETING</option><option>OTHER</option></select></div>
             </div>
-            <div class="fg g1"><div><label class="form-label">DETAILS</label><textarea class="form-control" id="t-desc" placeholder="Describe the task..."></textarea></div></div>
-            <div class="form-actions"><button class="btn btn-glass btn-sm" onclick="clearTaskForm()">Clear</button><button class="btn btn-orange" onclick="submitTask()">Assign Task</button></div>
+            <div class="fg g1"><div><label class="form-label">DETAILS</label><textarea class="form-control" id="t-desc" placeholder="DESCRIBE THE TASK..."></textarea></div></div>
+            <div class="form-actions"><button class="btn btn-glass btn-sm" onclick="clearTaskForm()">CLEAR</button><button class="btn btn-orange" onclick="submitTask()">ASSIGN TASK</button></div>
           </div>
         </div>
         <div id="task-avp-notice" style="display:none;margin-bottom:18px"><div style="background:#FEF3C7;color:#92400E;padding:12px 16px;border-radius:12px;font-size:12.5px;font-weight:600">⚠️ You can view & update your assigned tasks — task creation is reserved for SVP and CO-SVP</div></div>
         <div class="card">
           <div class="card-header">
-            <div class="card-title">All Tasks</div>
+            <div class="card-title">ALL TASKS</div>
             <div class="tab-row">
-              <button class="tab-btn active" onclick="filterTasks('all',this)">All</button>
-              <button class="tab-btn" onclick="filterTasks('doing',this)">In Progress</button>
-              <button class="tab-btn" onclick="filterTasks('todo',this)">Pending</button>
-              <button class="tab-btn" onclick="filterTasks('done',this)">Done</button>
+              <button class="tab-btn active" onclick="filterTasks('all',this)">ALL</button>
+              <button class="tab-btn" onclick="filterTasks('doing',this)">IN PROGRESS</button>
+              <button class="tab-btn" onclick="filterTasks('todo',this)">PENDING</button>
+              <button class="tab-btn" onclick="filterTasks('done',this)">DONE</button>
             </div>
           </div>
           <div class="table-wrap"><table class="task-table"><thead><tr><th>TASK NAME</th><th>ASSIGNED BY</th><th>ASSIGNEES</th><th>PRIORITY</th><th>DUE DATE</th><th>STATUS</th><th>PROGRESS</th><th></th></tr></thead><tbody id="task-tbody"></tbody></table></div>
@@ -971,12 +982,12 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 
       <!-- INBOX -->
       <div class="page" id="page-inbox">
-        <div class="page-header"><div class="page-title">Messages</div><div class="page-sub">Inbox · Sent · Compose</div></div>
+        <div class="page-header"><div class="page-title">MESSAGES</div><div class="page-sub">INBOX · SENT · COMPOSE</div></div>
         <div class="msg-layout">
           <div class="msg-list-panel">
-            <div class="msg-panel-hdr"><div style="font-size:13.5px;font-weight:800;color:var(--text-main)" id="inbox-list-title">📨 Inbox</div><button class="btn btn-orange btn-sm" onclick="showCompose()">✏️ Compose</button></div>
-            <div class="msg-tabs"><button class="msg-tab active" id="tab-inbox" onclick="switchMsgTab('inbox')">Inbox</button><button class="msg-tab" id="tab-sent" onclick="switchMsgTab('sent')">Sent</button></div>
-            <div class="msg-list" id="msg-list-container"><div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Inbox empty</div></div></div>
+            <div class="msg-panel-hdr"><div style="font-size:13.5px;font-weight:800;color:var(--text-main)" id="inbox-list-title">📨 INBOX</div><button class="btn btn-orange btn-sm" onclick="showCOMPOSE()">✏️ COMPOSE</button></div>
+            <div class="msg-tabs"><button class="msg-tab active" id="tab-inbox" onclick="switchMsgTab('inbox')">INBOX</button><button class="msg-tab" id="tab-sent" onclick="switchMsgTab('sent')">SENT</button></div>
+            <div class="msg-list" id="msg-list-container"><div class="empty"><div class="empty-icon">📭</div><div class="empty-text">INBOX empty</div></div></div>
           </div>
           <div class="msg-right" id="msg-right-panel">
             <div class="empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:380px"><div class="empty-icon">📩</div><div class="empty-text">Select a message or compose new</div></div>
@@ -986,7 +997,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 
       <!-- CHAT -->
       <div class="page" id="page-chat">
-        <div class="page-header"><div class="page-title">Group Chat</div><div class="page-sub">Executive Team Channel — Realtime</div></div>
+        <div class="page-header"><div class="page-title">GROUP CHAT</div><div class="page-sub">Executive Team Channel — Realtime</div></div>
         <div class="card">
           <div style="padding:16px 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:10px;background:#fff">
             <div style="width:36px;height:36px;border-radius:10px;background:var(--teal-light);color:#0D9488;display:flex;align-items:center;justify-content:center;font-size:16px">🏢</div>
@@ -997,7 +1008,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
             <div class="empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px"><div class="empty-icon">💬</div><div class="empty-text">No messages yet</div></div>
           </div>
           <div style="padding:14px 20px;border-top:1px solid var(--border-light);background:#fff;display:flex;gap:10px;align-items:center">
-            <input id="chat-input" class="form-control" style="border-radius:var(--radius-full)" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendChat()">
+            <input id="chat-input" class="form-control" style="border-radius:var(--radius-full)" placeholder="TYPE YOUR MESSAGE..." onkeydown="if(event.key==='Enter')sendChat()">
             <button onclick="sendChat()" style="width:40px;height:40px;border-radius:50%;background:var(--lime);color:var(--lime-dark);border:none;cursor:pointer;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800">➤</button>
           </div>
         </div>
@@ -1005,20 +1016,20 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 
       <!-- UPDATES -->
       <div class="page" id="page-updates">
-        <div class="page-header"><div class="page-title">Updates</div><div class="page-sub">Post · Link to Tasks & Messages · Realtime</div></div>
+        <div class="page-header"><div class="page-title">UPDATES</div><div class="page-sub">Post · LINK TO TASKs & Messages · Realtime</div></div>
         <div class="form-box">
-          <div class="form-box-title">📢 Post Update</div>
+          <div class="form-box-title">📢 POST UPDATE</div>
           <div class="fg g2">
-            <div><label class="form-label">SUBJECT *</label><input class="form-control" id="u-subject" placeholder="Update subject..."></div>
-            <div><label class="form-label">TYPE</label><select class="form-control" id="u-type"><option value="announce">📢 Announcement</option><option value="progress">📊 Progress Update</option><option value="info">ℹ️ Information</option></select></div>
+            <div><label class="form-label">SUBJECT *</label><input class="form-control" id="u-subject" placeholder="UPDATE SUBJECT..."></div>
+            <div><label class="form-label">TYPE</label><select class="form-control" id="u-type"><option value="announce">📢 ANNOUNCEMENT</option><option value="progress">📊 PROGRESS UPDATE</option><option value="info">ℹ️ INFORMATION</option></select></div>
           </div>
           <div class="fg g3">
             <div><label class="form-label">PROGRESS (%) — OPTIONAL</label><input class="form-control" id="u-pct" type="number" min="0" max="100" placeholder="0–100"></div>
-            <div><label class="form-label">LINK TO TASK</label><select class="form-control" id="u-task-link"><option value="">— Select Task —</option></select></div>
-            <div><label class="form-label">LINK TO MESSAGE</label><select class="form-control" id="u-msg-link"><option value="">— Select Message —</option></select></div>
+            <div><label class="form-label">LINK TO TASK</label><select class="form-control" id="u-task-link"><option value="">— SELECT TASK —</option></select></div>
+            <div><label class="form-label">LINK TO MESSAGE</label><select class="form-control" id="u-msg-link"><option value="">— SELECT MESSAGE —</option></select></div>
           </div>
-          <div class="fg g1"><div><label class="form-label">DETAILS *</label><textarea class="form-control" id="u-body" placeholder="Enter update details..."></textarea></div></div>
-          <div class="form-actions"><button class="btn btn-orange" onclick="postUpdate()">📢 Post Update</button></div>
+          <div class="fg g1"><div><label class="form-label">DETAILS *</label><textarea class="form-control" id="u-body" placeholder="ENTER UPDATE DETAILS..."></textarea></div></div>
+          <div class="form-actions"><button class="btn btn-orange" onclick="postUpdate()">📢 POST UPDATE</button></div>
         </div>
         <div class="update-list" id="update-list"><div class="empty"><div class="empty-icon">📢</div><div class="empty-text">No updates yet</div></div></div>
       </div>
@@ -1039,11 +1050,11 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <div class="modal-header"><div class="modal-title">🔄 Update Task Status</div><button class="modal-close" onclick="closeOverlay('status-modal')">✕</button></div>
     <div class="modal-body">
       <div style="font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text-main);border-bottom:1px solid var(--border-light);padding-bottom:10px" id="sm-task-name"></div>
-      <div style="margin-bottom:12px"><label class="form-label">STATUS</label><select class="form-control" id="sm-status"><option value="todo">Pending</option><option value="doing">In Progress</option><option value="done">Completed</option></select></div>
+      <div style="margin-bottom:12px"><label class="form-label">STATUS</label><select class="form-control" id="sm-status"><option value="todo">PENDING</option><option value="doing">IN PROGRESS</option><option value="done">COMPLETED</option></select></div>
       <div style="margin-bottom:12px"><label class="form-label">PROGRESS (%)</label><input class="form-control" id="sm-pct" type="number" min="0" max="100"></div>
-      <div><label class="form-label">NOTE (OPTIONAL)</label><textarea class="form-control" id="sm-note" placeholder="Add a note..."></textarea></div>
+      <div><label class="form-label">NOTE (OPTIONAL)</label><textarea class="form-control" id="sm-note" placeholder="ADD A NOTE..."></textarea></div>
     </div>
-    <div class="modal-footer"><button class="btn btn-glass" onclick="closeOverlay('status-modal')">Cancel</button><button class="btn btn-orange" onclick="saveStatus()">Save Status</button></div>
+    <div class="modal-footer"><button class="btn btn-glass" onclick="closeOverlay('status-modal')">CANCEL</button><button class="btn btn-orange" onclick="saveStatus()">SAVE STATUS</button></div>
   </div>
 </div>
 
@@ -1124,9 +1135,9 @@ function showToast(icon, text) {
   setTimeout(function(){t.classList.remove('show');}, 3400);
 }
 function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
-function pLabel(p){return p==='high'?'Urgent':p==='mid'?'Normal':'Low';}
+function pLabel(p){return p==='high'?'URGENT':p==='mid'?'NORMAL':'LOW';}
 function pClass(p){return p==='high'?'p-high':p==='mid'?'p-mid':'p-low';}
-function sLabel(s){return s==='done'?'Completed':s==='doing'?'In Progress':'Pending';}
+function sLabel(s){return s==='done'?'Completed':s==='doing'?'IN PROGRESS':'PENDING';}
 function sClass(s){return s==='done'?'s-done':s==='doing'?'s-doing':'s-todo';}
 function objToArr(obj) {
   if (!obj) return [];
@@ -1141,7 +1152,7 @@ function objToArr(obj) {
 }
 
 function selectRole(el) {
-  var btns = document.querySelectorAll('.role-btn');
+  var btns = document.querySelectorALL('.role-btn');
   for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('selected'); }
   el.classList.add('selected');
   document.getElementById('login-error').style.display = 'none';
@@ -1222,7 +1233,7 @@ function attachListeners() {
   refs.messages = db.ref('messages');
   refs.messages.on('value', function(snap) {
     messages = snap.val() || {};
-    renderInboxList();
+    renderINBOXList();
     renderDashboard();
     updateBadges();
     refreshMsgLinkSelect();
@@ -1273,15 +1284,15 @@ function closeSidebar() {
 }
 
 function nav(page, el) {
-  var pages = document.querySelectorAll('.page');
+  var pages = document.querySelectorALL('.page');
   for (var i = 0; i < pages.length; i++) { pages[i].classList.remove('active'); }
   document.getElementById('page-' + page).classList.add('active');
-  var navItems = document.querySelectorAll('.nav-item');
+  var navItems = document.querySelectorALL('.nav-item');
   for (var i = 0; i < navItems.length; i++) { navItems[i].classList.remove('active'); }
   if (el) el.classList.add('active');
-  var titles = {dashboard:'Dashboard', tasks:'Assign Task', inbox:'Messages', chat:'Group Chat', updates:'Updates', team:'Team Members'};
+  var titles = {dashboard:'Dashboard', tasks:'ASSIGN TASK', inbox:'Messages', chat:'Group Chat', updates:'Updates', team:'Team Members'};
   document.getElementById('topbar-title').textContent = titles[page] || page;
-  if (page === 'inbox') { renderInboxList(); refreshMsgLinkSelect(); }
+  if (page === 'inbox') { renderINBOXList(); refreshMsgLinkSelect(); }
   if (page === 'updates') { renderUpdates(); refreshTaskLinkSelect(); refreshMsgLinkSelect(); }
   if (page === 'chat') renderChat();
   if (page === 'team') renderTeam();
@@ -1344,8 +1355,8 @@ function renderDashboard() {
   document.getElementById('st-msgs').textContent = ur;
   document.getElementById('st-n1').textContent = mt.length === 0 ? '0 Task' : mt.length + ' Task(s)';
   document.getElementById('st-n2').textContent = mt.length > 0 ? Math.round(done/mt.length*100) + '% Rate' : '-';
-  document.getElementById('st-n3').textContent = doing > 0 ? doing + ' Running' : 'All Clear';
-  document.getElementById('st-n4').textContent = ur > 0 ? ur + ' Unread' : 'Inbox Clear';
+  document.getElementById('st-n3').textContent = doing > 0 ? doing + ' Running' : 'ALL Clear';
+  document.getElementById('st-n4').textContent = ur > 0 ? ur + ' Unread' : 'INBOX Clear';
 
   var tl = document.getElementById('dash-tasks-list');
   var recent = taskArr.slice(-5).reverse();
@@ -1396,7 +1407,7 @@ function renderDashboard() {
     dmHtml += '<div class="member-av" style="background:' + m.color + '">' + m.initial + '</div>';
     dmHtml += '<div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text-main)">' + m.role + '</div></div>';
     dmHtml += '<div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);font-weight:600">';
-    dmHtml += '<div class="dot dot-' + m.status + '"></div>' + (m.status === 'online' ? 'Online' : 'Offline') + '</div></div>';
+    dmHtml += '<div class="dot dot-' + m.status + '"></div>' + (m.status === 'online' ? 'ONLINE' : 'OFFLINE') + '</div></div>';
   }
   document.getElementById('dash-members').innerHTML = dmHtml;
 
@@ -1438,7 +1449,7 @@ function buildPicker(chipsId, optId, excludeUid) {
 }
 function updateChips(chipsId, optId) {
   var ch = document.getElementById(chipsId);
-  var checked = document.querySelectorAll('#' + optId + ' input:checked');
+  var checked = document.querySelectorALL('#' + optId + ' input:checked');
   var html = '';
   for (var i = 0; i < checked.length; i++) {
     var m = M(checked[i].value);
@@ -1452,13 +1463,13 @@ function removeR(uid, optId, chipsId) {
   if (cb) { cb.checked = false; updateChips(chipsId, optId); }
 }
 function getUIDs(optId) {
-  var checked = document.querySelectorAll('#' + optId + ' input:checked');
+  var checked = document.querySelectorALL('#' + optId + ' input:checked');
   var result = [];
   for (var i = 0; i < checked.length; i++) result.push(checked[i].value);
   return result;
 }
-function getComposeUIDs() {
-  var checked = document.querySelectorAll('.compose-rcb:checked');
+function getCOMPOSEUIDs() {
+  var checked = document.querySelectorALL('.compose-rcb:checked');
   var result = [];
   for (var i = 0; i < checked.length; i++) result.push(checked[i].value);
   return result;
@@ -1530,7 +1541,7 @@ function deleteUpdate(key) {
 
 function filterTasks(s, btn) {
   filterStatus = s;
-  var btns = document.querySelectorAll('.tab-btn');
+  var btns = document.querySelectorALL('.tab-btn');
   for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
   btn.classList.add('active');
   renderTasks();
@@ -1540,7 +1551,7 @@ function clearTaskForm() {
   document.getElementById('t-desc').value = '';
   document.getElementById('t-priority').value = 'mid';
   document.getElementById('t-category').value = '';
-  var cbs = document.querySelectorAll('#task-options input');
+  var cbs = document.querySelectorALL('#task-options input');
   for (var i = 0; i < cbs.length; i++) cbs[i].checked = false;
   updateChips('task-chips', 'task-options');
 }
@@ -1619,7 +1630,7 @@ function saveStatus() {
 
 function refreshTaskLinkSelect() {
   var sel = document.getElementById('u-task-link'); if (!sel) return;
-  sel.innerHTML = '<option value="">- Select Task -</option>';
+  sel.innerHTML = '<option value="">- SELECT TASK -</option>';
   var arr = objToArr(tasks);
   for (var i = 0; i < arr.length; i++) {
     var o = document.createElement('option');
@@ -1630,7 +1641,7 @@ function refreshTaskLinkSelect() {
 }
 function refreshMsgLinkSelect() {
   var sel = document.getElementById('u-msg-link'); if (!sel) return;
-  sel.innerHTML = '<option value="">- Select Message -</option>';
+  sel.innerHTML = '<option value="">- SELECT MESSAGE -</option>';
   var arr = objToArr(messages);
   for (var i = 0; i < arr.length; i++) {
     var m = arr[i];
@@ -1644,7 +1655,7 @@ function refreshMsgLinkSelect() {
   }
 }
 
-function renderInboxList() {
+function renderINBOXList() {
   if (!currentUser) return;
   var msgArr = objToArr(messages).reverse();
   var list = [];
@@ -1658,7 +1669,7 @@ function renderInboxList() {
   }
   var container = document.getElementById('msg-list-container');
   if (!list.length) {
-    container.innerHTML = '<div class="empty"><div class="empty-icon">&#128237;</div><div class="empty-text">' + (currentMsgTab === 'inbox' ? 'Inbox empty' : 'No sent messages') + '</div></div>';
+    container.innerHTML = '<div class="empty"><div class="empty-icon">&#128237;</div><div class="empty-text">' + (currentMsgTab === 'inbox' ? 'INBOX empty' : 'No sent messages') + '</div></div>';
     return;
   }
   var html = '';
@@ -1686,8 +1697,8 @@ function switchMsgTab(tab) {
   selectedMsgId = null;
   document.getElementById('tab-inbox').classList.toggle('active', tab === 'inbox');
   document.getElementById('tab-sent').classList.toggle('active', tab === 'sent');
-  document.getElementById('inbox-list-title').textContent = tab === 'inbox' ? ' Inbox' : ' Sent';
-  renderInboxList();
+  document.getElementById('inbox-list-title').textContent = tab === 'inbox' ? ' INBOX' : ' SENT';
+  renderINBOXList();
   document.getElementById('msg-right-panel').innerHTML = '<div class="empty" style="height:100%;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center"><div class="empty-icon">&#128233;</div><div class="empty-text">Select a message</div></div>';
 }
 
@@ -1697,7 +1708,7 @@ function openMsg(key) {
     db.ref('messages/' + key + '/unread').set(false);
   }
   selectedMsgId = key;
-  renderInboxList();
+  renderINBOXList();
   var frm = M(m.from);
   var toR = m.tos ? m.tos.map(function(uid){ return M(uid).role; }).join(', ') : '';
   var replies = m.replies ? Object.values(m.replies) : [];
@@ -1725,10 +1736,10 @@ function openMsg(key) {
     '<div class="conv-header"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div><div class="conv-subject">' + (m.subject || '') + '</div><div class="conv-meta"><span>From: ' + frm.role + '</span><span>To: ' + toR + '</span><span>' + (m.date || '') + ' ' + m.time + '</span></div></div><button class="del-btn" onclick="deleteMessage(\'' + key + '\')">Delete</button></div></div>' +
     '<div class="conv-body" id="conv-body">' + thread + '</div>' + linkedHtml +
     '<div class="reply-bar"><div style="font-size:10.5px;font-weight:700;color:var(--text-muted);margin-bottom:6px">REPLY</div>' +
-    '<textarea class="reply-input" id="reply-input-' + key + '" placeholder="Type your reply..."></textarea>' +
+    '<textarea class="reply-input" id="reply-input-' + key + '" placeholder="TYPE YOUR REPLY..."></textarea>' +
     '<div style="display:flex;justify-content:flex-end;gap:8px">' +
-    '<button class="btn btn-glass btn-sm" onclick="openMsg(\'' + key + '\')">Refresh</button>' +
-    '<button class="btn btn-orange btn-sm" onclick="sendReply(\'' + key + '\')">Send Reply</button></div></div>';
+    '<button class="btn btn-glass btn-sm" onclick="openMsg(\'' + key + '\')">REFRESH</button>' +
+    '<button class="btn btn-orange btn-sm" onclick="sendReply(\'' + key + '\')">SEND REPLY</button></div></div>';
   setTimeout(function(){ var cb = document.getElementById('conv-body'); if (cb) cb.scrollTop = cb.scrollHeight; }, 100);
 }
 
@@ -1759,7 +1770,7 @@ function sendReply(msgKey) {
   });
 }
 
-function showCompose() {
+function showCOMPOSE() {
   document.getElementById('tab-inbox').classList.remove('active');
   document.getElementById('tab-sent').classList.remove('active');
   selectedMsgId = null;
@@ -1767,41 +1778,41 @@ function showCompose() {
   for (var i = 0; i < MEMBERS.length; i++) {
     var m = MEMBERS[i];
     if (m.uid === currentUser.uid) continue;
-    opts += '<label class="recipient-option"><input type="checkbox" class="compose-rcb" value="' + m.uid + '" onchange="updateComposeChips()">';
+    opts += '<label class="recipient-option"><input type="checkbox" class="compose-rcb" value="' + m.uid + '" onchange="updateCOMPOSEChips()">';
     opts += '<div class="r-av" style="background:' + m.color + '">' + m.initial + '</div>';
     opts += '<span>' + m.role + '</span></label>';
   }
   document.getElementById('msg-right-panel').innerHTML =
     '<div class="compose-wrap">' +
-    '<div style="font-size:16px;font-weight:800;margin-bottom:18px;color:var(--text-main)">Compose New Message</div>' +
+    '<div style="font-size:16px;font-weight:800;margin-bottom:18px;color:var(--text-main)">COMPOSE New Message</div>' +
     '<div style="margin-bottom:12px"><label class="form-label">TO (MULTI-SELECT)</label>' +
     '<div class="recipient-picker"><div class="recipient-chips" id="compose-chips"></div><div class="recipient-options" id="compose-options">' + opts + '</div></div></div>' +
-    '<div style="margin-bottom:12px"><label class="form-label">SUBJECT</label><input class="form-control" id="c-subject" placeholder="Message subject..."></div>' +
-    '<div style="margin-bottom:12px"><label class="form-label">MESSAGE</label><textarea class="form-control" id="c-body" style="min-height:120px" placeholder="Type your message..."></textarea></div>' +
+    '<div style="margin-bottom:12px"><label class="form-label">SUBJECT</label><input class="form-control" id="c-subject" placeholder="MESSAGE SUBJECT..."></div>' +
+    '<div style="margin-bottom:12px"><label class="form-label">MESSAGE</label><textarea class="form-control" id="c-body" style="min-height:120px" placeholder="TYPE YOUR MESSAGE..."></textarea></div>' +
     '<div style="display:flex;justify-content:flex-end;gap:8px">' +
-    '<button class="btn btn-glass btn-sm" onclick="switchMsgTab(\'inbox\')">Cancel</button>' +
-    '<button class="btn btn-orange" onclick="sendNewMsg()">Send Message</button></div></div>';
+    '<button class="btn btn-glass btn-sm" onclick="switchMsgTab(\'inbox\')">CANCEL</button>' +
+    '<button class="btn btn-orange" onclick="sendNewMsg()">SEND MESSAGE</button></div></div>';
 }
 
-function updateComposeChips() {
+function updateCOMPOSEChips() {
   var chips = document.getElementById('compose-chips');
   if (!chips) return;
-  var checked = document.querySelectorAll('.compose-rcb:checked');
+  var checked = document.querySelectorALL('.compose-rcb:checked');
   var html = '';
   for (var i = 0; i < checked.length; i++) {
     var m = M(checked[i].value);
     html += '<span class="recipient-chip" style="background:' + m.color + '">' + m.role;
-    html += '<button class="chip-remove" onclick="removeComposeChip(\'' + checked[i].value + '\')">x</button></span>';
+    html += '<button class="chip-remove" onclick="removeCOMPOSEChip(\'' + checked[i].value + '\')">x</button></span>';
   }
   chips.innerHTML = html;
 }
-function removeComposeChip(uid) {
+function removeCOMPOSEChip(uid) {
   var cb = document.querySelector('.compose-rcb[value="' + uid + '"]');
-  if (cb) { cb.checked = false; updateComposeChips(); }
+  if (cb) { cb.checked = false; updateCOMPOSEChips(); }
 }
 
 function sendNewMsg() {
-  var tos = getComposeUIDs();
+  var tos = getCOMPOSEUIDs();
   var subject = document.getElementById('c-subject') ? document.getElementById('c-subject').value.trim() : '';
   var body = document.getElementById('c-body') ? document.getElementById('c-body').value.trim() : '';
   if (!tos.length) { showToast('!', 'SELECT AT LEAST 1 RECIPIENT'); return; }
@@ -1860,7 +1871,7 @@ function renderUpdates() {
   if (!currentUser) return;
   var typeBg = {announce:'#FEF08A', progress: 'var(--teal-light)', info:'#F3F4F6'};
   var typeColor = {announce:'#854D0E', progress:'#0D9488', info:'#4B5563'};
-  var typeLabel = {announce:'Announcement', progress:'Progress', info:'Info'};
+  var typeLabel = {announce:'ANNOUNCEMENT', progress:'Progress', info:'Info'};
   var list = document.getElementById('update-list');
   var updArr = objToArr(updates).reverse();
   if (!updArr.length) {
@@ -1959,13 +1970,13 @@ function renderTeam() {
     html += '<div class="team-card">';
     html += '<div class="team-av-big" style="background:' + m.color + '">' + m.initial + '</div>';
     html += '<div class="team-role-name">' + m.role + '</div>';
-    html += '<div class="team-status"><div class="dot dot-' + m.status + '"></div>' + (m.status === 'online' ? 'Online' : 'Offline') + '</div>';
+    html += '<div class="team-status"><div class="dot dot-' + m.status + '"></div>' + (m.status === 'online' ? 'ONLINE' : 'OFFLINE') + '</div>';
     html += '</div>';
   }
   document.getElementById('team-grid').innerHTML = html;
 }
 
-var overlays = document.querySelectorAll('.overlay');
+var overlays = document.querySelectorALL('.overlay');
 for (var i = 0; i < overlays.length; i++) {
   (function(o){ o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('open'); }); })(overlays[i]);
 }
