@@ -296,13 +296,13 @@ textarea.form-control{resize:vertical;min-height:84px}
 /* ── KANBAN ── */
 .kanban-wrap{margin-top:18px}
 .kanban-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-.kpi-card{background:rgba(255,255,255,0.40);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);
-  border-radius:var(--radius-sm);border:1px solid rgba(255,255,255,0.78);box-shadow:var(--shadow-card);
+.kpi-card{background:var(--navy);
+  border-radius:var(--radius-sm);border:1px solid rgba(255,255,255,0.08);box-shadow:var(--shadow-card);
   padding:16px 18px;position:relative;overflow:hidden;}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--kc,var(--lime));}
-.kpi-val{font-size:36px;font-weight:800;color:var(--kc,var(--navy));line-height:1}
-.kpi-lbl{font-size:11px;font-weight:700;color:var(--s400);text-transform:uppercase;letter-spacing:1.5px;margin-top:5px}
-.kpi-sub{font-size:11px;color:var(--s400);margin-top:2px}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--lime);opacity:.8;}
+.kpi-val{font-size:36px;font-weight:800;color:var(--lime);line-height:1}
+.kpi-lbl{font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.5px;margin-top:5px}
+.kpi-sub{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px}
 
 .kban-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
 .kban-scroll::-webkit-scrollbar{height:4px}
@@ -545,10 +545,10 @@ table.mx-table tr td:last-child{border-radius:0 var(--radius-xs) var(--radius-xs
         <!-- KANBAN -->
         <div class="subtab-panel active" id="stab-kanban">
           <div class="kanban-kpi-row">
-            <div class="kpi-card" style="--kc:var(--navy)"><div class="kpi-val" id="kpi-total">0</div><div class="kpi-lbl">TOTAL ACTIVE</div></div>
-            <div class="kpi-card" style="--kc:var(--green)"><div class="kpi-val" id="kpi-ontrack">0%</div><div class="kpi-lbl">ON-TRACK</div></div>
-            <div class="kpi-card" style="--kc:var(--orange)"><div class="kpi-val" id="kpi-overdue">0</div><div class="kpi-lbl">OVERDUE</div></div>
-            <div class="kpi-card" style="--kc:var(--red)"><div class="kpi-val" id="kpi-critical">0</div><div class="kpi-lbl">CRITICAL</div></div>
+            <div class="kpi-card"><div class="kpi-val" id="kpi-total">0</div><div class="kpi-lbl">TOTAL ACTIVE</div></div>
+            <div class="kpi-card"><div class="kpi-val" id="kpi-ontrack">0%</div><div class="kpi-lbl">ON-TRACK</div></div>
+            <div class="kpi-card"><div class="kpi-val" id="kpi-overdue">0</div><div class="kpi-lbl">OVERDUE</div></div>
+            <div class="kpi-card"><div class="kpi-val" id="kpi-critical">0</div><div class="kpi-lbl">CRITICAL</div></div>
           </div>
           <div class="kban-scroll">
             <div class="kban">
@@ -660,6 +660,55 @@ table.mx-table tr td:last-child{border-radius:0 var(--radius-xs) var(--radius-xs
       <div><label class="form-label">NOTE (OPTIONAL)</label><textarea class="form-control" id="sm-note" placeholder="Add a note..."></textarea></div>
     </div>
     <div class="modal-footer"><button class="btn btn-glass" onclick="closeOverlay('status-modal')">CANCEL</button><button class="btn btn-lime" onclick="saveStatus()">SAVE STATUS</button></div>
+  </div>
+</div>
+
+<!-- TASK DETAIL MODAL -->
+<div class="overlay" id="task-detail-modal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+        <div id="td-priority-dot" style="width:12px;height:12px;border-radius:50%;flex-shrink:0"></div>
+        <div class="modal-title" id="td-title" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+      </div>
+      <button class="modal-close" onclick="closeOverlay('task-detail-modal')">&#10005;</button>
+    </div>
+    <div class="modal-body" style="padding:20px 22px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px" id="td-badges"></div>
+      <div style="margin-bottom:16px">
+        <div style="font-size:10px;font-weight:800;color:var(--s400);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">ASSIGNED TO</div>
+        <div id="td-assignees" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.85);border-radius:var(--radius-xs);padding:11px 14px">
+          <div style="font-size:10px;font-weight:800;color:var(--s400);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">START DATE</div>
+          <div id="td-start" style="font-size:15px;font-weight:800;color:var(--navy)">&#8212;</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.85);border-radius:var(--radius-xs);padding:11px 14px">
+          <div style="font-size:10px;font-weight:800;color:var(--s400);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">DUE DATE</div>
+          <div id="td-due" style="font-size:15px;font-weight:800"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-size:10px;font-weight:800;color:var(--s400);text-transform:uppercase;letter-spacing:1.5px">PROGRESS</div>
+          <div id="td-pct-label" style="font-size:14px;font-weight:800;color:var(--navy)">0%</div>
+        </div>
+        <div class="prog-bar" style="height:8px;border-radius:4px">
+          <div id="td-pct-fill" class="prog-fill" style="height:100%;border-radius:4px;width:0%"></div>
+        </div>
+      </div>
+      <div id="td-category-row" style="margin-bottom:16px;display:none">
+        <div style="font-size:10px;font-weight:800;color:var(--s400);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px">CATEGORY</div>
+        <div id="td-category" style="font-size:13px;font-weight:700;color:var(--navy)"></div>
+      </div>
+      <div id="td-desc-row" style="margin-bottom:16px;display:none">
+        <div style="font-size:10px;font-weight:800;color:var(--s400);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px">DETAILS</div>
+        <div id="td-desc" style="font-size:13.5px;color:var(--s600);line-height:1.7;background:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.85);border-radius:var(--radius-xs);padding:11px 14px;white-space:pre-line"></div>
+      </div>
+      <div style="font-size:11px;color:var(--s400);text-transform:uppercase;letter-spacing:.5px" id="td-meta"></div>
+    </div>
+    <div class="modal-footer" id="td-footer"></div>
   </div>
 </div>
 
@@ -1161,6 +1210,82 @@ function renderKanbanKpis() {
   document.getElementById('kpi-critical').textContent = critical;
 }
 
+/* -- TASK DETAIL MODAL -- */
+function openTaskDetail(key) {
+  var t = tasks[key];
+  if (!t) return;
+  var cc = priColors[t.kpriority] || '#9BD400';
+  var pct = t.pct || 0;
+  var pctColor = pct >= 80 ? '#2DD4BF' : pct >= 40 ? '#FF6B2B' : '#FF4444';
+
+  document.getElementById('td-title').textContent = t.title;
+  document.getElementById('td-priority-dot').style.background = cc;
+
+  // Badges
+  var priLbl = t.kpriority || 'NORMAL';
+  var statusLbl = sLabel(t.status);
+  var statusCls = sClass(t.status);
+  var bhtml = '<span style="background:' + cc + '22;color:' + cc + ';border:1.5px solid ' + cc + ';border-radius:20px;padding:4px 13px;font-size:11px;font-weight:800;text-transform:uppercase">' + priLbl + '</span>';
+  bhtml += '<span class="status-badge ' + statusCls + '" style="font-size:11px">' + statusLbl + '</span>';
+  document.getElementById('td-badges').innerHTML = bhtml;
+
+  // Assignees
+  var ahtml = '';
+  if (t.assignees) {
+    for (var i = 0; i < t.assignees.length; i++) {
+      var m = M(t.assignees[i]);
+      ahtml += '<div style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.9);border-radius:20px;padding:5px 12px 5px 6px">';
+      ahtml += '<div style="width:26px;height:26px;border-radius:50%;background:' + m.color + ';display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff">' + m.initial + '</div>';
+      ahtml += '<span style="font-size:12px;font-weight:800;color:var(--navy);text-transform:uppercase">' + m.role + '</span></div>';
+    }
+  }
+  document.getElementById('td-assignees').innerHTML = ahtml || '<span style="color:var(--s400);font-size:13px">—</span>';
+
+  // Dates
+  document.getElementById('td-start').textContent = t.start ? t.start : '—';
+  var dueEl = document.getElementById('td-due');
+  dueEl.textContent = t.due ? t.due : '—';
+  dueEl.style.color = t.due ? dueColor(t.due) : 'var(--navy)';
+
+  // Progress
+  document.getElementById('td-pct-label').textContent = pct + '%';
+  document.getElementById('td-pct-label').style.color = pctColor;
+  document.getElementById('td-pct-fill').style.width = pct + '%';
+  document.getElementById('td-pct-fill').style.background = pctColor;
+
+  // Category
+  var catRow = document.getElementById('td-category-row');
+  if (t.category) {
+    catRow.style.display = 'block';
+    document.getElementById('td-category').textContent = t.category;
+  } else { catRow.style.display = 'none'; }
+
+  // Details / desc
+  var descRow = document.getElementById('td-desc-row');
+  if (t.desc && t.desc.trim()) {
+    descRow.style.display = 'block';
+    document.getElementById('td-desc').textContent = t.desc;
+  } else { descRow.style.display = 'none'; }
+
+  // Meta
+  var by = M(t.assignedBy);
+  document.getElementById('td-meta').textContent = 'ASSIGNED BY: ' + by.role + (t.createdAt ? '  |  ' + t.createdAt : '');
+
+  // Footer — update status button (assignees + SVP/CO-SVP only)
+  var footer = document.getElementById('td-footer');
+  var canEdit = (t.assignees && t.assignees.indexOf(currentUser.uid) >= 0) || currentUser.role === 'SVP' || currentUser.role === 'CO-SVP';
+  var canDel  = currentUser.role === 'SVP' || currentUser.role === 'CO-SVP';
+  var fhtml = '';
+  if (canDel) fhtml += '<button class="del-btn" onclick="deleteKanbanTask(\'' + key + '\');closeOverlay(\'task-detail-modal\')">&#128465; DELETE</button>';
+  fhtml += '<div style="display:flex;gap:8px;margin-left:auto">';
+  fhtml += '<button class="btn btn-glass" onclick="closeOverlay(\'task-detail-modal\')">CLOSE</button>';
+  if (canEdit) fhtml += '<button class="btn btn-lime" onclick="closeOverlay(\'task-detail-modal\');openStatusModal(\'' + key + '\')">&#128260; UPDATE STATUS</button>';
+  fhtml += '</div>';
+  footer.innerHTML = fhtml;
+
+  document.getElementById('task-detail-modal').classList.add('open');
+}
+
 function renderKanban() {
   if (!currentUser) return;
   var taskArr = objToArr(tasks);
@@ -1205,6 +1330,7 @@ function renderKanban() {
       card.draggable = true;
       card.dataset.id = t._key;
       card.addEventListener('dragstart', (function(k){ return function(){ dragId = k; }; })(t._key));
+      card.addEventListener('click', (function(k){ return function(e){ if(e.target.classList.contains('kdel-btn')) return; openTaskDetail(k); }; })(t._key));
       var kmtag = '<span class="kmtag" style="background:' + cc + '22;color:' + cc + '">' + (t.kpriority || 'NORMAL') + '</span>';
       var delBtn = canDel ? '<button class="kdel-btn" onclick="deleteKanbanTask(\'' + t._key + '\')">&#10005;</button>' : '';
       card.innerHTML =
