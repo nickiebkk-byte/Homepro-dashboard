@@ -3634,12 +3634,33 @@ function rtRenderPriceFromGP(){
     +'<span style="font-size:13px;color:rgba(255,255,255,0.50)">ราคาขาย (รวม VAT)</span>'
     +'<span id="pgp-exact" style="font-size:22px;font-weight:800;color:#fff;font-family:Prompt,sans-serif">—</span>'
     +'</div>'
-    +'<div style="font-size:11px;font-weight:800;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">💡 ราคาแนะนำ (ปัดสวย)</div>'
-    +'<div id="pgp-suggest" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px"></div>'
-    +'<div style="font-size:11px;color:rgba(255,255,255,0.25);text-align:center">ปัดขึ้นให้ลงท้าย 9 / 99 / 999 — ⭐ ราคาที่ GP% ใกล้เป้ามากสุด</div>'
+    +'<div style="font-size:11px;font-weight:800;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">💡 ราคาแนะนำ (ปัดสวย) — ลงท้ายด้วย</div>'
+    +'<div id="pgp-ends" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px"></div>'
+    +'<div id="pgp-ends-hint" style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:10px"></div>'
+    +'<div id="pgp-suggest" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:8px"></div>'
+    +'<div style="font-size:11px;color:rgba(255,255,255,0.25);text-align:center">⭐ = ราคาต่ำสุดที่ได้ GP% ตามเป้า</div>'
     +'</div>'
     +'</div>';
+  pgpRenderEnds();
   rtCalcPriceFromGP();
+}
+
+
+var PGP_ENDS=[]; // [] = อัตโนมัติ
+function pgpRenderEnds(){
+  var el=document.getElementById('pgp-ends'); if(!el) return;
+  var opts=[{v:'auto',l:'อัตโนมัติ'},{v:9,l:'…9'},{v:49,l:'49'},{v:59,l:'59'},{v:69,l:'69'},{v:79,l:'79'},{v:89,l:'89'},{v:99,l:'99'}];
+  el.innerHTML=opts.map(function(o){
+    var on=o.v==='auto'?!PGP_ENDS.length:PGP_ENDS.indexOf(o.v)>=0;
+    return '<button type="button" onclick="pgpToggleEnd(\''+o.v+'\')" style="padding:6px 12px;border-radius:20px;font-size:13px;font-weight:700;font-family:Prompt,sans-serif;cursor:pointer;border:1.5px solid '+(on?'#C8FF00':'rgba(255,255,255,0.15)')+';background:'+(on?'rgba(200,255,0,0.15)':'rgba(255,255,255,0.04)')+';color:'+(on?'#C8FF00':'rgba(255,255,255,0.6)')+'">'+o.l+'</button>';
+  }).join('');
+  var hint=document.getElementById('pgp-ends-hint');
+  if(hint) hint.textContent=PGP_ENDS.length?'เลือกได้หลายแบบ — กด "อัตโนมัติ" เพื่อล้าง':'อัตโนมัติ: ต่ำกว่า 300 บาท ลงท้าย 5/9 · ตั้งแต่ 300 บาท ลงท้าย 59/99';
+}
+function pgpToggleEnd(v){
+  if(v==='auto'){ PGP_ENDS=[]; }
+  else { v=parseInt(v,10); var i=PGP_ENDS.indexOf(v); if(i>=0) PGP_ENDS.splice(i,1); else PGP_ENDS.push(v); }
+  pgpRenderEnds(); rtCalcPriceFromGP();
 }
 
 function rtCalcPriceFromGP(){
@@ -3656,22 +3677,25 @@ function rtCalcPriceFromGP(){
   if(exactEl) exactEl.textContent=rt(exact)+' บาท';
   results.style.display='block';
 
-  // สุ่มราคาแนะนำ ลงท้าย 9/99/999
-  function roundTo9(price,digits){
-    var base=Math.pow(10,digits);
-    return Math.ceil(price/base)*base-1;
-  }
-  var suggested=[roundTo9(exact,1),roundTo9(exact,2),roundTo9(exact,3)];
-  // กรองซ้ำ
-  suggested=suggested.filter(function(p,i,a){return p>=exact&&a.indexOf(p)===i;});
-
-  // หาราคาที่ GP% ใกล้เป้ามากสุด
-  var bestIdx=0, bestDiff=999;
-  suggested.forEach(function(p,i){
-    var ag=(p-costVAT)/p*100;
-    var diff=Math.abs(ag-gp);
-    if(diff<bestDiff){bestDiff=diff;bestIdx=i;}
+  // ราคาแนะนำ (ปัดสวย) — ใช้ลงท้ายที่เลือกจากปุ่ม (ไม่เลือก = อัตโนมัติ)
+  var ends=(window.PGP_ENDS&&PGP_ENDS.length)?PGP_ENDS.slice():(exact<300?[5,9]:[59,99]);
+  function stepOf(e){ return e<10?10:100; }
+  var pool={};
+  ends.forEach(function(e){
+    var st=stepOf(e), p=Math.floor(exact/st)*st+e;
+    while(p>exact) p-=st;                  // ตัวที่ต่ำกว่าหรือเท่ากับขั้นต่ำ
+    for(var k=0;k<4;k++){ if(p>0) pool[p]=1; p+=st; }
   });
+  var prices=Object.keys(pool).map(Number).sort(function(a,b){return a-b;});
+  var cand=[];
+  var belows=prices.filter(function(p){return p<exact-1e-9;});
+  var below=belows.length?belows[belows.length-1]:0;
+  if(below>0&&((below-costVAT)/below*100)>=gp-1) cand.push({p:below,under:true});
+  prices.filter(function(p){return p>=exact-1e-9;}).slice(0,3).forEach(function(p){cand.push({p:p});});
+  var suggested=cand.map(function(c){return c.p;});
+  // ⭐ = ราคาต่ำสุดที่ได้ GP% ถึงเป้า
+  var bestIdx=0;
+  for(var bi=0;bi<cand.length;bi++){ if(!cand[bi].under){ bestIdx=bi; break; } }
 
   var sugEl=document.getElementById('pgp-suggest');
   if(!sugEl) return;
@@ -3685,6 +3709,7 @@ function rtCalcPriceFromGP(){
       +'<div style="font-size:13px;font-weight:700;color:'+gc+';margin-top:4px">'+ag.toFixed(2)+'%</div>'
       +'<div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px">GP% จริง</div>'
       +(isBest?'<div style="font-size:9px;background:#C8FF00;color:#111;border-radius:10px;padding:1px 6px;font-weight:800;margin-top:4px;display:inline-block">แนะนำ ⭐</div>':'')
+      +(cand[i].under?'<div style="font-size:9px;color:#fcd34d;margin-top:4px">ต่ำกว่าเป้าเล็กน้อย</div>':'')
       +'</div>';
   }).join('');
 }
